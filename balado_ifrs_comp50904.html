@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balado Exécutif — Chapitre 4 : Les Actifs (Claude Laroche, ERPI / COMP 50904 MBA HEC)</title>
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --accent-subtle: rgba(56, 189, 248, 0.15);
+            --alex-color: #38bdf8;
+            --sophie-color: #ec4899;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 24px 60px;
+        }
+
+        /* HEADER */
+        .header {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .podcast-badge {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #0b1120;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .podcast-badge .pulse {
+            width: 8px;
+            height: 8px;
+            background: #0b1120;
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .sub-header {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0b1120;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            color: white;
+        }
+
+        /* MAIN CONTAINER */
+        .main-layout {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SIDEBAR (CHAPTERS & CONTROLS) */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .player-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 20px;
+        }
+
+        .player-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .active-speaker-tag {
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            transition: all 0.2s ease;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-ctrl {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+        }
+
+        .btn-ctrl:hover {
+            transform: scale(1.08);
+        }
+
+        .btn-play {
+            background: var(--accent);
+            color: #0b1120;
+            width: 56px;
+            height: 56px;
+            font-size: 1.35rem;
+        }
+
+        .btn-secondary-ctrl {
+            background: #334155;
+            color: white;
+        }
+
+        .btn-secondary-ctrl:hover {
+            background: #475569;
+        }
+
+        .rate-selector {
+            display: flex;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .rate-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rate-btn.active {
+            background: var(--accent);
+            color: #0b1120;
+        }
+
+        /* VOICE SETTINGS BOXES */
+        .voice-settings {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .voice-settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.8rem;
+        }
+
+        .preset-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .preset-btn {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .voice-speaker-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .voice-alex-box {
+            border-left: 3px solid var(--alex-color);
+        }
+
+        .voice-sophie-box {
+            border-left: 3px solid var(--sophie-color);
+        }
+
+        .voice-speaker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .speaker-pill {
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .pill-alex {
+            color: var(--alex-color);
+        }
+
+        .pill-sophie {
+            color: var(--sophie-color);
+        }
+
+        .btn-voice-test {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-main);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-voice-test:hover {
+            background: var(--accent);
+            color: #0b1120;
+        }
+
+        .voice-select {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            outline: none;
+        }
+
+        .voice-select:focus {
+            border-color: var(--accent);
+        }
+
+        /* CHAPTER NAVIGATION */
+        .chapter-list {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .chapter-title-heading {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .chapter-item {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            margin-bottom: 3px;
+        }
+
+        .chapter-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+        }
+
+        .chapter-item.active {
+            background: var(--accent-subtle);
+            color: var(--accent);
+            font-weight: 600;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* TRANSCRIPT AREA */
+        .transcript-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .segment-heading {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+            font-size: 1.15rem;
+            scroll-margin-top: 20px;
+        }
+
+        .segment-heading:first-child {
+            margin-top: 0;
+        }
+
+        /* DIALOGUE BUBBLES WITH CLICK-TO-PLAY AFFORDANCE */
+        .dialogue-card {
+            display: flex;
+            gap: 16px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .dialogue-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateX(2px);
+        }
+
+        .dialogue-card.speaking {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: var(--accent);
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+            transform: translateX(4px);
+        }
+
+        .dialogue-card .jump-badge {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 3px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            pointer-events: none;
+        }
+
+        .dialogue-card:hover .jump-badge {
+            opacity: 1;
+        }
+
+        .dialogue-card.speaking .jump-badge {
+            opacity: 1;
+            background: var(--accent);
+            color: #0b1120;
+            font-weight: 700;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .avatar-alex {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--alex-color);
+            border: 2px solid var(--alex-color);
+        }
+
+        .avatar-sophie {
+            background: rgba(236, 72, 153, 0.2);
+            color: var(--sophie-color);
+            border: 2px solid var(--sophie-color);
+        }
+
+        .dialogue-content {
+            flex: 1;
+            padding-right: 60px;
+        }
+
+        .dialogue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .speaker-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .speaker-alex {
+            color: var(--alex-color);
+        }
+
+        .speaker-sophie {
+            color: var(--sophie-color);
+        }
+
+        .speaker-tag {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        .dialogue-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .dialogue-card.speaking .dialogue-text {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* HIGHLIGHT BOXES */
+        .callout-ifrs {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 10px 14px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            color: #e2e8f0;
+        }
+
+        .callout-piege {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 10px 14px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            color: #e2e8f0;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10b981;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-title">
+            <div class="podcast-badge">
+                <span class="pulse"></span> CHAPITRE 4 : LES ACTIFS
+            </div>
+            <div>
+                <h1>🎙️ Le Radar Financier : La Maîtrise des Actifs</h1>
+                <div class="sub-header">Manuel Claude Laroche (ERPI) — COMP 50904 (Prof. Zvi Singer, HEC Montréal)</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn" id="btnCopyScript" title="Copier le script complet pour NotebookLM">📋 Copier pour NotebookLM</button>
+            <a href="lecteur_videos_comp50904.html" class="btn">🎬 Lecteur Vidéos (33 Capsules)</a>
+            <a href="../wiki/01_Cours_En_Cours/COMP50904_Information_Financiere/00_Ouvrage_Claude_Laroche/Chapitre_04_Les_Actifs.md" class="btn btn-primary">📖 Fiche Chapitre 4</a>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <main class="main-layout">
+        <!-- SIDEBAR CONTROLS -->
+        <aside class="sidebar">
+            <div class="player-card">
+                <div class="player-status">
+                    <span>Voix : Synthèse neuronale</span>
+                    <span id="speakerIndicator" class="active-speaker-tag">Prêt à écouter</span>
+                </div>
+
+                <div class="controls-row">
+                    <button class="btn-ctrl btn-secondary-ctrl" id="btnPrev" title="Ligne précédente">⏮️</button>
+                    <button class="btn-ctrl btn-play" id="btnPlay" title="Lecture / Pause">▶️</button>
+                    <button class="btn-ctrl btn-secondary-ctrl" id="btnStop" title="Arrêter et revenir au début">⏹️</button>
+                    <button class="btn-ctrl btn-secondary-ctrl" id="btnNext" title="Ligne suivante">⏭️</button>
+                </div>
+
+                <div class="rate-selector">
+                    <button class="rate-btn" data-rate="0.9">0.9x</button>
+                    <button class="rate-btn active" data-rate="1.0">1.0x</button>
+                    <button class="rate-btn" data-rate="1.25">1.25x</button>
+                    <button class="rate-btn" data-rate="1.5">1.5x</button>
+                    <button class="rate-btn" data-rate="1.75">1.75x</button>
+                </div>
+
+                <div class="voice-settings">
+                    <div class="voice-settings-header">
+                        <span>🎭 Attribution des Voix</span>
+                        <div class="preset-badges">
+                            <button class="preset-btn" id="btnPresetCA" title="Duo Canadien (Antoine & Sylvie)">🍁 fr-CA</button>
+                            <button class="preset-btn" id="btnPresetFR" title="Duo France (Henri & Denise)">🇫🇷 fr-FR</button>
+                        </div>
+                    </div>
+
+                    <!-- VOIX ALEX -->
+                    <div class="voice-speaker-box voice-alex-box">
+                        <div class="voice-speaker-header">
+                            <span class="speaker-pill pill-alex">👔 Alex (Homme)</span>
+                            <button class="btn-voice-test" id="btnTestAlex" title="Tester la voix d'Alex">🔊 Tester</button>
+                        </div>
+                        <select id="voiceSelectAlex" class="voice-select">
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+
+                    <!-- VOIX SOPHIE -->
+                    <div class="voice-speaker-box voice-sophie-box">
+                        <div class="voice-speaker-header">
+                            <span class="speaker-pill pill-sophie">📊 Sophie (Femme)</span>
+                            <button class="btn-voice-test" id="btnTestSophie" title="Tester la voix de Sophie">🔊 Tester</button>
+                        </div>
+                        <select id="voiceSelectSophie" class="voice-select">
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CHAPTERS -->
+                <div class="chapter-list">
+                    <div class="chapter-title-heading">Chapitres du Balado (Cliquez pour sauter)</div>
+                    <div class="chapter-item active" data-target="seg-intro">0. Définition & Frontière Courant / Non courant</div>
+                    <div class="chapter-item" data-target="seg-tresorerie">1. Trésorerie & Règle des 3 mois (4.1)</div>
+                    <div class="chapter-item" data-target="seg-creances">2. Créances & Piège de la radiation (4.2)</div>
+                    <div class="chapter-item" data-target="seg-stocks">3. Stocks, PEPS, CMP & Interdiction LIFO (4.3)</div>
+                    <div class="chapter-item" data-target="seg-placements">4. Placements financiers IFRS 9 (4.4)</div>
+                    <div class="chapter-item" data-target="seg-immo">5. Immobilisations : CapEx vs OpEx (4.5)</div>
+                    <div class="chapter-item" data-target="seg-amortissement">6. Méthodes d'amortissement comparées</div>
+                    <div class="chapter-item" data-target="seg-depreciation">7. Dépréciation IAS 36 & Goodwill</div>
+                    <div class="chapter-item" data-target="seg-ratios">8. Diagnostic par les ratios & DuPont</div>
+                    <div class="chapter-item" data-target="seg-outro">9. Cheat Sheet Flash (60s)</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- TRANSCRIPT INTERACTIF -->
+        <section class="transcript-container" id="transcript">
+
+            <!-- SEGMENT 0 : INTRODUCTION & DÉFINITION DE L'ACTIF -->
+            <div class="segment-heading" id="seg-intro">🏛️ Segment 0 : Définition de l'Actif & Frontière Courant / Non Courant</div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex <span class="speaker-tag">MBA HEC Montréal</span></span>
+                    </div>
+                    <div class="dialogue-text">Bienvenue au Radar Financier, le balado de révision accélérée pour COMP 50904 ! Aujourd'hui, on s'attaque au gros bloc du bilan : le Chapitre 4 du manuel de Claude Laroche, entièrement consacré aux Actifs. Avec moi en studio, Sophie ! Salut Sophie !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie <span class="speaker-tag">Spécialiste Comptabilité</span></span>
+                    </div>
+                    <div class="dialogue-text">Salut Alex ! Et salut à toute la cohorte ! Le Chapitre 4, c'est le cœur battant de la situation financière. Zvi Singer nous a prévenus dès le premier cours : comprendre les actifs, c'est être capable de voir si la richesse annoncée par une entreprise repose sur du solide ou sur des mirages comptables.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Exact ! Rappelle-nous d'abord la définition officielle d'un actif selon le cadre conceptuel, et comment on sépare le court terme du long terme.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Un Actif, c'est une ressource économique actuelle contrôlée par l'entité du fait d'événements passés, et dont on attend des avantages économiques futurs sous forme d'entrées de fonds. Et au bilan, on trace une ligne stricte : les Actifs courants sont ceux qu'on s'attend à convertir en argent ou à consommer dans les douze mois ou dans le cycle normal d'exploitation. Tout le reste, ce sont les Actifs non courants, c'est-à-dire nos investissements durables.</div>
+                    <div class="callout-ifrs"><strong>Équation fondamentale :</strong> Actif Total = Passif Total + Capitaux Propres. Les actifs représentent ce que l'entreprise possède pour opérer, financés soit par de la dette, soit par les actionnaires.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 1 : TRÉSORERIE ET ÉQUIVALENTS -->
+            <div class="segment-heading" id="seg-tresorerie">💵 Segment 1 : La Trésorerie et ses Équivalents (Section 4.1)</div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Commençons par le poste le plus liquide : la trésorerie et les équivalents de trésorerie. Qu'est-ce qui a le droit d'entrer dans cette catégorie dorée ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">La trésorerie pure, c'est l'encaisse immédiatement disponible : comptes bancaires courants et tiroirs-caisses. Les équivalents de trésorerie, ce sont des placements à très court terme, hautement liquides et sans risque de fluctuation. La règle d'or d'IAS 7 et de Claude Laroche : leur échéance initiale à l'achat doit être inférieure ou égale à trois mois ! Pensez à des bons du Trésor à soixante jours ou des billets de trésorerie à quatre-vingt-dix jours.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et attention au piège d'examen classique : que fait-on si notre compte bancaire est dans le rouge à la fin de l'année avec un découvert bancaire ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Ne mettez jamais un actif négatif au bilan ! Un découvert bancaire doit obligatoirement être reclassé dans les Passifs courants, sous la rubrique des emprunts bancaires à court terme ou marges de crédit. Et si l'entreprise détient des devises étrangères comme des dollars américains, elle doit les convertir au taux de change de clôture à la date précise du bilan.</div>
+                    <div class="callout-piege"><strong>Piège Zvi Singer :</strong> Un solde bancaire négatif n'est pas un actif négatif, c'est une dette d'exploitation à court terme inscrite au passif.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 2 : CRÉANCES CLIENTS ET PERTES -->
+            <div class="segment-heading" id="seg-creances">📑 Segment 2 : Les Créances Clients & Les Créances Douteuses (Section 4.2)</div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Passons au deuxième grand poste : les comptes clients. Quand on vend à crédit, on a un droit contractuel d'encaisser l'argent. Mais que nous enseigne le principe de prudence ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Le principe de prudence exige de présenter les créances à leur Valeur Nette de Réalisation, c'est-à-dire le montant qu'on s'attend raisonnablement à encaisser. Au bilan, on a donc : Créances clients brutes, moins la Provision pour créances douteuses, égal Créances nettes. La provision est un compte de contre-actif.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et pourquoi doit-on enregistrer la charge tout de suite, sans attendre la faillite légale du client un an plus tard ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">C'est la règle d'or du rattachement des charges aux produits ! La perte sur créance doit être enregistrée dans le même exercice financier que la vente à crédit qui l'a engendrée. Et écoutez bien la question préférée de Zvi Singer : que se passe-t-il quand on radie officiellement une créance irrécouvrable ? L'écriture est : Débit Provision pour créances douteuses, Crédit Comptes clients bruts. Résultat : zéro impact sur le résultat net de l'année, et zéro impact sur la créance nette au bilan !</div>
+                    <div class="callout-piege"><strong>Règle fatale d'examen :</strong> La radiation d'une créance n'affecte ni le bénéfice net ni le montant net des créances au bilan, car la dépense avait déjà été anticipée lors de la dotation.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et pour surveiller l'encaissement, on calcule le délai moyen de recouvrement, le DSO : comptes clients divisés par les ventes à crédit, multiplié par trois cent soixante-cinq jours. Si le DSO grimpe en flèche, l'entreprise finance ses clients à ses dépens et risque la crise de liquidité.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 3 : LES STOCKS ET VALORISATION -->
+            <div class="segment-heading" id="seg-stocks">📦 Segment 3 : Les Stocks, PEPS, CMP & Interdiction LIFO (Section 4.3)</div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Parlons des stocks. Première notion : le coût d'acquisition comprend le prix d'achat net, majoré de tous les frais nécessaires pour acheminer le stock à son lieu et son état actuels : droits de douane, transport, assurances de transit et manutention. Par contre, les frais d'entreposage ultérieurs et les frais de vente ne sont jamais capitalisés dans les stocks, ce sont des charges d'exploitation immédiates !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et comment calcule-t-on le coût des stocks vendus ? Claude Laroche présente trois méthodes : le coût spécifique pour les articles de grand luxe ou uniques, le PEPS ou FIFO où les plus anciens stocks sont réputés vendus en premier, et le Coût Moyen Pondéré qui lisse les prix.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Et attention : en période d'inflation, la méthode PEPS minimise le coût des ventes et maximise le bénéfice net ainsi que la valeur du stock final au bilan ! Et rappelons que la méthode DEPS ou LIFO est formellement interdite sous IFRS, car elle sous-estimerait artificiellement la valeur du stock au bilan.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et à la clôture de l'exercice, la règle impérative : évaluer les stocks au plus faible du coût d'acquisition et de la Valeur Nette de Réalisation. Si un produit démodé ne peut plus être vendu qu'à perte, on inscrit immédiatement une dépréciation de stock au résultat net !</div>
+                    <div class="callout-ifrs"><strong>Formule VNR :</strong> VNR = Prix de vente estimé sur le marché - Coûts d'achèvement - Frais de vente. Si Coût > VNR, dépréciation immédiate en charge.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 4 : PLACEMENTS FINANCIERS -->
+            <div class="segment-heading" id="seg-placements">📈 Segment 4 : Les Placements Financiers (Section 4.4 & IFRS 9)</div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Section 4.4 : les placements financiers sous la norme IFRS 9. Alex, comment classe-t-on les actions et obligations détenues par une entreprise ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Tout dépend du modèle d'affaires de détention. Il y a trois catégories : premièrement, le Coût amorti pour les obligations qu'on garde jusqu'à l'échéance pour toucher les intérêts. Deuxièmement, la Juste valeur par les Autres Éléments du Résultat Global, où les variations boursières dorment dans les capitaux propres. Et troisièmement, la Juste valeur par le Résultat Net, pour les titres négociés activement, où chaque gain ou perte de marché frappe en direct le résultat net du trimestre !</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 5 : IMMOBILISATIONS ET CAPEX -->
+            <div class="segment-heading" id="seg-immo">🏗️ Segment 5 : Immobilisations Corporelles — CapEx vs OpEx (Section 4.5 & IAS 16)</div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Passons aux actifs à long terme avec les immobilisations corporelles sous IAS 16. La grande frontière comptable, c'est la distinction entre dépense en capital, le CapEx, et dépense d'exploitation, l'OpEx.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Une dépense est capitalisée au bilan si elle procure des avantages économiques futurs au-delà de l'exercice : prix d'achat, frais d'installation, essais et améliorations majeures prolongeant la durée de vie. Par contre, un entretien d'huile, une réparation de toiture usuelle ou un changement de pièce mineure, c'est de l'OpEx, passé immédiatement en charges d'exploitation !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Et n'oublions pas l'obligation spécifique d'IAS 16 : les coûts futurs de démantèlement et de remise en état d'un site doivent être estimés, actualisés et ajoutés immédiatement au coût initial de l'immobilisation au bilan, avec une provision équivalente au passif !</div>
+                    <div class="callout-ifrs"><strong>Coût de démantèlement :</strong> Même si l'usine fermera dans 25 ans, l'obligation légale ou implicite de remise en état est capitalisée au coût de l'actif dès le jour 1.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 6 : MÉTHODES D'AMORTISSEMENT -->
+            <div class="segment-heading" id="seg-amortissement">⏳ Segment 6 : Les Méthodes d'Amortissement Comparées</div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Abordons maintenant l'amortissement. Rappelons que l'amortissement n'a jamais pour but de refléter la valeur de revente sur le marché d'occasion ! C'est simplement une répartition systématique du coût amortissable sur la durée de vie utile de l'actif.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Exactement ! Le montant amortissable est égal au Coût historique moins la Valeur résiduelle estimée. Et Claude Laroche compare trois grandes méthodes : la méthode linéaire où la charge est constante chaque année, la méthode dégressive à taux constant où la charge est très forte au début — ce qui colle parfaitement à l'obsolescence rapide des ordinateurs ou des véhicules —, et la méthode des unités d'œuvre basée sur l'utilisation effective, comme les heures de vol d'un avion ou les kilomètres d'un camion.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et au bilan, l'amortissement annuel s'accumule dans un compte de contre-actif appelé Amortissement cumulé, qui vient réduire la valeur brute pour donner la Valeur Comptable Nette. Au tableau des flux de trésorerie, c'est une charge sans sortie de fonds qu'on rajoute au bénéfice net.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 7 : DÉPRÉCIATION ET GOODWILL -->
+            <div class="segment-heading" id="seg-depreciation">📉 Segment 7 : La Dépréciation d'Actifs & Le Goodwill (IAS 36)</div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Et que se passe-t-il si un actif perd brutalement de sa valeur économique ? On applique le test de dépréciation selon IAS 36. On compare la Valeur Comptable Nette avec la Valeur Recouvrable. Et quelle est la formule de la Valeur Recouvrable, Alex ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">C'est le MAXIMUM entre deux montants : d'un côté, la Juste valeur nette des frais de vente, et de l'autre, la Valeur d'utilité basée sur les flux de trésorerie futurs actualisés. Si la Valeur Comptable Nette est supérieure à la Valeur Recouvrable, l'actif est surévalué : on doit inscrire une perte de dépréciation immédiate au résultat !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Et n'oubliez jamais : sous IFRS, le Goodwill, ou écart d'acquisition, n'est JAMAIS amorti ! Il doit obligatoirement subir un test annuel de dépréciation.</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 8 : DÉCOMPOSITION DUPONT EN DÉTAIL -->
+            <div class="segment-heading" id="seg-ratios">📊 Segment 8 : Diagnostic Financier & La Décomposition DuPont en Détail</div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Pour boucler notre analyse des actifs en gestionnaires MBA, abordons le modèle d'analyse le plus puissant et le plus testé par Zvi Singer à l'examen : la fameuse Décomposition DuPont ! Sophie, rappelle-nous d'où on part et pourquoi le ratio de départ, le ROE, est une véritable boîte noire.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Tout part du ROE, le Rendement des capitaux propres, c'est-à-dire le Résultat Net divisé par les Capitaux Propres moyens. C'est l'indicateur roi des actionnaires : pour chaque dollar qu'ils ont investi dans l'entreprise, combien de cents de profit net l'entreprise génère-t-elle ? Mais le grand danger, c'est que regarder un ROE seul est trompeur : une entreprise peut afficher un ROE de vingt-cinq pour cent et être pourtant sur le point de faire faillite !</div>
+                    <div class="callout-piege"><strong>Le piège de la boîte noire :</strong> Un ROE élevé peut être le signe d'une rentabilité éclatante... ou simplement d'un endettement toxique qui dissimule des opérations médiocres.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et c'est là que la firme chimique DuPont a inventé sa géniale décomposition mathématique au début du vingtième siècle ! Sophie, montre-nous la mécanique de cette formule à trois facteurs.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">C'est d'une élégance mathématique absolue ! On prend la formule du ROE et on insère deux termes intermédiaires : les Ventes et l'Actif Total. On obtient trois fractions multipliées entre elles :
+Première fraction : Résultat Net divisé par les Ventes.
+Deuxième fraction : Ventes divisées par l'Actif Total.
+Et troisième fraction : Actif Total divisé par les Capitaux Propres.
+Regardez bien les simplifications : les Ventes au dénominateur de la première fraction s'annulent avec les Ventes au numérateur de la deuxième ! Et l'Actif Total au dénominateur de la deuxième s'annule avec l'Actif Total au numérateur de la troisième !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">C'est magique ! Mathématiquement, il ne reste que Résultat Net sur Capitaux Propres. Mais managérialement, on a fait apparaître trois moteurs d'affaires distincts :
+La Marge Nette, multipliée par la Rotation de l'Actif Total, multipliée par le Levier Financier !
+ROE égal Marge Nette fois Rotation de l'Actif fois Levier Financier.</div>
+                    <div class="callout-ifrs"><strong>La Pyramide DuPont à 3 Facteurs :</strong><br>
+                    ROE = (Résultat Net / Ventes) × (Ventes / Actif Total) × (Actif Total / Capitaux Propres)<br>
+                    ROE = Marge Nette × Rotation de l'Actif × Levier Financier (Equity Multiplier)</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Décortiquons le premier moteur : la Marge Nette, Résultat Net sur Ventes. Elle mesure l'efficacité opérationnelle et le pouvoir de fixation des prix, le fameux pricing power. Pour chaque tranche de cent dollars de chiffre d'affaires, combien de dollars restent dans les poches nettes après avoir payé le coût des ventes, les salaires, le marketing, l'amortissement, les intérêts et les impôts ? Pour augmenter sa marge, un gestionnaire doit soit augmenter ses prix de vente, soit réduire ses coûts de fabrication.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Passons au deuxième moteur : la Rotation de l'Actif Total ! C'est le lien direct avec notre Chapitre 4 sur les Actifs ! C'est les Ventes divisées par l'Actif Total moyen. Comment l'interpréter ?</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Ce ratio mesure l'efficacité de l'outil de production et la vitesse de rotation du capital. Combien de dollars de chiffre d'affaires chaque dollar d'actif inscrit au bilan réussit-il à générer chaque année ? Si vous gérez mal vos actifs — par exemple avec des usines à moitié vides, des stocks dormants qui s'empilent ou des clients qui ne paient pas —, votre dénominateur d'actif gonfle et votre rotation s'effondre ! À l'inverse, si vous accélérez la rotation des stocks avec du juste-à-temps et réduisez le délai client DSO, votre rotation d'actifs grimpe en flèche.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et que se passe-t-il si on multiplie ces deux premiers facteurs ensemble ? C'est le pivot central du modèle !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Marge Nette multipliée par Rotation de l'Actif donne le ROA, le Rendement de l'Actif Total : Résultat Net divisé par Actif Total. Le ROA mesure la rentabilité économique pure de l'entreprise, indépendamment de la façon dont elle est financée ! Que l'entreprise utilise beaucoup de dette ou zéro dette, le ROA vous dit si son outil économique produit de la valeur.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et c'est là qu'intervient le troisième moteur : le Levier Financier, ou Equity Multiplier, égal à l'Actif Total divisé par les Capitaux Propres ! Sophie, explique-nous son rôle d'amplificateur et son danger mortel.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Rappelons l'identité du bilan : Actif égal Dette plus Capitaux Propres. Si une entreprise n'a aucune dette, ses actifs sont financés à cent pour cent par ses actionnaires, donc le levier vaut exactement un virgule zéro. Mais dès qu'elle emprunte, elle achète des actifs avec l'argent des créanciers ! Les capitaux propres deviennent petits par rapport à l'actif, et le levier monte à deux, trois, cinq ou dix. Si le rendement économique des actifs, le ROA, est supérieur au coût de la dette après impôt, chaque dollar emprunté démultiplie le profit des actionnaires : c'est l'effet de levier positif !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Mais attention à l'effet de massue, le reverse leverage ! Si les ventes chutent ou que les taux d'intérêt grimpent, la charge d'intérêts bancaires reste fixe. Le ROA s'effondre sous le coût de la dette, et le levier financier amplifie les pertes jusqu'à couler l'entreprise !</div>
+                    <div class="callout-piege"><strong>L'Effet de Massue :</strong> Le levier financier est une arme à double tranchant. Il dope les gains en période d'expansion, mais accélère la faillite dès que le résultat opérationnel recule.</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Et c'est grâce à ça qu'on résout l'exercice d'examen préféré de Zvi Singer : l'identification d'entreprises à l'aveugle ! À partir de la pyramide DuPont, vous pouvez deviner le modèle d'affaires :
+Premier profil, l'épicier de masse comme Walmart, Costco ou Metro : une marge nette très faible de deux pour cent, mais une rotation d'actifs fulgurante de trois fois par an et un levier modéré de deux virgule cinq. Leur ROE de quinze pour cent est propulsé par la vitesse de rotation des stocks !
+Deuxième profil, la maison de luxe ou le logiciel SaaS comme LVMH, Ferrari ou Adobe : une marge nette énorme de vingt-cinq à trente pour cent, une rotation d'actifs lente de zéro virgule cinq, et très peu de dette avec un levier de un virgule trois. Leur ROE de vingt pour cent est propulsé par leur marge et leur marque !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Et le troisième profil à repérer immédiatement : l'entreprise malade ! Une marge ridicule de un pour cent, une rotation médiocre de zéro virgule quatre, mais un ROE trompeur de vingt pour cent obtenu uniquement parce que son levier d'endettement est de cinquante ! Dès que les banques coupent le crédit, c'est le dépôt de bilan. Voilà toute la puissance d'analyse que DuPont nous donne !</div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 9 : CHEAT SHEET FLASH -->
+            <div class="segment-heading" id="seg-outro">⏱️ Segment 9 : Cheat Sheet Flash (60s) & Conclusion</div>
+
+            <div class="dialogue-card" data-speaker="Sophie">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-sophie">SO</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-sophie">Sophie</span>
+                    </div>
+                    <div class="dialogue-text">Alex, le récapitulatif flash en soixante secondes pour graver le Chapitre 4 :
+Un, Trésorerie : équivalents à trois mois maximum, découvert bancaire toujours au passif.
+Deux, Créances : provision en contre-actif, radiation sans impact sur le résultat net.
+Trois, Stocks : coût d'entrée complet, PEPS et CMP permis, LIFO interdit, règle du moindre du coût et de la VNR.
+Quatre, Placements IFRS 9 : coût amorti, JV-AERG ou JV-RN.
+Cinq, Immobilisations : entretien en charges, améliorations et démantèlement au bilan.
+Six, Dépréciation : test si VCN supérieure à la Valeur Recouvrable. Et Goodwill jamais amorti !</div>
+                </div>
+            </div>
+
+            <div class="dialogue-card" data-speaker="Alex">
+                <span class="jump-badge">▶ Lancer d'ici</span>
+                <div class="avatar avatar-alex">AL</div>
+                <div class="dialogue-content">
+                    <div class="dialogue-header">
+                        <span class="speaker-name speaker-alex">Alex</span>
+                    </div>
+                    <div class="dialogue-text">Voilà ! Avec cette maîtrise des actifs du Chapitre 4, vous avez tous les atouts en main pour analyser n'importe quel bilan et réussir haut la main votre examen de COMP 50904 ! Bonnes révisions à toute la cohorte du MBA HEC Montréal, et à très bientôt sur le Radar Financier !</div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div class="toast" id="toastMsg">Notification</div>
+
+    <!-- SCRIPT DE LECTURE VOCALE MULTI-VOIX ET SYNCHRONISATION ROBUSTE -->
+    <script>
+        const cards = document.querySelectorAll('.dialogue-card');
+        const btnPlay = document.getElementById('btnPlay');
+        const btnStop = document.getElementById('btnStop');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const speakerIndicator = document.getElementById('speakerIndicator');
+        const voiceSelectAlex = document.getElementById('voiceSelectAlex');
+        const voiceSelectSophie = document.getElementById('voiceSelectSophie');
+        const btnTestAlex = document.getElementById('btnTestAlex');
+        const btnTestSophie = document.getElementById('btnTestSophie');
+        const btnPresetCA = document.getElementById('btnPresetCA');
+        const btnPresetFR = document.getElementById('btnPresetFR');
+        const rateButtons = document.querySelectorAll('.rate-btn');
+        const chapterItems = document.querySelectorAll('.chapter-item');
+        const toast = document.getElementById('toastMsg');
+
+        let synth = window.speechSynthesis;
+        let voices = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let currentRate = 1.0;
+        let activeUtterance = null;
+        let playTimeout = null;
+
+        // Charger et trier les voix
+        function loadVoices() {
+            voices = synth.getVoices();
+            if (!voices || voices.length === 0) return;
+
+            voiceSelectAlex.innerHTML = '';
+            voiceSelectSophie.innerHTML = '';
+
+            const sortedVoices = [...voices].sort((a, b) => {
+                const aFrCA = a.lang === 'fr-CA' ? 3 : (a.lang.startsWith('fr') ? 2 : 1);
+                const bFrCA = b.lang === 'fr-CA' ? 3 : (b.lang.startsWith('fr') ? 2 : 1);
+                if (aFrCA !== bFrCA) return bFrCA - aFrCA;
+                return a.name.localeCompare(b.name);
+            });
+
+            sortedVoices.forEach(voice => {
+                const optA = document.createElement('option');
+                optA.value = voice.name;
+                optA.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelectAlex.appendChild(optA);
+
+                const optS = document.createElement('option');
+                optS.value = voice.name;
+                optS.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelectSophie.appendChild(optS);
+            });
+
+            applySmartVoiceDefaults();
+        }
+
+        function applySmartVoiceDefaults() {
+            const savedAlex = localStorage.getItem('balado_voice_alex');
+            const savedSophie = localStorage.getItem('balado_voice_sophie');
+
+            if (savedAlex && Array.from(voiceSelectAlex.options).some(o => o.value === savedAlex)) {
+                voiceSelectAlex.value = savedAlex;
+            } else {
+                const alexCandidate = voices.find(v => 
+                    (v.lang.startsWith('fr') && /antoine|jean|henri|paul|alain|claude|jerome|maurice|male|homme/i.test(v.name)) ||
+                    (v.lang === 'fr-CA' && !/sylvie|femme|female/i.test(v.name))
+                ) || voices.find(v => v.lang.startsWith('fr')) || voices[0];
+                if (alexCandidate) voiceSelectAlex.value = alexCandidate.name;
+            }
+
+            if (savedSophie && Array.from(voiceSelectSophie.options).some(o => o.value === savedSophie)) {
+                voiceSelectSophie.value = savedSophie;
+            } else {
+                const sophieCandidate = voices.find(v => 
+                    (v.lang.startsWith('fr') && /sylvie|denise|julie|hortense|brigitte|coralie|eloise|celeste|jacqueline|vivienne|female|femme/i.test(v.name)) ||
+                    (v.lang.startsWith('fr') && v.name !== voiceSelectAlex.value)
+                ) || voices.find(v => v.lang.startsWith('fr')) || voices[Math.min(1, voices.length - 1)];
+                if (sophieCandidate) voiceSelectSophie.value = sophieCandidate.name;
+            }
+        }
+
+        voiceSelectAlex.addEventListener('change', () => {
+            localStorage.setItem('balado_voice_alex', voiceSelectAlex.value);
+        });
+
+        voiceSelectSophie.addEventListener('change', () => {
+            localStorage.setItem('balado_voice_sophie', voiceSelectSophie.value);
+        });
+
+        btnPresetCA.addEventListener('click', () => {
+            const caMale = voices.find(v => v.lang === 'fr-CA' && /antoine|jean/i.test(v.name)) || voices.find(v => v.lang === 'fr-CA');
+            const caFemale = voices.find(v => v.lang === 'fr-CA' && /sylvie/i.test(v.name)) || voices.find(v => v.lang === 'fr-CA');
+            if (caMale) voiceSelectAlex.value = caMale.name;
+            if (caFemale) voiceSelectSophie.value = caFemale.name;
+            localStorage.setItem('balado_voice_alex', voiceSelectAlex.value);
+            localStorage.setItem('balado_voice_sophie', voiceSelectSophie.value);
+            showToast("Préréglage Canadien (fr-CA) appliqué !");
+        });
+
+        btnPresetFR.addEventListener('click', () => {
+            const frMale = voices.find(v => v.lang.startsWith('fr') && /henri|paul|alain|claude/i.test(v.name)) || voices.find(v => v.lang.startsWith('fr'));
+            const frFemale = voices.find(v => v.lang.startsWith('fr') && /denise|brigitte|julie|hortense|eloise/i.test(v.name)) || voices.find(v => v.lang.startsWith('fr'));
+            if (frMale) voiceSelectAlex.value = frMale.name;
+            if (frFemale) voiceSelectSophie.value = frFemale.name;
+            localStorage.setItem('balado_voice_alex', voiceSelectAlex.value);
+            localStorage.setItem('balado_voice_sophie', voiceSelectSophie.value);
+            showToast("Préréglage France (fr-FR) appliqué !");
+        });
+
+        function testSingleVoice(speaker) {
+            safeStop();
+            const isAlex = speaker === 'Alex';
+            const voiceName = isAlex ? voiceSelectAlex.value : voiceSelectSophie.value;
+            const text = isAlex 
+                ? "Bonjour Vincent ! C'est Alex. Prêt pour la révision du Chapitre 4 sur les Actifs avec Zvi Singer !"
+                : "Salut Vincent ! C'est Sophie. Je suis prête pour l'analyse détaillée des actifs de Claude Laroche !";
+
+            const utter = new SpeechSynthesisUtterance(text);
+            const chosenVoice = voices.find(v => v.name === voiceName);
+            if (chosenVoice) utter.voice = chosenVoice;
+            utter.rate = currentRate;
+            utter.pitch = isAlex ? 0.95 : 1.15;
+            synth.speak(utter);
+        }
+
+        btnTestAlex.addEventListener('click', () => testSingleVoice('Alex'));
+        btnTestSophie.addEventListener('click', () => testSingleVoice('Sophie'));
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function highlightCard(index) {
+            cards.forEach((c, i) => {
+                c.classList.toggle('speaking', i === index);
+            });
+            if (cards[index]) {
+                cards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const speaker = cards[index].dataset.speaker;
+                speakerIndicator.textContent = `En train de parler : ${speaker} (Ligne ${index + 1}/${cards.length})`;
+                speakerIndicator.style.color = speaker === 'Alex' ? 'var(--alex-color)' : 'var(--sophie-color)';
+                updateActiveChapter(cards[index]);
+            }
+        }
+
+        function updateActiveChapter(activeCard) {
+            // Trouver le segment précédent le plus proche
+            let el = activeCard;
+            while (el && !el.classList.contains('segment-heading')) {
+                el = el.previousElementSibling;
+            }
+            if (el && el.id) {
+                chapterItems.forEach(ch => {
+                    ch.classList.toggle('active', ch.dataset.target === el.id);
+                });
+            }
+        }
+
+        // ARRÊT SÉCURISÉ CONTRE LES BUGS DE CHROMIUM
+        function safeStop() {
+            clearTimeout(playTimeout);
+            if (synth.speaking || synth.pending || synth.paused) {
+                if (synth.paused) {
+                    try { synth.resume(); } catch(e){}
+                }
+                try { synth.cancel(); } catch(e){}
+            }
+            isPlaying = false;
+            btnPlay.textContent = '▶️';
+        }
+
+        // LANCER LA LECTURE DIRECTE DEPUIS N'IMPORTE QUEL EMPLACEMENT
+        function playFromIndex(index) {
+            safeStop();
+            currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+            highlightCard(currentIndex);
+            isPlaying = true;
+            btnPlay.textContent = '⏸️';
+
+            // Délai de 60ms indispensable pour que synth.cancel() soit digéré par Edge/Chrome
+            playTimeout = setTimeout(() => {
+                speakCurrentLine();
+            }, 60);
+        }
+
+        function speakCurrentLine() {
+            if (!isPlaying) return;
+            if (currentIndex >= cards.length) {
+                safeStop();
+                cards.forEach(c => c.classList.remove('speaking'));
+                speakerIndicator.textContent = "Balado terminé 🎉";
+                speakerIndicator.style.color = 'var(--text-muted)';
+                return;
+            }
+
+            highlightCard(currentIndex);
+            const card = cards[currentIndex];
+            const textToSpeak = card.querySelector('.dialogue-text').innerText;
+            const speaker = card.dataset.speaker;
+            const isAlex = speaker === 'Alex';
+
+            activeUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            activeUtterance.rate = currentRate;
+            activeUtterance.pitch = isAlex ? 0.95 : 1.15;
+
+            const selectedVoiceName = isAlex ? voiceSelectAlex.value : voiceSelectSophie.value;
+            const selectedVoice = voices.find(v => v.name === selectedVoiceName);
+            if (selectedVoice) {
+                activeUtterance.voice = selectedVoice;
+            }
+
+            activeUtterance.onend = () => {
+                if (isPlaying) {
+                    currentIndex++;
+                    playTimeout = setTimeout(() => {
+                        speakCurrentLine();
+                    }, 40);
+                }
+            };
+
+            activeUtterance.onerror = (e) => {
+                if (e.error === 'interrupted' || e.error === 'canceled') return;
+                console.warn("Speech error:", e);
+                if (isPlaying) {
+                    currentIndex++;
+                    playTimeout = setTimeout(() => {
+                        speakCurrentLine();
+                    }, 40);
+                }
+            };
+
+            synth.speak(activeUtterance);
+        }
+
+        // ÉVÉNEMENTS DES CONTRÔLES PRINCIPAUX
+        btnPlay.addEventListener('click', () => {
+            if (isPlaying) {
+                safeStop();
+                speakerIndicator.textContent = `En pause (Ligne ${currentIndex + 1})`;
+                speakerIndicator.style.color = 'var(--warning)';
+            } else {
+                playFromIndex(currentIndex);
+            }
+        });
+
+        btnStop.addEventListener('click', () => {
+            safeStop();
+            currentIndex = 0;
+            cards.forEach(c => c.classList.remove('speaking'));
+            speakerIndicator.textContent = "Arrêté (Prêt au début)";
+            speakerIndicator.style.color = 'var(--text-muted)';
+            if (cards[0]) cards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                playFromIndex(currentIndex - 1);
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentIndex < cards.length - 1) {
+                playFromIndex(currentIndex + 1);
+            }
+        });
+
+        // CLIC DIRECT SUR N'IMPORTE QUELLE BULLE DE DIALOGUE : REPRISE INSTANTANÉE !
+        cards.forEach((card, idx) => {
+            card.addEventListener('click', () => {
+                playFromIndex(idx);
+            });
+        });
+
+        // CHANGEMENT DE VITESSE
+        rateButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                rateButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentRate = parseFloat(btn.dataset.rate);
+                if (isPlaying) {
+                    // Reprendre la ligne actuelle à la nouvelle vitesse
+                    playFromIndex(currentIndex);
+                }
+            });
+        });
+
+        // NAVIGATION PAR CHAPITRE : CLIQUE ET JOUE DIRECTEMENT LE DÉBUT DU CHAPITRE
+        chapterItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.dataset.target;
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    let nextEl = targetEl.nextElementSibling;
+                    while (nextEl && !nextEl.classList.contains('dialogue-card')) {
+                        nextEl = nextEl.nextElementSibling;
+                    }
+                    if (nextEl) {
+                        const targetIdx = Array.from(cards).indexOf(nextEl);
+                        if (targetIdx !== -1) {
+                            playFromIndex(targetIdx);
+                        }
+                    }
+                }
+            });
+        });
+
+        // COPIE DU SCRIPT POUR NOTEBOOKLM
+        document.getElementById('btnCopyScript').addEventListener('click', () => {
+            let fullScript = "# Script Balado : Chapitre 4 — Les Actifs (Claude Laroche, ERPI)\n# Cours COMP 50904 — MBA HEC Montréal\n\n";
+            cards.forEach(card => {
+                const spk = card.dataset.speaker;
+                const txt = card.querySelector('.dialogue-text').innerText;
+                fullScript += `**${spk}** : ${txt}\n\n`;
+            });
+            navigator.clipboard.writeText(fullScript).then(() => {
+                showToast("Script complet copié pour NotebookLM !");
+            });
+        });
+    </script>
+</body>
+</html>

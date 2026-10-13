@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Speech Coach — Guide Méthodologique & Référentiel Scientifique</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 14mm 15mm 16mm 15mm;
+            @top-right {
+                content: "Executive Speech Coach • MBA HEC Montréal";
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 8pt;
+                color: #64748b;
+            }
+            @bottom-right {
+                content: "Page " counter(page) " / " counter(pages);
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 8pt;
+                color: #64748b;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            line-height: 1.46;
+            font-size: 9.4pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Titres & Hiérarchie */
+        h1, h2, h3, h4 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 14pt;
+            margin-bottom: 6pt;
+            page-break-after: avoid;
+        }
+
+        h1 {
+            font-size: 19pt;
+            line-height: 1.2;
+            border-bottom: 2pt solid #0284c7;
+            padding-bottom: 5pt;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 13pt;
+            border-left: 3.5pt solid #0284c7;
+            padding-left: 7pt;
+            margin-top: 14pt;
+            color: #0f172a;
+        }
+
+        h3 {
+            font-size: 10.5pt;
+            color: #0369a1;
+            margin-top: 10pt;
+            margin-bottom: 3pt;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 6pt;
+            text-align: justify;
+        }
+
+        /* Page de Garde */
+        .cover-page {
+            page-break-after: always;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16pt 10pt;
+            box-sizing: border-box;
+        }
+
+        .cover-header {
+            border-bottom: 3pt solid #0284c7;
+            padding-bottom: 12pt;
+        }
+
+        .hec-tag {
+            font-size: 10.5pt;
+            font-weight: 700;
+            letter-spacing: 1.5pt;
+            text-transform: uppercase;
+            color: #0284c7;
+            margin-bottom: 6pt;
+        }
+
+        .cover-title {
+            font-size: 25pt;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #0f172a;
+            margin: 8pt 0 10pt 0;
+        }
+
+        .cover-subtitle {
+            font-size: 12pt;
+            font-weight: 400;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .cover-body {
+            margin-top: 24pt;
+        }
+
+        .cover-highlights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10pt;
+            margin-top: 16pt;
+        }
+
+        .highlight-card {
+            background: #f8fafc;
+            border: 1pt solid #e2e8f0;
+            border-radius: 7pt;
+            padding: 10pt;
+        }
+
+        .highlight-title {
+            font-weight: 700;
+            font-size: 10pt;
+            color: #0369a1;
+            margin-bottom: 3pt;
+        }
+
+        .highlight-desc {
+            font-size: 8.8pt;
+            color: #64748b;
+            line-height: 1.35;
+        }
+
+        .cover-footer {
+            border-top: 1pt solid #e2e8f0;
+            padding-top: 12pt;
+            font-size: 8.8pt;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8pt 0 10pt 0;
+            font-size: 8.6pt;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background: #0f172a;
+            color: #ffffff;
+            text-align: left;
+            padding: 5.5pt 7pt;
+            font-weight: 600;
+            font-size: 8.2pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+
+        td {
+            padding: 4.8pt 7pt;
+            border-bottom: 1pt solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        /* Callouts / Encadrés */
+        .callout {
+            background: #f0fdf4;
+            border-left: 3.5pt solid #16a34a;
+            padding: 7pt 10pt;
+            border-radius: 0 5pt 5pt 0;
+            margin: 7pt 0;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 3pt;
+        }
+
+        .callout-warn {
+            background: #fffbeb;
+            border-left-color: #d97706;
+        }
+        .callout-warn .callout-title { color: #b45309; }
+
+        .callout-info {
+            background: #f0f9ff;
+            border-left-color: #0284c7;
+        }
+        .callout-info .callout-title { color: #0369a1; }
+
+        /* Équations / Formules */
+        .formula-box {
+            background: #f8fafc;
+            border: 1pt solid #cbd5e1;
+            border-radius: 6pt;
+            padding: 7pt 12pt;
+            font-family: 'Consolas', 'JetBrains Mono', monospace;
+            font-size: 9pt;
+            color: #0f172a;
+            margin: 6pt 0 9pt 0;
+            display: block;
+        }
+
+        .badge-optimal { color: #16a34a; font-weight: 700; }
+        .badge-danger { color: #dc2626; font-weight: 700; }
+        .badge-warn { color: #d97706; font-weight: 700; }
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE DE GARDE -->
+    <div class="cover-page">
+        <div class="cover-header">
+            <div class="hec-tag">HEC Montréal • Maîtrise en administration des affaires (MBA)</div>
+            <div class="cover-title">Executive Speech Coach</div>
+            <div class="cover-subtitle">
+                Guide Méthodologique & Référentiel Scientifique d'Audit Oratoire<br>
+                <strong>Référentiel Exécutif HEC Montréal, Psycholinguistique de la Fluidité, Présence Exécutive et Rhétorique de Persuasion</strong>
+            </div>
+        </div>
+
+        <div class="cover-body">
+            <p style="font-size: 10.5pt; color: #334155; line-height: 1.6;">
+                Ce document détaille la logique d'analyse algorithmique, les seuils empiriques et les théories académiques 
+                qui régissent l'application <strong>Executive Speech Coach</strong>. Développé pour les analyses de cas managériales 
+                et les présentations de comité de direction, cet outil transforme l'entraînement oratoire en une pratique délibérée, 
+                objective et mesurable en temps réel.
+            </p>
+
+            <div class="cover-highlights">
+                <div class="highlight-card">
+                    <div class="highlight-title">🎯 Score Executive Speech Coach sur 100 Pts</div>
+                    <div class="highlight-desc">Pace (25 pts), Silences stratégiques (20 pts), Anti-disfluences (20 pts), Concision & Souffle (15 pts), Maîtrise du chrono (20 pts).</div>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-title">🔬 Psycholinguistique Validée</div>
+                    <div class="highlight-desc">Modèle triadique de Skehan (Speed, Breakdown, Repair fluency) et calcul du Mean Length of Utterance (MLU).</div>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-title">🚫 Audit Disfluences 4 Paliers</div>
+                    <div class="highlight-desc">Toastmasters Ah-Counter & Grammarian : sons parasites (euh), béquilles (en fait), double-clutch (je je) et mots sur-utilisés.</div>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-title">🤝 Leadership & Persuasion</div>
+                    <div class="highlight-desc">Analyse des pronoms de leadership (Noah Zandan, HBR), détection de l'accroche (Hook) et de la recommandation finale (CTA).</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cover-footer">
+            <div><strong>Auteur :</strong> Vincent Cantin (Cohorte MBA 2026-2028)</div>
+            <div><strong>Cours :</strong> MNGT 56124 — Communication & Leadership</div>
+            <div><strong>Version :</strong> 2.4 (Octobre 2026)</div>
+        </div>
+    </div>
+
+    <!-- PAGE 1 : INTRODUCTION & ARCHITECTURE -->
+    <h2>1. Introduction : Du « Feeling » à la Mesure Algorithmique</h2>
+    <p>
+        Dans les programmes MBA et les comités exécutifs, la prise de parole en public est le principal vecteur de décision, 
+        d'adhésion et d'autorité. Pourtant, les rétroactions traditionnelles demeurent souvent subjectives et tardives : 
+        <em>« Tu avais l'air stressé »</em>, <em>« C'était un peu trop rapide »</em> ou <em>« Sois plus convaincant »</em>.
+    </p>
+    <p>
+        L'<strong>Executive Speech Coach</strong> comble ce fossé en fournissant un miroir analytique en temps réel. 
+        Conçu pour s'exécuter localement dans le navigateur (garantissant la confidentialité absolue des données sans aucun serveur tiers), 
+        l'outil combine la <strong>Web Audio API</strong> pour la prosodie et les silences, et la <strong>Web Speech API</strong> pour 
+        la transcription et l'analyse lexicale.
+    </p>
+
+    <div class="callout callout-info">
+        <div class="callout-title">💡 Principe d'Entraînement Délibéré (K. Anders Ericsson)</div>
+        L'excellence oratoire ne provient pas de la simple répétition, mais de boucles de feedback immédiates focalisées sur des variables précises : 
+        débit, pauses respiratoires, éradication des béquilles et architecture argumentative.
+    </div>
+
+    <h2>2. La Scorecard Executive Speech Coach : Architecture des 5 Dimensions (100 Pts)</h2>
+    <p>
+        Le score global est normalisé sur 100 points selon une pondération calibrée pour refléter les attentes 
+        des dirigeants et professeurs de communication exécutive :
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Dimension</th>
+                <th>Pts</th>
+                <th>Fondement Théorique</th>
+                <th>Plage Optimale</th>
+                <th>Mécanisme de Pénalité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. Pace (Débit)</strong></td>
+                <td><strong>25</strong></td>
+                <td>Skehan (Speed Fluency) & Rodero (2012)</td>
+                <td><span class="badge-optimal">125 – 150 WPM</span></td>
+                <td>Pénalité linéaire si &lt; 110 WPM (mou) ou &gt; 160 WPM (précipité).</td>
+            </tr>
+            <tr>
+                <td><strong>2. Silences Stratégiques</strong></td>
+                <td><strong>20</strong></td>
+                <td>Tavakoli (Breakdown Fluency) & Erhard (HEC)</td>
+                <td><span class="badge-optimal">2.0 – 3.5 pauses/min</span> (durée &ge; 1.2s)</td>
+                <td>Pénalité en cloche : apnée oratoire (&lt; 1.5/min) ou débit haché (&gt; 3.8/min).</td>
+            </tr>
+            <tr>
+                <td><strong>3. Clarté (Anti-Fillers)</strong></td>
+                <td><strong>20</strong></td>
+                <td>Toastmasters (Ah-Counter & Grammarian)</td>
+                <td><span class="badge-optimal">&lt; 1.5 % de disfluences</span></td>
+                <td>Pénalité abrupte selon le ratio : <em>Score = 20 - (ratio &times; 250)</em>.</td>
+            </tr>
+            <tr>
+                <td><strong>4. Concision (MLU)</strong></td>
+                <td><strong>15</strong></td>
+                <td>Jane Rosenzweig (Harvard) & MLU Psycholinguistique</td>
+                <td><span class="badge-optimal">9 à 18 mots / run</span></td>
+                <td>Pénalité progressive si phrases étirées (&gt; 18 mots sans pause) ou alertes &gt; 25 mots.</td>
+            </tr>
+            <tr>
+                <td><strong>5. Respect du Chrono</strong></td>
+                <td><strong>20</strong></td>
+                <td>Sylvia Ann Hewlett (Gravitas) & Toastmasters Rules</td>
+                <td><span class="badge-optimal">&plusmn; 5 % de la cible</span> (min. 3s)</td>
+                <td>Déduction de 0.8 pt par seconde d'écart au-delà de la marge de tolérance.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- PAGE 3 : DÉTAIL DES DIMENSIONS 1, 2 ET 3 -->
+    <h2>3. Analyse Approfondie des Métriques Algorithmiques</h2>
+
+    <h3>3.1. Dimension 1 : Le Débit Vocal (Pace) & Vitesse d'Articulation</h3>
+    <p>
+        Les recherches en sciences cognitives de l'écoute (notamment Emma Rodero, 2012) démontrent que la capacité de rétention 
+        de l'auditoire chute drastiquement au-delà de 160 mots par minute (surcharge cognitive) et en deçà de 115 mots par minute 
+        (décrochage attentionnel). L'algorithme calcule le WPM en continu :
+    </p>
+    <div class="formula-box">
+        WPM = (Mots Spoken / Temps Écoulé en Secondes) &times; 60
+    </div>
+    <p>
+        <strong>Règle HEC Montréal :</strong> En situation de stress ou de concours, la tendance naturelle est l'accélération (débit &gt; 165 WPM). 
+        Le coach applique une pénalité progressive dès 160 WPM pour forcer l'orateur à ralentir et poser sa voix.
+    </p>
+
+    <h3>3.2. Dimension 2 : Les Silences Stratégiques (La Courbe en Cloche)</h3>
+    <p>
+        Contrairement aux idées reçues, le silence n'est pas une absence de parole, mais <strong>l'élément le plus puissant de la rhétorique exécutive</strong>. 
+        Dans le cours MNGT 56124 d'Olivier Erhard, il est rappelé que <em>« l'émotion et l'impact ont besoin de 2 secondes de silence pour se déposer »</em>.
+    </p>
+    <p>
+        L'algorithme utilise la Web Audio API pour mesurer le niveau RMS du microphone. Tout silence supérieur ou égal à <strong>1.2 seconde</strong> 
+        est enregistré comme une <strong>pause d'ancrage validée</strong>. L'évaluation obéit à une <strong>courbe en cloche (*Bell Curve*)</strong> :
+    </p>
+    <ul>
+        <li><strong>Zone d'Apnée (&lt; 1.5 pause/min) :</strong> L'orateur parle sans respirer. Score de 8 à 14/20. Diagnostic : <em>« En apnée : intégrez des silences pour laisser respirer l'auditoire. »</em></li>
+        <li><strong>Zone Optimale (2.0 à 3.5 pauses/min) :</strong> Cadence royale. Score maximal de 20/20.</li>
+        <li><strong>Zone Hachée (&gt; 3.8 pauses/min) :</strong> Trop de micro-arrêts qui morcellent la pensée. Score réduit jusqu'à 5/20. Diagnostic : <em>« Débit haché : conservez le momentum de persuasion. »</em></li>
+    </ul>
+
+    <h3>3.3. Dimension 3 : L'Audit des Disfluences en 4 Paliers (Toastmasters & HBR)</h3>
+    <p>
+        Le moteur de détection intègre la double perspective de l'<strong>Ah-Counter</strong> (sons involontaires) 
+        et du <strong>Grammarian</strong> (pauvreté lexicale et béquilles récurrentes) :
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Famille</th>
+                <th>Nature & Typologie</th>
+                <th>Exemples Traités</th>
+                <th>Règle Managériale</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. Filler Sounds</strong></td>
+                <td>Sons d'hésitation sans valeur sémantique.</td>
+                <td>« euh », « um », « hmm », « tsé »</td>
+                <td>Remplacer le son par un silence franc de 1.5s.</td>
+            </tr>
+            <tr>
+                <td><strong>2. Crutch Words</strong></td>
+                <td>Locutions et tics béquilles de liaison.</td>
+                <td>« en fait », « du coup », « dans le fond », « genre »</td>
+                <td>Éliminer ces prothèses verbales qui parasitent le message.</td>
+            </tr>
+            <tr>
+                <td><strong>3. Double-Clutch</strong></td>
+                <td>Répétition involontaire de mots ou syntagmes.</td>
+                <td>« je je », « on a on a », « pour pour »</td>
+                <td>Règle Noah Zandan : quand la pensée hésite, ne pas bégayer le mot. Marquer l'arrêt.</td>
+            </tr>
+            <tr>
+                <td><strong>4. Overused Words</strong></td>
+                <td>Mots fétiches répétés &ge; 3 à 4 fois (hors stop-words).</td>
+                <td>« effectivement », « concrètement », « clairement »</td>
+                <td>Règle Grammarian : saturation auditive. Utiliser des synonymes.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="callout callout-warn">
+        <div class="callout-title">⚠️ Gestion des Faux-Positifs Grammaticaux</div>
+        Le moteur exclut strictement les formes pronominales légitimes du français (ex: <em>« nous nous sommes réunis »</em>, <em>« vous vous souvenez »</em>) 
+        et les comparaisons valides (ex: <em>« c'est comme prévu »</em>) grâce à une table de contextes syntaxiques autorisés.
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- PAGE 4 : CONCISION, LEADERSHIP ET LOGIQUE RHÉTORIQUE -->
+    <h2>4. Concision, Leadership et Architecture Rhétorique</h2>
+
+    <h3>4.1. Concision & Souffle : Le Mean Length of Utterance (MLU)</h3>
+    <p>
+        Directrice du <em>Harvard Writing Center</em>, <strong>Jane Rosenzweig</strong> (HBR, 2022) a formalisé les 3 règles de concision exécutive : 
+        couper le superflu, privilégier les verbes d'action et limiter chaque phrase à <strong>une seule idée maîtresse</strong>.
+    </p>
+    <p>
+        En psycholinguistique (Tavakoli & Skehan 2005), cette dimension est mesurée par le <strong>Mean Length of Utterance (MLU)</strong>, 
+        c'est-à-dire le nombre moyen de mots prononcés entre deux respirations ou pauses :
+    </p>
+    <div class="formula-box">
+        MLU = Mots Totaux / (Pauses d'Ancrage + Nombre d'Énoncés Finalisés)
+    </div>
+    <ul>
+        <li><strong>MLU Optimal (9 à 18 mots/run) :</strong> Idéal pour la mémoire de travail de l'auditoire (George Miller, 7 &plusmn; 2 blocs cognitifs).</li>
+        <li><strong>MLU &gt; 22 mots/run :</strong> Signal d'apnée oratoire et de phrases sans fin (*run-on sentences*). Pénalité sur la Dimension 4.</li>
+    </ul>
+
+    <h3>4.2. L'Alignement Collectif : Ratio de Pronoms de Leadership (Noah Zandan / HBR)</h3>
+    <p>
+        L'analyse de plus de 100 000 allocutions de dirigeants par <em>Quantified Communications</em> démontre que le choix des pronoms 
+        conditionne l'autorité (*Ethos*) et la mobilisation (*Pathos*) :
+    </p>
+    <ul>
+        <li><strong>Pronoms Singuliers (« Je, Moi, Mon ») :</strong> Indispensables dans l'introduction pour assumer la responsabilité personnelle, 
+        mais destructeurs s'ils dominent tout le discours (perception d'égocentrisme ou d'autoritarisme).</li>
+        <li><strong>Pronoms Collectifs (« Nous, Notre, Nos, Ensemble ») :</strong> Créent le sentiment d'appartenance et partagent la vision d'équipe.</li>
+        <li><strong>Équilibre Idéal Calibré :</strong> <strong>55 % à 85 % de « Nous »</strong> pour 15 % à 45 % de « Je ». L'outil calcule ce ratio en direct 
+        et alerte l'orateur si le « Je » dépasse 80 % (<em>« Intégrez le collectif « Nous » pour fédérer »</em>).</li>
+    </ul>
+
+    <h3>4.3. Détection de la Structure Exécutive (Hook & Call-to-Action)</h3>
+    <p>
+        Selon la séquence motivée d'Alan Monroe et la pyramide de Barbara Minto (McKinsey), un pitch managérial réussi doit comporter deux balises critiques :
+    </p>
+    <ol>
+        <li><strong>L'Accroche Exécutive (*Hook*) dans les 15 premières secondes :</strong>
+            L'algorithme vérifie que l'amorce ne commence pas par une béquille (<em>« Bon alors aujourd'hui... »</em>), mais par une assertion 
+            cadrée (<em>« Le défi auquel nous faisons face... »</em>, <em>« Notre objectif stratégique... »</em>). Bonus jusqu'à +2 pts.
+        </li>
+        <li><strong>La Chute Décisive (*Call-to-Action*) :</strong>
+            L'algorithme recherche la présence de verbes d'action et de décision (<em>« recommandons », « décidons », « agissons », « déployer », « priorité »</em>) 
+            vers la fin du discours pour valider un atterrissage opérationnel clair. Bonus jusqu'à +2 pts.
+        </li>
+    </ol>
+
+    <h3>4.4. Richesse et Diversité Lexicale (Type-Token Ratio - TTR)</h3>
+    <p>
+        Pour quantifier la maturité de l'expression managériale sans favoriser le verbiage, le coach mesure en direct le 
+        <strong>Type-Token Ratio (TTR)</strong> :
+    </p>
+    <div class="formula-box">
+        TTR = Vocables Uniques Débités (hors mots vides) / Total Mots Prononcés
+    </div>
+    <p>
+        Un ratio supérieur à <strong>0.50</strong> démontre une aisance stylistique et un vocabulaire d'affaires précis, 
+        tandis qu'un ratio inférieur à <strong>0.35</strong> signale un appauvrissement discursif ou une boucle de répétition due au stress.
+    </p>
+
+    <div class="page-break"></div>
+
+    <!-- PAGE 5 : GUIDE PRATIQUE & PROTOCOLE D'ENTRAÎNEMENT -->
+    <h2>5. Guide Pratique d'Entraînement pour les Équipes MBA</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Durée</th>
+                <th>Budget Mots (~135 WPM)</th>
+                <th>Pauses Cibles</th>
+                <th>Usage Recommandé</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>30s CEO</strong></td>
+                <td>30 sec</td>
+                <td>65 – 75 mots</td>
+                <td>1 à 2 pauses</td>
+                <td>Elevator pitch, synthèse flash en plénière, accroche d'atelier.</td>
+            </tr>
+            <tr>
+                <td><strong>1 Min</strong></td>
+                <td>60 sec</td>
+                <td>130 – 140 mots</td>
+                <td>2 à 3 pauses</td>
+                <td>Synthèse de sous-groupe, intervention ciblée en réunion.</td>
+            </tr>
+            <tr>
+                <td><strong>2 Min</strong></td>
+                <td>120 sec</td>
+                <td>250 – 270 mots</td>
+                <td>3 à 5 pauses</td>
+                <td><strong>Format officiel des analyses de cas HEC (MNGT 56124).</strong></td>
+            </tr>
+            <tr>
+                <td><strong>3 Min</strong></td>
+                <td>180 sec</td>
+                <td>390 – 420 mots</td>
+                <td>5 à 8 pauses</td>
+                <td>Présentation de projet d'équipe, livrable d'atelier.</td>
+            </tr>
+            <tr>
+                <td><strong>5 Min</strong></td>
+                <td>300 sec</td>
+                <td>650 – 700 mots</td>
+                <td>8 à 14 pauses</td>
+                <td>Rapport exécutif de conseil d'administration ou simulation Globstrat.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>6. Protocole d'Entraînement en 3 Prises (La Méthode Itérative)</h2>
+    <p>
+        Pour maximiser votre progression avant une présentation notée ou un pitch réel, suivez ce protocole en 3 prises successives :
+    </p>
+
+    <div class="callout callout-info">
+        <div class="callout-title">Prise 1 : L'Étalonnage à Blanc (Diagnostic Brut)</div>
+        Activez l'enregistrement vidéo et parlez sans regarder les compteurs. À la fin, consultez votre score global et le décompte 
+        des disfluences. Notez votre mot fétiche dominant et votre débit moyen.
+    </div>
+
+    <div class="callout callout-warn">
+        <div class="callout-title">Prise 2 : La Contrainte du Silence (Règle des 2 Secondes)</div>
+        Répétez le même pitch en vous forçant à marquer une pause complète de 2 secondes après chaque idée maîtresse. 
+        Si vous hésitez sur le mot suivant, <strong>ne dites rien</strong> : laissez le silence s'installer. Observez la remontée du score de clarté.
+    </div>
+
+    <div class="callout">
+        <div class="callout-title">Prise 3 : L'Exécution Exécutive Finale</div>
+        Verrouillez votre accroche dès la première phrase, équilibrez le « Nous » et terminez sur une recommandation limpide 
+        dans les 5 secondes précédant la fin du chrono. Téléchargez votre bilan Markdown ou JSON pour conserver l'historique.
+    </div>
+
+    <div class="callout callout-info" style="margin-top: 14pt;">
+        <div class="callout-title">🔒 Confidentialité & Souveraineté des Données</div>
+        L'ensemble des calculs, flux audio, flux vidéo et transcriptions s'exécutent <strong>à 100 % localement dans la mémoire vive de votre navigateur</strong>. 
+        Aucune donnée audio, vidéo ou textuelle n'est transmise à un serveur externe ni enregistrée dans le cloud. Vos répétitions et diagnostics 
+        restent strictement confidentiels.
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- PAGE 6 : RÉFÉRENCES BIBLIOGRAPHIQUES -->
+    <h2>7. Références Bibliographiques Fondatrices</h2>
+    <p style="font-size: 9.2pt; color: #475569; margin-bottom: 12pt;">
+        La grille d'évaluation et les algorithmes de l'<strong>Executive Speech Coach</strong> s'appuient sur un croisement 
+        multidisciplinaire entre les sciences de gestion (Harvard, HEC Montréal), la psycholinguistique expérimentale et la rhétorique professionnelle :
+    </p>
+    <ul style="font-size: 8.8pt; line-height: 1.6; color: #334155;">
+        <li><strong>Duarte, N. (2010).</strong> <em>Resonate: Present Visual Stories that Transform Audiences.</em> Wiley.</li>
+        <li><strong>Erhard, O. (2026).</strong> <em>MNGT 56124 — Communication managériale et prise de parole.</em> HEC Montréal.</li>
+        <li><strong>Ericsson, K. A. (2008).</strong> Deliberate practice and acquisition of expert performance. <em>Academic Emergency Medicine</em>, 15(11), 988-994.</li>
+        <li><strong>Hewlett, S. A. (2014).</strong> <em>Executive Presence: The Missing Link Between Merit and Success.</em> Harper Business / Harvard Business Review.</li>
+        <li><strong>Kormos, J., & Dénes, M. (2004).</strong> Exploring measures and perceptions of fluent speech. <em>Language Testing</em>, 21(2), 145-164.</li>
+        <li><strong>Minto, B. (2009).</strong> <em>The Pyramid Principle: Logic in Writing and Thinking.</em> Financial Times Prentice Hall.</li>
+        <li><strong>Pentland, A. (2008).</strong> <em>Honest Signals: How They Shape Our World.</em> MIT Press.</li>
+        <li><strong>Rodero, E. (2012).</strong> A training model for improving speech delivery in broadcast journalism. <em>Journalism & Mass Communication Educator</em>, 67(4), 386-397.</li>
+        <li><strong>Rosenzweig, J. (2022).</strong> How to Write with Concision and Power. <em>Harvard Business Review</em>.</li>
+        <li><strong>Schreiber, L. M., Paul, G. D., & Shibley, L. R. (2012).</strong> The Development and Test of the Public Speaking Competence Rubric. <em>Communication Education</em>, 61(3), 205-233.</li>
+        <li><strong>Shapira, A. (2023).</strong> The 6 Levers of Executive Persuasion. <em>Harvard Business Review</em>.</li>
+        <li><strong>Skehan, P., & Tavakoli, P. (2005).</strong> Strategic planning, task structure, and performance testing. <em>Language Testing</em>, 22(3), 239-276.</li>
+        <li><strong>Toastmasters International (2022).</strong> <em>International Speech Contest Judge’s Guide and Ballot (Item 1172).</em></li>
+        <li><strong>Zandan, N. (2016).</strong> The Science of Persuasion and Leadership Analytics. <em>Quantified Communications & Harvard Business Review</em>.</li>
+    </ul>
+
+    <div style="margin-top: 35pt; padding: 12pt; border-top: 1pt solid #cbd5e1; text-align: center; font-size: 8.5pt; color: #64748b;">
+        Guide méthodologique rédigé par Vincent Cantin pour les cohortes MBA de HEC Montréal.<br>
+        Accompagne l'application autonome <code>speech_coach.html</code>. Usage pédagogique et professionnel interne.
+    </div>
+
+</body>
+</html>

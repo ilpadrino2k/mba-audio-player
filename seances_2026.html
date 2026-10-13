@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toutes les Séances de Cours 2026 — MBA HEC Montréal (S26AB)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --hec-blue: #002855;
+      --hec-blue-light: #0056b3;
+      --hec-blue-accent: #2563eb;
+      --hec-gold: #d4af37;
+      --hec-gold-light: #f59e0b;
+      
+      --accent-emerald: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #f43f5e;
+      --accent-cyan: #06b6d4;
+
+      /* Dark Theme */
+      --bg-body: #0a0f1d;
+      --bg-surface: rgba(18, 26, 47, 0.85);
+      --bg-surface-elevated: rgba(30, 41, 69, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f1f5f9;
+      --bg-surface: rgba(255, 255, 255, 0.9);
+      --bg-surface-elevated: #ffffff;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.2);
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Top Bar */
+    header.top-bar {
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--hec-blue-accent), #1e3a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .brand-info h1 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+    .brand-info p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--hec-blue-accent), #1d4ed8);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .theme-toggle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--border-hover);
+    }
+
+    /* Main Container */
+    main.main-content {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 60px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Hero Summary & Stats Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.45), rgba(15, 23, 42, 0.65));
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 24px;
+      align-items: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (max-width: 900px) {
+      .hero-banner { grid-template-columns: 1fr; }
+    }
+
+    .hero-title h2 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .hero-title p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .hero-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-card .stat-val {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--hec-gold);
+    }
+    .stat-card .stat-lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Controls & Filter Bar */
+    .controls-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px 12px 42px;
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--hec-blue-accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    .search-box .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      color: var(--text-dim);
+    }
+
+    .view-toggle-btns {
+      display: flex;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+    .view-btn {
+      padding: 8px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .view-btn.active {
+      background: var(--hec-blue-accent);
+      color: #fff;
+    }
+
+    .filter-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .filter-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-right: 4px;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+    .chip.active {
+      background: rgba(37, 99, 235, 0.2);
+      border-color: var(--hec-blue-accent);
+      color: var(--hec-blue-light);
+    }
+    [data-theme="dark"] .chip.active {
+      color: #60a5fa;
+    }
+
+    /* Sessions Cards Grid */
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .sessions-grid { grid-template-columns: 1fr; }
+    }
+
+    .session-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+    }
+    .session-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .session-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
+    .session-card.cat-globstrat::before { background: var(--accent-emerald); }
+    .session-card.cat-comp50904::before { background: var(--hec-blue-accent); }
+    .session-card.cat-comp50905::before { background: var(--accent-cyan); }
+    .session-card.cat-saturday::before { background: var(--hec-gold); }
+    .session-card.cat-exam::before { background: var(--accent-rose); }
+    .session-card.cat-atelier::before { background: var(--accent-purple); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .card-course-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-globstrat { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-comp50904 { background: rgba(37, 99, 235, 0.15); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.3); }
+    .badge-comp50905 { background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-saturday { background: rgba(212, 175, 55, 0.15); color: #fbbf24; border: 1px solid rgba(212, 175, 55, 0.3); }
+    .badge-exam { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-atelier { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+    .card-date-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .card-meta-row {
+      display: flex;
+      gap: 14px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .card-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .card-concepts-list {
+      background: var(--bg-surface-elevated);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+    .concepts-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .concepts-text {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .preparation-tag {
+      font-size: 0.75rem;
+      color: var(--hec-gold-light);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    /* Table View */
+    .table-container {
+      display: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table.master-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    table.master-table th {
+      background: var(--bg-surface-elevated);
+      padding: 14px 18px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    table.master-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    table.master-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+      animation: modalIn 0.2s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    footer.bottom-bar {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="brand-section">
+      <div class="brand-logo">HEC</div>
+      <div class="brand-info">
+        <h1>MBA HEC Montréal — Calendrier Intégral 2026</h1>
+        <p>Cohorte S26AB • Édifice Hélène-Desmarais • Vincent Cantin, ing.</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn btn-secondary">📊 Tableau de Bord</a>
+      <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" title="Changer le thème">🌙</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-content">
+
+    <!-- HERO BANNER -->
+    <div class="hero-banner">
+      <div class="hero-title">
+        <h2>Programme Pédagogique & Séances 2026 — Vincent Cantin</h2>
+        <p>Répertoire exhaustif synchronisé de l’horaire officiel ZoneCours : <strong>44 séances de cours, ateliers, simulations d’affaires, samedis intensifs et examens finaux</strong> avec salles attitrées à l’édifice Hélène-Desmarais.</p>
+      </div>
+      <div class="hero-stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="totalSessionsCount">44</div>
+          <div class="stat-lbl">Séances & Événements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">4</div>
+          <div class="stat-lbl">Samedis Présentiels</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">2</div>
+          <div class="stat-lbl">Examens Finaux</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">9</div>
+          <div class="stat-lbl">Simulation Globstrat</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS & FILTER BAR -->
+    <div class="controls-panel">
+      <div class="search-row">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="globalSearch" placeholder="Rechercher une séance, un thème (ex: Seuil, Bilan, Belle, ÉDI, Londres, C.623), un professeur ou une date..." oninput="handleSearch()">
+        </div>
+        <div class="view-toggle-btns">
+          <button class="view-btn active" id="btnViewGrid" onclick="setViewMode('grid')">🔲 Cartes</button>
+          <button class="view-btn" id="btnViewTable" onclick="setViewMode('table')">📑 Tableau</button>
+        </div>
+      </div>
+
+      <!-- COURSE CHIPS -->
+      <div class="filter-groups">
+        <span class="filter-label">Cours :</span>
+        <button class="chip active" onclick="filterByCourse('all', this)">Tous (44)</button>
+        <button class="chip" onclick="filterByCourse('MNGT 50482', this)">🚀 Globstrat (MNGT 50482)</button>
+        <button class="chip" onclick="filterByCourse('COMP 50904', this)">📘 Info Financière (COMP 50904)</button>
+        <button class="chip" onclick="filterByCourse('COMP 50905', this)">📊 Compta Gestion (COMP 50905)</button>
+        <button class="chip" onclick="filterByCourse('MNGT 50415', this)">👤 Coaching (MNGT 50415)</button>
+        <button class="chip" onclick="filterByCourse('MNGT 56124', this)">🗣️ Communication (MNGT 56124)</button>
+        <button class="chip" onclick="filterByCourse('ATEL', this)">💡 Ateliers (ATEL)</button>
+      </div>
+
+      <!-- MONTH & TYPE CHIPS -->
+      <div class="filter-groups">
+        <span class="filter-label">Mois :</span>
+        <button class="chip active" onclick="filterByMonth('all', this)">Tous</button>
+        <button class="chip" onclick="filterByMonth('09', this)">Septembre 2026</button>
+        <button class="chip" onclick="filterByMonth('10', this)">Octobre 2026</button>
+        <button class="chip" onclick="filterByMonth('11', this)">Novembre 2026</button>
+        <button class="chip" onclick="filterByMonth('12', this)">Décembre 2026</button>
+
+        <span class="filter-label" style="margin-left: 12px;">Type :</span>
+        <button class="chip active" onclick="filterByType('all', this)">Tous</button>
+        <button class="chip" onclick="filterByType('saturday', this)">⭐ Samedis Obligatoires</button>
+        <button class="chip" onclick="filterByType('exam', this)">📝 Examens</button>
+      </div>
+    </div>
+
+    <!-- SESSIONS GRID VIEW -->
+    <div class="sessions-grid" id="sessionsGridContainer"></div>
+
+    <!-- SESSIONS TABLE VIEW -->
+    <div class="table-container" id="sessionsTableContainer">
+      <table class="master-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date & Heure</th>
+            <th>Cours</th>
+            <th>Titre de la Séance</th>
+            <th>Thèmes & Concepts Clés</th>
+            <th>Lieu / Salle</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTableBody"></tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- MODAL FOR SESSION DETAILS -->
+  <div class="modal-backdrop" id="sessionModal" onclick="handleModalBackdrop(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span id="modalCourseBadge" class="card-course-badge badge-comp50904">COMP 50904</span>
+          <h3 id="modalSessionTitle" style="font-family: var(--font-display); font-size: 1.3rem; margin-top: 6px;">Titre de la séance</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeSessionModal()">✕</button>
+      </div>
+      <div id="modalSessionBody" style="line-height: 1.6; font-size: 0.92rem; color: var(--text-main);"></div>
+      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary" onclick="copySessionMarkdown()">📋 Copier pour Obsidian</button>
+        <button class="btn btn-primary" onclick="closeSessionModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bottom-bar">
+    <p>MBA HEC Montréal • Cohorte S26AB (2026-2028) • Base de Connaissances & Calendrier Synchronisé</p>
+  </footer>
+
+  <!-- SCRIPT DATA & LOGIC -->
+  <script>
+    // FULL MASTER DATASET (44 OFFICIAL SESSIONS & EVENTS IN 2026)
+    const ALL_SESSIONS_2026 = [
+      {
+        num: 1,
+        dateStr: '2026-09-10',
+        dateDisplay: 'Jeudi 10 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '16 h 00 – 17 h 30 (4:00PM - 5:30PM)',
+        courseCode: 'ATEL 56101',
+        courseName: 'Atelier MBA',
+        category: 'atelier',
+        title: 'ATEL 56101 : Atelier MBA (Séance 1)',
+        desc: 'Accueil officiel et première session plénière d’intégration pour la cohorte MBA S26AB.',
+        concepts: 'Orientation académique, culture MBA HEC, intégration de la cohorte.',
+        prep: 'Présence requise à l’édifice Hélène-Desmarais.',
+        location: 'Édifice HDesmarais, Salle A.373 Centre de conf. Claude-S',
+        prof: 'Direction du Programme MBA'
+      },
+      {
+        num: 2,
+        dateStr: '2026-09-10',
+        dateDisplay: 'Jeudi 10 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '17 h 30 – 19 h 00 (5:30PM - 7:00PM)',
+        courseCode: 'ATEL 56101',
+        courseName: 'Atelier MBA',
+        category: 'atelier',
+        title: 'ATEL 56101 : Atelier MBA (Séance 2)',
+        desc: 'Deuxième atelier d’accueil et activités d’apprentissage expérientiel en sous-groupes.',
+        concepts: 'Dynamique collaborative, constitution des équipes de travail.',
+        prep: 'Participation active.',
+        location: 'Édifice HDesmarais, Salle A.463 GardaWorld',
+        prof: 'Direction du Programme MBA'
+      },
+      {
+        num: 3,
+        dateStr: '2026-09-10',
+        dateDisplay: 'Jeudi 10 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '19 h 00 – 21 h 30 (7:00PM - 9:30PM)',
+        courseCode: 'ATEL 56101',
+        courseName: 'Atelier MBA',
+        category: 'atelier',
+        title: 'ATEL 56101 : Atelier MBA (Séance 3)',
+        desc: 'Soirée de clôture d’accueil, consignes pour la semaine intensive Globstrat et réseautage.',
+        concepts: 'Préparation Globstrat, valeurs HEC Montréal.',
+        prep: 'Tenue de ville recommandée.',
+        location: 'Édifice HDesmarais, Salle A.373 Centre de conf. Claude-S',
+        prof: 'Direction du Programme MBA'
+      },
+      {
+        num: 4,
+        dateStr: '2026-09-14',
+        dateDisplay: 'Lundi 14 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '09 h 00 – 11 h 30 (9:00AM - 11:30AM)',
+        courseCode: 'ATEL 56101',
+        courseName: 'Atelier MBA',
+        category: 'atelier',
+        title: 'ATEL 56101 : Atelier MBA (Séance 4)',
+        desc: 'Dernière séance de cadrage pédagogique avant le lancement des opérations de simulation d’entreprise.',
+        concepts: 'Méthodes de travail MBA, rigueur d’analyse et gouvernance.',
+        prep: 'Documents d’accueil HEC.',
+        location: 'Édifice HDesmarais, Salle A.373 Centre de conf. Claude-S',
+        prof: 'Direction du Programme MBA'
+      },
+      {
+        num: 5,
+        dateStr: '2026-09-14',
+        dateDisplay: 'Lundi 14 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '13 h 00 – 14 h 30 (1:00PM - 2:30PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 1)',
+        desc: 'Lancement officiel de la simulation d’entreprise. Présentation du marché mondial et des paramètres initiaux.',
+        concepts: 'Modèle d’affaires, segments de marché, diagnostic concurrentiel.',
+        prep: 'Manuel Globstrat.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 6,
+        dateStr: '2026-09-14',
+        dateDisplay: 'Lundi 14 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '16 h 00 – 17 h 30 (4:00PM - 5:30PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 2)',
+        desc: 'Validation des choix stratégiques d’équipe et soumission de la Décision 1.',
+        concepts: 'Harmonie stratégique interne et externe, décision 1.',
+        prep: 'Tableur financier d’équipe.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 7,
+        dateStr: '2026-09-15',
+        dateDisplay: 'Mardi 15 septembre 2026',
+        dayOfWeek: 'Mardi',
+        time: '09 h 30 – 11 h 00 (9:30AM - 11:00AM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 3)',
+        desc: 'Analyse des résultats du Tour 1 et stratégie marketing/prix pour le marché international.',
+        concepts: 'Mix marketing, élasticité-prix, parts de marché.',
+        prep: 'Rapport de résultats Tour 1.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 8,
+        dateStr: '2026-09-15',
+        dateDisplay: 'Mardi 15 septembre 2026',
+        dayOfWeek: 'Mardi',
+        time: '14 h 00 – 15 h 30 (2:00PM - 3:30PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 4)',
+        desc: 'Planification de la capacité de production, investissements R&D et validation des Décisions 2 et 3.',
+        concepts: 'Capacité industrielle, coûts unitaires, innovation produit.',
+        prep: 'Analyse des coûts de revient.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 9,
+        dateStr: '2026-09-16',
+        dateDisplay: 'Mercredi 16 septembre 2026',
+        dayOfWeek: 'Mercredi',
+        time: '09 h 30 – 11 h 00 (9:30AM - 11:00AM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 5)',
+        desc: 'Gestion des ressources humaines, rémunération, climat organisationnel et politiques RSE.',
+        concepts: 'Motivation des équipes, développement durable, impact sociétal.',
+        prep: 'Indicateurs RH Globstrat.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 10,
+        dateStr: '2026-09-16',
+        dateDisplay: 'Mercredi 16 septembre 2026',
+        dayOfWeek: 'Mercredi',
+        time: '14 h 00 – 15 h 30 (2:00PM - 3:30PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 6)',
+        desc: 'Structure du capital, politique d’emprunt bancaire, trésorerie et validation des Décisions 4 et 5.',
+        concepts: 'Besoins en fonds de roulement (BFR), levier financier, solvabilité.',
+        prep: 'Budget de trésorerie.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 11,
+        dateStr: '2026-09-17',
+        dateDisplay: 'Jeudi 17 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '09 h 30 – 11 h 00 (9:30AM - 11:00AM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 7)',
+        desc: 'Stratégie d’expansion internationale, logistique globale et gestion du risque de change.',
+        concepts: 'Taux de change, barrières tarifaires, chaîne d’approvisionnement.',
+        prep: 'Données macroéconomiques mondiales.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 12,
+        dateStr: '2026-09-17',
+        dateDisplay: 'Jeudi 17 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '13 h 30 – 15 h 00 (1:30PM - 3:00PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 8)',
+        desc: 'Optimisation de la rentabilité, ajustements concurrentiels et soumission des Décisions 6 et 7.',
+        concepts: 'Rentabilité des capitaux propres, positionnement stratégique.',
+        prep: 'Préparation du pitch final.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 13,
+        dateStr: '2026-09-18',
+        dateDisplay: 'Vendredi 18 septembre 2026',
+        dayOfWeek: 'Vendredi',
+        time: '09 h 30 – 13 h 00 (9:30AM - 1:00PM)',
+        courseCode: 'MNGT 50482',
+        courseName: 'Gérer une entreprise : simulation',
+        category: 'globstrat',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 9 — Clôture & Pitch)',
+        desc: 'Résultats finaux de la Décision 8 et présentation orale exécutive de 10 minutes devant le Conseil d’administration.',
+        concepts: 'Pitch exécutif, gouvernance, reddition de comptes et valeur créée.',
+        prep: 'Présentation PPTX exécutif.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Alireza Ahmadsimab & Luc Bélanger-Martin'
+      },
+      {
+        num: 13.5,
+        dateStr: '2026-09-21',
+        dateDisplay: 'Lundi 21 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '17 h 30 – 18 h 15 (5:30PM - 6:15PM)',
+        courseCode: 'TRANSITION',
+        courseName: 'Direction de la transition durable',
+        category: 'atelier',
+        title: '🌱 Présentation Sulitest & Plateforme TASK',
+        desc: 'Présentation de la plateforme TASK et du Sulitest avec la Direction de la transition durable de HEC Montréal. Format comodal (Salle Luc-Poirier A.668 ou sur Zoom). Cette rencontre précède directement la Séance 1 d’ATEL 56118 à 18h30.',
+        concepts: 'Transition durable, compétences ESG, plateforme TASK, évaluation Sulitest.',
+        prep: 'Connexion Zoom disponible (ID: 827 3246 1161, Code: 886814) ou Salle A.668.',
+        location: 'Édifice HDesmarais, Salle A.668 Luc-Poirier / Zoom',
+        prof: 'Direction de la transition durable HEC'
+      },
+      {
+        num: 14,
+        dateStr: '2026-09-21',
+        dateDisplay: 'Lundi 21 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'ATEL 56118',
+        courseName: 'Atelier analyse de cas',
+        category: 'atelier',
+        title: 'ATEL 56118 : Atelier analyse de cas (Séance 1)',
+        desc: 'Apprentissage et pratique de la méthodologie standardisée HEC de résolution de cas d’affaires.',
+        concepts: 'Diagnostic FFOM/PESTEL, question décisionnelle, critères pondérés, 5W2H.',
+        prep: 'Lecture du cas d’entraînement.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Brian King'
+      },
+      {
+        num: 14.5,
+        dateStr: '2026-09-22',
+        dateDisplay: 'Mardi 22 septembre 2026',
+        dayOfWeek: 'Mardi',
+        time: '12 h 15 – 12 h 45 (12:15PM - 12:45PM)',
+        courseCode: 'DIRECTION',
+        courseName: 'Direction Pédagogique MBA',
+        category: 'atelier',
+        title: '👥 Rencontre avec le Directeur Pédagogique MBA',
+        desc: 'Rencontre officielle en ligne sur Zoom avec Yves Plourde, directeur pédagogique du MBA. Présentation des évaluations, rétroaction professeurs, évaluations d’enseignement et ateliers de leadership.',
+        concepts: 'Gouvernance pédagogique, évaluation des apprentissages, parcours expérientiel.',
+        prep: 'Rejoindre via Zoom (ID: 872 5291 0410, Code: 735837).',
+        location: 'En ligne sur Zoom (ID: 872 5291 0410)',
+        prof: 'Yves Plourde (Directeur Pédagogique MBA)'
+      },
+      {
+        num: 15,
+        dateStr: '2026-09-24',
+        dateDisplay: 'Jeudi 24 septembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'ATEL 56103',
+        courseName: 'Séance préparatoire comptabilité',
+        category: 'atelier',
+        title: 'ATEL 56103 : Séance préparatoire — Gérer à l’aide des informations comptables',
+        desc: 'Mise à niveau essentielle sur la mécanique comptable (débit/crédit, partie double, balance de vérification).',
+        concepts: 'Équation comptable, enregistrement des transactions, préparation à COMP 50904.',
+        prep: 'Exercices préparatoires ZoneCours.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Thierry Pejot-Charrost & Zvi Singer'
+      },
+      {
+        num: 16,
+        dateStr: '2026-09-26',
+        dateDisplay: 'Samedi 26 septembre 2026',
+        dayOfWeek: 'Samedi',
+        time: '09 h 00 – 12 h 00 (9:00AM - 12:00PM)',
+        courseCode: 'ATEL 56128',
+        courseName: 'Équipes collaboratives & conflits 1',
+        category: 'saturday',
+        title: 'ATEL 56128 : Gestion des équipes collaboratives et résolution de conflits 1 (Séance 1)',
+        desc: 'Premier samedi obligatoire crédité. Mise en place du contrat d’équipe MBA et techniques de résolution de conflits.',
+        concepts: 'Dynamique de groupe, sécurité psychologique, communication non-violente.',
+        prep: 'Contrat d’équipe préliminaire.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Direction MBA HEC Montréal'
+      },
+      {
+        num: 16.5,
+        dateStr: '2026-09-26',
+        dateDisplay: 'Samedi 26 septembre 2026',
+        dayOfWeek: 'Samedi',
+        time: '12 h 05 – 12 h 20 (12:05PM - 12:20PM)',
+        courseCode: 'SCU',
+        courseName: 'Compétitions Universitaires',
+        category: 'saturday',
+        title: '🏆 Présentation du Service des Compétitions Universitaires (SCU)',
+        desc: 'Courte présentation du SCU en classe lors de la pause du premier samedi obligatoire pour présenter les compétitions de cas MBA et les opportunités d’implication.',
+        concepts: 'Compétitions d’affaires, résolution de cas, représentation HEC.',
+        prep: 'En présentiel durant la pause d’ATEL 56128.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Équipe du SCU HEC Montréal'
+      },
+
+      {
+        num: 17,
+        dateStr: '2026-09-28',
+        dateDisplay: 'Lundi 28 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '16 h 45 – 18 h 15 (4:45PM - 6:15PM)',
+        courseCode: 'ATEL 56104',
+        courseName: 'Recherche d’informations d’affaires',
+        category: 'atelier',
+        title: 'ATEL 56104 : Recherche d’informations d’affaires (Séance 1)',
+        desc: 'Formation avancée par la bibliothèque HEC sur les bases de données d’affaires (Capital IQ, IBISWorld, Statista).',
+        concepts: 'Veille concurrentielle, extraction de rapports financiers, recherche documentaire.',
+        prep: 'Ordinateur portable requis.',
+        location: 'Édifice HDesmarais, Salle A.668 Luc-Poirier - EHD',
+        prof: 'Daphné Bélizaire'
+      },
+      {
+        num: 18,
+        dateStr: '2026-09-28',
+        dateDisplay: 'Lundi 28 septembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'comp50904',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 1)',
+        desc: 'Lancement du parcours réflexif de leadership. Transition du rôle d’ingénieur/expert technique vers dirigeant.',
+        concepts: 'Posture de gestionnaire, styles de leadership, auto-diagnostic.',
+        prep: 'Questionnaire de profil de leadership.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 19,
+        dateStr: '2026-09-29',
+        dateDisplay: 'Mardi 29 septembre 2026',
+        dayOfWeek: 'Mardi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'comp50905',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 1)',
+        desc: 'Fondements de la communication managériale, présence scénique et structure d’impact.',
+        concepts: 'Art oratoire, contact visuel, gestion du trac, clarté du message.',
+        prep: 'Présentation de 1 minute.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 20,
+        dateStr: '2026-10-01',
+        dateDisplay: 'Jeudi 1er octobre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'comp50904',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 1)',
+        desc: 'Cadre conceptuel IFRS/NCECF, rôle économique de l’information financière et principes de gouvernance.',
+        concepts: 'Normalisation comptable, postulats IFRS, gouvernance et éthique.',
+        prep: 'Laroche chap. 1.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 21,
+        dateStr: '2026-10-06',
+        dateDisplay: 'Mardi 6 octobre 2026',
+        dayOfWeek: 'Mardi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'comp50905',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 2)',
+        desc: 'Techniques de persuasion, narration d’affaires (*Storytelling*) et adaptation à l’auditoire.',
+        concepts: 'Structure narrative, arguments rationnels vs émotionnels, pitch.',
+        prep: 'Préparation d’un récit d’affaires.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 22,
+        dateStr: '2026-10-08',
+        dateDisplay: 'Jeudi 8 octobre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'comp50904',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 2)',
+        desc: 'État de la situation financière : Actifs courants (stocks, créances) et immobilisations.',
+        concepts: 'Amortissement, dépréciation, évaluation à la juste valeur, stocks FIFO/CMUP.',
+        prep: 'Laroche chap. 2 et 3.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 23,
+        dateStr: '2026-10-13',
+        dateDisplay: 'Mardi 13 octobre 2026',
+        dayOfWeek: 'Mardi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'comp50904',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 2)',
+        desc: 'Réflexivité managériale, gestion des déclencheurs émotionnels et intelligence relationnelle.',
+        concepts: 'Gestion de soi, rétroaction constructive, autorité d’influence.',
+        prep: 'Journal réflexif module 1.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 24,
+        dateStr: '2026-10-15',
+        dateDisplay: 'Jeudi 15 octobre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'comp50904',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 3)',
+        desc: 'Passifs à court et long terme, obligations, capitaux propres et bénéfices non répartis.',
+        concepts: 'Dette financière, capitaux propres, actions, provisions pour risques.',
+        prep: 'Laroche chap. 4 et 5.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 25,
+        dateStr: '2026-10-17',
+        dateDisplay: 'Samedi 17 octobre 2026',
+        dayOfWeek: 'Samedi',
+        time: '09 h 00 – 12 h 00 (9:00AM - 12:00PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'saturday',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 3)',
+        desc: 'Samedi obligatoire (Matin) : Ateliers pléniers de dynamique de leadership et posture managériale.',
+        concepts: 'Leadership situationnel, alignement de valeurs, coaching d’équipe.',
+        prep: 'Préparation des études de cas de leadership.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 26,
+        dateStr: '2026-10-17',
+        dateDisplay: 'Samedi 17 octobre 2026',
+        dayOfWeek: 'Samedi',
+        time: '13 h 00 – 16 h 00 (1:00PM - 4:00PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'saturday',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 4)',
+        desc: 'Samedi obligatoire (Après-midi) : Analyse pratique en équipe des états financiers réels d’entreprises cotées.',
+        concepts: 'État du résultat global, notes aux états financiers, travail d’équipe crédité.',
+        prep: 'Rapports annuels d’entreprises.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 27,
+        dateStr: '2026-10-22',
+        dateDisplay: 'Jeudi 22 octobre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'comp50904',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 5)',
+        desc: 'Tableau des flux de trésorerie : Flux d’exploitation, d’investissement et de financement.',
+        concepts: 'Méthode indirecte, flux de trésorerie opérationnel, Capex, cash flow libre.',
+        prep: 'Exercices de flux de trésorerie.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 28,
+        dateStr: '2026-10-26',
+        dateDisplay: 'Lundi 26 octobre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'comp50904',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 4)',
+        desc: 'Délégation, responsabilisation des collaborateurs et gestion de la performance humaine.',
+        concepts: 'Contrat psychologique, rétroaction 360°, délégation efficace.',
+        prep: 'Plan de développement individuel.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 29,
+        dateStr: '2026-10-29',
+        dateDisplay: 'Jeudi 29 octobre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'comp50904',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 6 — Diagnostic & Ratios)',
+        desc: 'Système complet des ratios financiers (liquidité, solvabilité, rentabilité ROE/ROA, décomposition DuPont) et révision finale.',
+        concepts: 'Current ratio, Quick ratio, Debt-to-Equity, DuPont, révision d’examen.',
+        prep: 'Révision des quiz notés.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Johnathon Cziffra & Zvi Singer'
+      },
+      {
+        num: 30,
+        dateStr: '2026-11-02',
+        dateDisplay: 'Lundi 2 novembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 20 h 00 (6:30PM - 8:00PM)',
+        courseCode: 'COMP 50904',
+        courseName: 'Analyser l’information financière',
+        category: 'exam',
+        title: '📝 EXAMEN FINAL — COMP 50904 (Information financière)',
+        desc: 'Examen final individuel en présentiel à l’édifice Hélène-Desmarais. Durée : 1 h 30 (40% de la note finale).',
+        concepts: 'États financiers complets, ratios, flux de trésorerie, IFRS.',
+        prep: 'Calculatrice conforme et carte étudiante requise.',
+        location: 'Édifice HDesmarais (Salle officielle selon nom de famille)',
+        prof: 'Direction des examens HEC'
+      },
+      {
+        num: 31,
+        dateStr: '2026-11-04',
+        dateDisplay: 'Mercredi 4 novembre 2026',
+        dayOfWeek: 'Mercredi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'comp50905',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 3)',
+        desc: 'Argumentation sous contrainte, réfutation d’objections et prise de parole devant les médias/investisseurs.',
+        concepts: 'Négociation, gestion de crise, réfutation stratégique.',
+        prep: 'Préparation d’un pitch de négociation.',
+        location: 'Édifice HDesmarais, Salle C.626 Londres',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 32,
+        dateStr: '2026-11-05',
+        dateDisplay: 'Jeudi 5 novembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 20 h 30 (6:30PM - 8:30PM)',
+        courseCode: 'ATEL 56132',
+        courseName: 'Équité, Diversité et Inclusion (ÉDI 1)',
+        category: 'atelier',
+        title: 'ATEL 56132 : Atelier ÉDI 1 (Séance 1)',
+        desc: 'Atelier crédité obligatoire : « De la différence à la diversité, entre discrimination et vivre ensemble ».',
+        concepts: 'Biais cognitifs inconscients, inclusion organisationnelle, leadership inclusif.',
+        prep: 'Lectures préparatoires ZoneCours.',
+        location: 'Édifice HDesmarais, Salle A.463 GardaWorld',
+        prof: 'Faculté ÉDI HEC Montréal'
+      },
+      {
+        num: 32.5,
+        dateStr: '2026-11-09',
+        dateDisplay: 'Lundi 9 novembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'ATEL 56101',
+        courseName: 'Atelier MBA (Séance additionnelle IA)',
+        category: 'atelier',
+        title: '🤖 Nouvel Atelier IA : Créer de la valeur avec l’IA (Luc Lespérance)',
+        desc: 'Nouvel atelier ajouté à l’horaire officiel (séance additionnelle au 56101 Atelier MBA). Comprendre le potentiel réel de l’IA, ses limites et son utilisation judicieuse en organisation et au MBA.',
+        concepts: 'Intelligence artificielle appliquée, création de valeur, limites et gouvernance de l’IA.',
+        prep: 'Consultation d’HEC en ligne pour détails de la salle.',
+        location: 'Édifice HDesmarais, HEC Montréal',
+        prof: 'Luc Lespérance'
+      },
+      {
+        num: 33,
+        dateStr: '2026-11-12',
+        dateDisplay: 'Jeudi 12 novembre 2026',
+
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'comp50905',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 1)',
+        desc: 'Lancement du cours. Comportement des coûts (fixes vs variables), Marge sur coût variable (MCV) et seuil de rentabilité (CVP).',
+        concepts: 'Coûts fixes, coûts variables, MCVu, TMCV, point mort.',
+        prep: 'Mini-manuel Sponem sec. 1.1.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 34,
+        dateStr: '2026-11-16',
+        dateDisplay: 'Lundi 16 novembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'comp50904',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 5)',
+        desc: 'Alignement stratégique des équipes, culture d’entreprise et gestion du changement.',
+        concepts: 'Gestion du changement, vision stratégique, mobilisation.',
+        prep: 'Journal de bord module 2.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 35,
+        dateStr: '2026-11-19',
+        dateDisplay: 'Jeudi 19 novembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'comp50905',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 2)',
+        desc: 'Méthode des coûts complets, sections homogènes, clés de répartition, unités d’œuvre (UO) et tarification.',
+        concepts: 'Charges directes/indirectes, centres d’analyse, UO, décisions long terme.',
+        prep: 'Mini-manuel Sponem sec. 1.2.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 36,
+        dateStr: '2026-11-21',
+        dateDisplay: 'Samedi 21 novembre 2026',
+        dayOfWeek: 'Samedi',
+        time: '09 h 00 – 12 h 00 (9:00AM - 12:00PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'saturday',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 4)',
+        desc: 'Samedi obligatoire (Matin) : Ateliers intensifs d’art oratoire, simulations de pitch exécutif enregistrées.',
+        concepts: 'Pitch exécutif, gestuelle, occupation de l’espace scénique, vidéo-feedback.',
+        prep: 'Préparation d’un discours de 3 minutes.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 37,
+        dateStr: '2026-11-21',
+        dateDisplay: 'Samedi 21 novembre 2026',
+        dayOfWeek: 'Samedi',
+        time: '13 h 00 – 16 h 00 (1:00PM - 4:00PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'saturday',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 3 — Cas Belle)',
+        desc: 'Samedi obligatoire (Après-midi) : Résolution en équipe et finalisation du rapport du Cas Belle Cosmétique.',
+        concepts: 'Prévisions budgétaires, Cas Belle Cosmétique, budget des ventes et de production.',
+        prep: 'Lecture approfondie du Cas Belle.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 38,
+        dateStr: '2026-11-23',
+        dateDisplay: 'Lundi 23 novembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'comp50905',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 5)',
+        desc: 'Influence stratégique, communication avec le conseil d’administration et gouvernance relationnelle.',
+        concepts: 'Règles de gouvernance, communication aux actionnaires, clarté décisionnelle.',
+        prep: 'Étude de cas de communication stratégique.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 39,
+        dateStr: '2026-11-26',
+        dateDisplay: 'Jeudi 26 novembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'comp50905',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 4 — Écarts)',
+        desc: 'Contrôle budgétaire, budget flexible et décomposition mathématique des écarts sur coûts variables.',
+        concepts: 'Écart sur volume, écart sur prix, écart sur quantité, analyse des causes.',
+        prep: 'Mini-manuel Sponem sec. 2.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 40,
+        dateStr: '2026-11-30',
+        dateDisplay: 'Lundi 30 novembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 50415',
+        courseName: 'Devenir dirigeant(e) : coaching',
+        category: 'comp50904',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Programme de coaching (Séance 6 — Clôture)',
+        desc: 'Séance de clôture du parcours de coaching. Synthèse des apprentissages et plan de carrière exécutif.',
+        concepts: 'Bilan de compétences, leadership authentique, plan d’action individuel.',
+        prep: 'Dépôt du journal réflexif final.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Viana Poulin & Luc Turcotte'
+      },
+      {
+        num: 41,
+        dateStr: '2026-12-03',
+        dateDisplay: 'Jeudi 3 décembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'comp50905',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 5 — PCI & ROI)',
+        desc: 'Centres de responsabilité (coûts, profits, investissements), Prix de Cession Interne (PCI), ROI et EVA.',
+        concepts: 'Prix de cession interne, rentabilité divisionnaire, Balanced Scorecard, ESG.',
+        prep: 'Mini-manuel Sponem sec. 3 et 4.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 42,
+        dateStr: '2026-12-07',
+        dateDisplay: 'Lundi 7 décembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'MNGT 56124',
+        courseName: 'L’art de communiquer en dirigeant(e)',
+        category: 'comp50905',
+        title: 'MNGT 56124 : L’art de communiquer en tant que dirigeant-e (Séance 6 — Clôture)',
+        desc: 'Dernière séance de communication. Présentation des pitchs finaux et bilan de progression en art oratoire.',
+        concepts: 'Maîtrise de la communication exécutive, bilan individuel.',
+        prep: 'Pitch final prêt.',
+        location: 'Édifice HDesmarais, Salle C.651 Groupe-Deschênes - EHD',
+        prof: 'Chantal Robidoux & Olivier Erhard'
+      },
+      {
+        num: 43,
+        dateStr: '2026-12-10',
+        dateDisplay: 'Jeudi 10 décembre 2026',
+        dayOfWeek: 'Jeudi',
+        time: '18 h 30 – 21 h 30 (6:30PM - 9:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'comp50905',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 6 — Synthèse & Révision)',
+        desc: 'Étude de cas intégrative globale récapitulant l’ensemble du cours et préparation à l’examen final.',
+        concepts: 'Synthèse CVP, coûts complets, budgets, écarts, PCI, révision finale.',
+        prep: 'Exercices Wooclap.',
+        location: 'Édifice HDesmarais, Salle C.623 Labid-Aljundi',
+        prof: 'Samuel Sponem & Margaret Fong'
+      },
+      {
+        num: 44,
+        dateStr: '2026-12-14',
+        dateDisplay: 'Lundi 14 décembre 2026',
+        dayOfWeek: 'Lundi',
+        time: '18 h 30 – 20 h 30 (6:30PM - 8:30PM)',
+        courseCode: 'COMP 50905',
+        courseName: 'Comptabilité de gestion et performance',
+        category: 'exam',
+        title: '📝 EXAMEN FINAL — COMP 50905 (Comptabilité de gestion)',
+        desc: 'Examen final individuel en présentiel à l’édifice Hélène-Desmarais. Durée : 2 h 00 (40% de la note finale).',
+        concepts: 'Tout le programme : coûts, seuil, budgets, écarts, PCI.',
+        prep: 'Documentation papier uniquement permise, calculatrice conforme.',
+        location: 'Édifice HDesmarais (Salle officielle selon nom de famille)',
+        prof: 'Direction des examens HEC'
+      }
+    ];
+
+    let currentCourseFilter = 'all';
+    let currentMonthFilter = 'all';
+    let currentTypeFilter = 'all';
+    let currentSearchTerm = '';
+    let currentView = 'grid';
+    let currentActiveSession = null;
+
+    function renderSessions() {
+      const filtered = ALL_SESSIONS_2026.filter(s => {
+        // Course Filter
+        let matchesCourse = true;
+        if (currentCourseFilter !== 'all') {
+          if (currentCourseFilter === 'MNGT Leadership') {
+            matchesCourse = s.courseCode.includes('50415') || s.courseCode.includes('56124');
+          } else {
+            matchesCourse = s.courseCode.includes(currentCourseFilter) || s.courseName.includes(currentCourseFilter);
+          }
+        }
+
+        // Month Filter
+        let matchesMonth = true;
+        if (currentMonthFilter !== 'all') {
+          matchesMonth = s.dateStr.substring(5, 7) === currentMonthFilter;
+        }
+
+        // Type Filter
+        let matchesType = true;
+        if (currentTypeFilter !== 'all') {
+          if (currentTypeFilter === 'saturday') matchesType = s.category === 'saturday';
+          else if (currentTypeFilter === 'exam') matchesType = s.category === 'exam';
+        }
+
+        // Search Filter
+        let matchesSearch = true;
+        if (currentSearchTerm) {
+          const q = currentSearchTerm.toLowerCase();
+          matchesSearch = s.title.toLowerCase().includes(q) ||
+                          s.courseCode.toLowerCase().includes(q) ||
+                          s.courseName.toLowerCase().includes(q) ||
+                          s.concepts.toLowerCase().includes(q) ||
+                          s.desc.toLowerCase().includes(q) ||
+                          s.dateDisplay.toLowerCase().includes(q) ||
+                          s.location.toLowerCase().includes(q);
+        }
+
+        return matchesCourse && matchesMonth && matchesType && matchesSearch;
+      });
+
+      document.getElementById('totalSessionsCount').textContent = filtered.length;
+
+      // Render Grid
+      const gridContainer = document.getElementById('sessionsGridContainer');
+      if (filtered.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-surface); border-radius: var(--radius-md); color: var(--text-dim);">
+            <div style="font-size: 2.4rem; margin-bottom: 10px;">🔍</div>
+            <h3>Aucune séance ne correspond aux critères sélectionnés.</h3>
+            <p style="margin-top: 6px;">Essayez de réinitialiser vos filtres ou de modifier votre recherche.</p>
+          </div>
+        `;
+      } else {
+        gridContainer.innerHTML = filtered.map(s => `
+          <div class="session-card cat-${s.category}" onclick="openSessionModal(${s.num})">
+            <div>
+              <div class="card-header">
+                <span class="card-course-badge badge-${s.category}">${s.courseCode}</span>
+                <span class="card-date-badge">📅 ${s.dateStr.substring(5)}</span>
+              </div>
+              <h3 class="card-title">${s.title}</h3>
+              <div class="card-meta-row">
+                <span class="card-meta-item">⏰ ${s.time}</span>
+                <span class="card-meta-item">📍 ${s.location.split('(')[0].trim()}</span>
+              </div>
+              <p class="card-desc">${s.desc}</p>
+              <div class="card-concepts-list">
+                <div class="concepts-label">Concepts clés abordés :</div>
+                <div class="concepts-text">${s.concepts}</div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <span class="preparation-tag">📖 ${s.prep}</span>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;" onclick="event.stopPropagation(); openSessionModal(${s.num})">
+                Détails ➔
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Table
+      const tableBody = document.getElementById('sessionsTableBody');
+      tableBody.innerHTML = filtered.map(s => `
+        <tr onclick="openSessionModal(${s.num})" style="cursor: pointer;">
+          <td style="font-weight: 800; font-family: var(--font-mono); color: var(--hec-gold);">${s.num}</td>
+          <td>
+            <strong>${s.dateDisplay}</strong><br>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">⏰ ${s.time}</span>
+          </td>
+          <td><span class="card-course-badge badge-${s.category}">${s.courseCode}</span></td>
+          <td><strong>${s.title}</strong></td>
+          <td style="max-width: 320px; font-size: 0.82rem; color: var(--text-muted);">${s.concepts}</td>
+          <td style="font-size: 0.82rem;">${s.location}</td>
+          <td>
+            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;">Voir</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Filter Handlers
+    function filterByCourse(courseCode, btn) {
+      currentCourseFilter = courseCode;
+      btn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderSessions();
+    }
+
+    function filterByMonth(monthStr, btn) {
+      currentMonthFilter = monthStr;
+      btn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderSessions();
+    }
+
+    function filterByType(typeStr, btn) {
+      currentTypeFilter = typeStr;
+      btn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderSessions();
+    }
+
+    function handleSearch() {
+      currentSearchTerm = document.getElementById('globalSearch').value.trim();
+      renderSessions();
+    }
+
+    function setViewMode(mode) {
+      currentView = mode;
+      document.getElementById('btnViewGrid').classList.toggle('active', mode === 'grid');
+      document.getElementById('btnViewTable').classList.toggle('active', mode === 'table');
+
+      document.getElementById('sessionsGridContainer').style.display = mode === 'grid' ? 'grid' : 'none';
+      document.getElementById('sessionsTableContainer').style.display = mode === 'table' ? 'block' : 'none';
+    }
+
+    // Modal
+    function openSessionModal(sessionNum) {
+      const s = ALL_SESSIONS_2026.find(item => item.num === sessionNum);
+      if (!s) return;
+      currentActiveSession = s;
+
+      document.getElementById('modalCourseBadge').className = `card-course-badge badge-${s.category}`;
+      document.getElementById('modalCourseBadge').textContent = s.courseCode;
+      document.getElementById('modalSessionTitle').textContent = s.title;
+
+      document.getElementById('modalSessionBody').innerHTML = `
+        <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm); margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <p><strong>📅 Date exacte :</strong> ${s.dateDisplay} (${s.dayOfWeek})</p>
+          <p><strong>⏰ Plage horaire :</strong> ${s.time}</p>
+          <p><strong>📍 Salle / Lieu :</strong> ${s.location}</p>
+          <p><strong>👨‍🏫 Enseignant(s) :</strong> ${s.prof}</p>
+        </div>
+
+        <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--text-main); margin-bottom: 6px;">🎯 Description & Objectifs pédagogiques</h4>
+        <p style="margin-bottom: 14px; color: var(--text-muted);">${s.desc}</p>
+
+        <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--text-main); margin-bottom: 6px;">🧠 Concepts & Outils abordés</h4>
+        <p style="margin-bottom: 14px; background: rgba(37, 99, 235, 0.08); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--hec-blue-accent);">${s.concepts}</p>
+
+        <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--text-main); margin-bottom: 6px;">📚 Préparation requise</h4>
+        <p style="color: var(--hec-gold-light); font-weight: 600;">${s.prep}</p>
+      `;
+
+      document.getElementById('sessionModal').classList.add('active');
+    }
+
+    function closeSessionModal() {
+      document.getElementById('sessionModal').classList.remove('active');
+    }
+
+    function handleModalBackdrop(e) {
+      if (e.target.id === 'sessionModal') {
+        closeSessionModal();
+      }
+    }
+
+    function copySessionMarkdown() {
+      if (!currentActiveSession) return;
+      const s = currentActiveSession;
+      const md = `### 📅 ${s.title}\n- **Date & Heure :** ${s.dateDisplay} (${s.time})\n- **Lieu :** ${s.location}\n- **Cours :** [[${s.courseCode}]] — ${s.courseName}\n- **Enseignant(s) :** ${s.prof}\n- **Concepts clés :** ${s.concepts}\n- **Préparation :** ${s.prep}\n- **Description :** ${s.desc}\n`;
+
+      navigator.clipboard.writeText(md).then(() => {
+        alert("✅ Fiche de la séance copiée en Markdown pour Obsidian !");
+      });
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+    }
+
+    // Initial render
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSessions();
+    });
+  </script>
+</body>
+</html>

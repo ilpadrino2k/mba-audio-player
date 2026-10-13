@@ -1,0 +1,2803 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wiki & Cockpit Académique — MBA HEC Montréal (S26AB)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Outfit', var(--font-sans);
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Dark Theme (Default) */
+      --bg-base: #070b14;
+      --bg-surface: #0f172a;
+      --bg-surface-elevated: #1e293b;
+      --bg-glass: rgba(15, 23, 42, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.18);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --hec-blue: #004b93;
+      --hec-blue-light: #3b82f6;
+      --hec-blue-glow: rgba(59, 130, 246, 0.35);
+      
+      --accent-gold: #f59e0b;
+      --accent-gold-glow: rgba(245, 158, 11, 0.25);
+      
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.25);
+      
+      --accent-cyan: #06b6d4;
+      --accent-cyan-glow: rgba(6, 182, 212, 0.25);
+      
+      --accent-rose: #f43f5e;
+      --accent-rose-glow: rgba(244, 63, 94, 0.25);
+
+      --accent-purple: #a855f7;
+      --accent-purple-glow: rgba(168, 85, 247, 0.25);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.25);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.45);
+      --shadow-lg: 0 20px 50px rgba(0,0,0,0.6);
+      --shadow-glow: 0 0 25px var(--hec-blue-glow);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f1f5f9;
+      --bg-glass: rgba(255, 255, 255, 0.88);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --hec-blue: #003366;
+      --hec-blue-light: #1d4ed8;
+      --hec-blue-glow: rgba(29, 78, 216, 0.15);
+
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 25px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.55;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background-image: 
+        radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.10) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hover);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--hec-blue-light);
+    }
+
+    .app-container {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+      width: 100%;
+    }
+
+    /* Modern Top Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 28px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 14px;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #004b93, #1d4ed8);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: white;
+      box-shadow: 0 0 25px var(--hec-blue-glow);
+      border: 1px solid rgba(255,255,255,0.25);
+      position: relative;
+    }
+
+    .brand-logo::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      bottom: -2px;
+      right: -2px;
+      border: 2px solid var(--bg-surface);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-text p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-primary { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+    .badge-gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .badge-rose { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+    .badge-cyan { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.3); }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--hec-blue-light), #1d4ed8);
+      color: white;
+      box-shadow: 0 4px 14px var(--hec-blue-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--hec-blue-glow);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: var(--border-hover);
+      border-color: var(--text-dim);
+    }
+
+    .theme-toggle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      font-size: 1.15rem;
+      transition: all 0.2s ease;
+    }
+    .theme-toggle-btn:hover {
+      background: var(--border-hover);
+      transform: rotate(15deg);
+    }
+
+    /* Key Metric Bar */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-info h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .stat-info .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .stat-info .stat-sub {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    /* Navigation Bar */
+    .nav-tabs-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 6px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 175px;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-surface-elevated);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--hec-blue-light), var(--hec-blue));
+      color: white;
+      box-shadow: 0 4px 14px var(--hec-blue-glow);
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Filters Bar */
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 500;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+    .chip.active {
+      background: var(--text-main);
+      color: var(--bg-base);
+      border-color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 9px 14px 9px 38px;
+      background: var(--bg-base);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--hec-blue-light);
+    }
+    .search-box .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* Timeline & Calendar Layout */
+    .calendar-grid-wrapper {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .calendar-grid-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mini Calendar */
+    .mini-calendar-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
+      position: sticky;
+      top: 106px;
+    }
+
+    .mini-calendar-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .month-selector {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: var(--bg-base);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .month-btn {
+      flex: 1;
+      padding: 7px 2px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .month-btn.active {
+      background: var(--hec-blue-light);
+      color: white;
+    }
+
+    .days-grid-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .day-cell:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+    }
+    .day-cell.other-month {
+      color: var(--text-dim);
+      opacity: 0.3;
+    }
+    .day-cell.today {
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+    .day-cell.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--hec-blue-light);
+    }
+    .day-cell.has-exam::after {
+      background: var(--accent-rose);
+      box-shadow: 0 0 6px var(--accent-rose);
+    }
+    .day-cell.has-saturday::after {
+      background: var(--accent-gold);
+      box-shadow: 0 0 6px var(--accent-gold);
+    }
+
+    /* Event Cards List */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .event-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: 145px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--hec-blue-light);
+    }
+
+    .event-card.type-exam::before { background: var(--accent-rose); }
+    .event-card.type-saturday::before { background: var(--accent-gold); }
+    .event-card.type-simulation::before { background: var(--accent-emerald); }
+    .event-card.type-atelier::before { background: var(--accent-purple); }
+
+    .event-card:hover {
+      transform: translateX(4px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .event-date-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .event-date-col .day-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+    .event-date-col .full-date {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .event-date-col .event-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .event-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .event-body p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .event-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* WIKI EXPLORER TAB */
+    .wiki-explorer-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      min-height: 600px;
+    }
+
+    @media (max-width: 950px) {
+      .wiki-explorer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wiki-sidebar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: fit-content;
+    }
+
+    .wiki-nav-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      margin: 8px 0 4px 8px;
+    }
+
+    .wiki-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wiki-nav-item {
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      background: transparent;
+      border: none;
+      text-align: left;
+      width: 100%;
+    }
+    .wiki-nav-item:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+    }
+    .wiki-nav-item.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--hec-blue-light);
+      font-weight: 700;
+      border-left: 3px solid var(--hec-blue-light);
+    }
+
+    .wiki-content-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      line-height: 1.65;
+    }
+
+    .wiki-content-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .wiki-content-card .wiki-meta-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .wiki-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 24px 0 10px;
+    }
+
+    .wiki-body p {
+      margin-bottom: 14px;
+      color: var(--text-muted);
+    }
+
+    .wiki-body ul, .wiki-body ol {
+      padding-left: 22px;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+    .wiki-body li {
+      margin-bottom: 6px;
+    }
+
+    .callout-box {
+      background: var(--bg-surface-elevated);
+      border-left: 4px solid var(--hec-blue-light);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 18px 0;
+      font-size: 0.9rem;
+    }
+    .callout-box.callout-gold { border-left-color: var(--accent-gold); }
+    .callout-box.callout-emerald { border-left-color: var(--accent-emerald); }
+
+    /* Courses Tab */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .course-card:hover {
+      border-color: var(--hec-blue-light);
+      box-shadow: var(--shadow-md), 0 0 20px var(--hec-blue-glow);
+      transform: translateY(-3px);
+    }
+
+    .course-code {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--hec-blue-light);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .course-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 8px 0;
+    }
+
+    /* Deliverables Tab */
+    .deliverables-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .deliverables-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .deliverables-list {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .deliverable-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+    .deliverable-item:hover {
+      border-color: var(--border-hover);
+    }
+
+    .deliv-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      accent-color: var(--accent-emerald);
+      cursor: pointer;
+    }
+
+    .deliv-weight {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--accent-gold);
+    }
+
+    .progress-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      height: fit-content;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: var(--bg-surface-elevated);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: 16px 0 10px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--hec-blue-light), var(--accent-emerald));
+      width: 0%;
+      border-radius: var(--radius-full);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Tools & Case Framework */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+    }
+
+    .tool-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tool-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-base);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--hec-blue-light);
+    }
+
+    .calc-result-box {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--bg-surface-elevated);
+      border: 1px dashed var(--border-hover);
+      border-radius: var(--radius-md);
+    }
+
+    .calc-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+    .calc-result-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .calc-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-emerald);
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 28px;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header>
+      <div class="brand-section">
+        <div class="brand-logo">HEC</div>
+        <div class="brand-text">
+          <h1>
+            MBA HEC Montréal
+            <span class="badge badge-primary">Cohorte S26AB</span>
+          </h1>
+          <p>
+            Portail & Wiki Académique • Édifice Hélène-Desmarais
+            <span class="badge badge-gold">Temps Partiel</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="btn btn-secondary" onclick="exportICalFile()" title="Télécharger le fichier .ics">
+          📅 Exporter iCal
+        </button>
+        <button class="btn btn-primary" onclick="openZoneCoursModal()">
+          🔄 Sync ZoneCours
+        </button>
+        <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" title="Changer de thème">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- Top Key Metrics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">🎓</div>
+        <div class="stat-info">
+          <h4>Prochain Jalon</h4>
+          <div class="stat-value" id="countdownDays">10 j</div>
+          <div class="stat-sub">Atelier virtuel (3 sept. 2026)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">📌</div>
+        <div class="stat-info">
+          <h4>Samedis Obligatoires</h4>
+          <div class="stat-value">3 journées</div>
+          <div class="stat-sub">26 sept. • 17 oct. • 21 nov.</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;">📝</div>
+        <div class="stat-info">
+          <h4>Examens Finaux</h4>
+          <div class="stat-value">2 épreuves</div>
+          <div class="stat-sub">2 nov. (50904) • 14 déc. (50905)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🏢</div>
+        <div class="stat-info">
+          <h4>Simulation Globstrat</h4>
+          <div class="stat-value">14–18 Sept.</div>
+          <div class="stat-sub">Semaine intensive présentielle</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs-wrapper">
+      <button class="tab-btn active" onclick="switchTab('tab-calendar')">
+        🗓️ Calendrier & Séances
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-wiki')">
+        📚 Explorateur Wiki
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-courses')">
+        📘 Cours & Syllabus
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-deliverables')">
+        🎯 Livrables & Notes
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-tools')">
+        🧮 Analyse de Cas & Ratios
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-zonecours')">
+        🔄 ZoneCours & Sync
+      </button>
+    </div>
+
+    <!-- TAB 1: CALENDAR & SESSIONS -->
+    <div id="tab-calendar" class="tab-pane active">
+      
+      <div class="filters-bar">
+        <div class="filter-chips">
+          <button class="chip active" onclick="filterEvents('all', this)">Tous les événements</button>
+          <button class="chip" onclick="filterEvents('saturday', this)">📌 Samedis Présentiels</button>
+          <button class="chip" onclick="filterEvents('exam', this)">📝 Examens Finaux</button>
+          <button class="chip" onclick="filterEvents('simulation', this)">🏢 Simulation Globstrat</button>
+          <button class="chip" onclick="filterEvents('atelier', this)">💡 Ateliers Pratiques</button>
+          <button class="chip" onclick="filterEvents('cours', this)">📘 Cours Réguliers</button>
+        </div>
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="eventSearch" placeholder="Rechercher une séance, un sujet, un code..." oninput="searchEvents()">
+        </div>
+      </div>
+
+      <div class="calendar-grid-wrapper">
+        
+        <!-- Sidebar Mini Calendar -->
+        <div class="mini-calendar-card">
+          <h3>
+            <span>Automne 2026</span>
+            <span class="badge badge-primary" id="selectedMonthLabel">Septembre</span>
+          </h3>
+
+          <div class="month-selector">
+            <button class="month-btn active" onclick="selectMonth(8, 'Septembre', this)">Sept.</button>
+            <button class="month-btn" onclick="selectMonth(9, 'Octobre', this)">Oct.</button>
+            <button class="month-btn" onclick="selectMonth(10, 'Novembre', this)">Nov.</button>
+            <button class="month-btn" onclick="selectMonth(11, 'Décembre', this)">Déc.</button>
+          </div>
+
+          <div class="days-grid-header">
+            <div>D</div><div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div>
+          </div>
+          
+          <div class="days-grid" id="miniCalendarGrid"></div>
+
+          <div style="margin-top: 18px; font-size: 0.78rem; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-rose);"></span>
+              <span>Examen Final en présentiel</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-gold);"></span>
+              <span>Samedi Obligatoire</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--hec-blue-light);"></span>
+              <span>Séance / Événement clé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Timeline List -->
+        <div class="timeline-list" id="eventsListContainer"></div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: WIKI KNOWLEDGE BASE EXPLORER -->
+    <div id="tab-wiki" class="tab-pane">
+      <div class="wiki-explorer-grid">
+        
+        <!-- Wiki Navigation Sidebar -->
+        <div class="wiki-sidebar">
+          <div class="search-box" style="min-width: 100%;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="wikiSearch" placeholder="Filtrer les fiches..." oninput="filterWikiList()">
+          </div>
+
+          <div class="wiki-nav-section-title">📊 Concepts & Méthodes HEC</div>
+          <div class="wiki-nav-list" id="wikiConceptsList">
+            <button class="wiki-nav-item active" onclick="loadWikiDoc('case-method')">
+              <span>🎯 Résolution de Cas HEC</span>
+              <span class="badge badge-primary">Méthode</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('pestel-swot')">
+              <span>🌐 PESTEL & FFOM</span>
+              <span class="badge badge-gold">Stratégie</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('ratios')">
+              <span>📈 Ratios Financiers</span>
+              <span class="badge badge-emerald">Finance</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('breakeven')">
+              <span>⚖️ Seuil de Rentabilité (CVP)</span>
+              <span class="badge badge-cyan">Gestion</span>
+            </button>
+          </div>
+
+          <div class="wiki-nav-section-title">📘 Fiches de Cours A2026</div>
+          <div class="wiki-nav-list" id="wikiCoursesList">
+            <button class="wiki-nav-item" onclick="loadWikiDoc('comp50904')">
+              <span>COMP 50904 — Info Financière</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('comp50905')">
+              <span>COMP 50905 — Compta Gestion</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('mngt50482')">
+              <span>MNGT 50482 — Globstrat</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('mngt50415')">
+              <span>MNGT 50415 — Coaching Dirigeant</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('mngt56124')">
+              <span>MNGT 56124 — Communication</span>
+            </button>
+          </div>
+
+          <div class="wiki-nav-section-title">🏢 Entités & Annuaire</div>
+          <div class="wiki-nav-list" id="wikiEntitiesList">
+            <button class="wiki-nav-item" onclick="loadWikiDoc('profs')">
+              <span>👨‍🏫 Annuaire des Professeurs</span>
+            </button>
+            <button class="wiki-nav-item" onclick="loadWikiDoc('student')">
+              <span>👤 Profil Étudiant (Vincent C.)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Wiki Reader Display -->
+        <div class="wiki-content-card">
+          <div id="wikiDocHeader">
+            <h2 id="wikiDocTitle">Méthodologie de Résolution de Cas d'Affaires (Standard HEC Montréal)</h2>
+            <div class="wiki-meta-bar">
+              <span id="wikiDocType" class="badge badge-primary">Concept Méthodologique</span>
+              <span id="wikiDocResource">Source : Guides pédagogiques HEC Montréal</span>
+              <span>Tags : <code>#methode-hec</code> <code>#cas-affaires</code> <code>#decision</code></span>
+            </div>
+          </div>
+
+          <div class="wiki-body" id="wikiDocBody">
+            <!-- Populated from JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: COURSES & SYLLABUS -->
+    <div id="tab-courses" class="tab-pane">
+      <div class="courses-grid">
+        
+        <!-- COMP 50904 -->
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="course-code">COMP 50904</span>
+              <span class="badge badge-gold">Bloc 1</span>
+            </div>
+            <h3 class="course-title">Analyser l'information financière</h3>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;">
+              Compréhension et analyse approfondie des 4 états financiers (Bilan, Résultat, Flux de trésorerie, Capitaux propres), cadre IFRS/NCECF, gouvernance et ratios de liquidité/solvabilité/rentabilité.
+            </p>
+            <div style="font-size: 0.82rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 14px;">
+              <span><strong>Enseignants :</strong> Zvi Singer & Johnathon Cziffra</span>
+              <span><strong>Période :</strong> 28 septembre au 1er novembre 2026</span>
+              <span><strong>Examen final :</strong> 📝 Lundi 2 nov. 2026 (18h30 – 21h30)</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-emerald">Crédits : 3.0</span>
+            <button class="btn btn-secondary" onclick="loadWikiDoc('comp50904'); switchTab('tab-wiki');">Lire la Fiche</button>
+          </div>
+        </div>
+
+        <!-- COMP 50905 -->
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="course-code">COMP 50905</span>
+              <span class="badge badge-gold">Bloc 2</span>
+            </div>
+            <h3 class="course-title">Comptabilité de gestion et performance</h3>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;">
+              Mesures de performance interne, analyse des coûts fixes vs variables, coûts de revient, marge sur coût variable (MCV), seuil de rentabilité (CVP) et budgets d'exploitation.
+            </p>
+            <div style="font-size: 0.82rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 14px;">
+              <span><strong>Enseignants :</strong> Samuel Sponem & Michael Fong</span>
+              <span><strong>Période :</strong> 9 novembre au 13 décembre 2026</span>
+              <span><strong>Examen final :</strong> 📝 Lundi 14 déc. 2026 (18h30 – 21h30)</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-emerald">Crédits : 3.0</span>
+            <button class="btn btn-secondary" onclick="loadWikiDoc('comp50905'); switchTab('tab-wiki');">Lire la Fiche</button>
+          </div>
+        </div>
+
+        <!-- MNGT 50482 -->
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="course-code">MNGT 50482</span>
+              <span class="badge badge-emerald">Semaine Intensive</span>
+            </div>
+            <h3 class="course-title">Simulation d'entreprise (Globstrat)</h3>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;">
+              Semaine d'immersion managériale en équipe. Prise de décisions stratégiques transversales (R&D, Opérations, Marketing, RH, Finance) et pitch final devant le conseil.
+            </p>
+            <div style="font-size: 0.82rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 14px;">
+              <span><strong>Coordonnateur :</strong> Alireza Ahmadsimab</span>
+              <span><strong>Période :</strong> 14 au 18 septembre 2026 (Journées complètes)</span>
+              <span><strong>Lieu :</strong> Édifice Hélène-Desmarais</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-primary">Obligatoire</span>
+            <button class="btn btn-secondary" onclick="loadWikiDoc('mngt50482'); switchTab('tab-wiki');">Lire la Fiche</button>
+          </div>
+        </div>
+
+        <!-- MNGT 50415 & 56124 -->
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="course-code">LEADERSHIP</span>
+              <span class="badge badge-purple">Continu</span>
+            </div>
+            <h3 class="course-title">Coaching & Communication Dirigeant</h3>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;">
+              • <strong>MNGT 50415 :</strong> Devenir dirigeant-e (Programme de coaching réflexif).<br>
+              • <strong>MNGT 56124 :</strong> L'art de communiquer en dirigeant-e (Prise de parole et pitch).
+            </p>
+            <div style="font-size: 0.82rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 14px;">
+              <span><strong>Samedis associés :</strong> 17 octobre (50415) & 21 novembre (56124)</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-emerald">Accompagnement</span>
+            <button class="btn btn-secondary" onclick="loadWikiDoc('mngt50415'); switchTab('tab-wiki');">Lire la Fiche</button>
+          </div>
+        </div>
+
+        <!-- ATELIERS -->
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="course-code">ATELIERS</span>
+              <span class="badge badge-primary">Crédités</span>
+            </div>
+            <h3 class="course-title">Ateliers Pratiques & Diversité</h3>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;">
+              • <strong>ATEL 56128 :</strong> Gestion des équipes et conflits (Samedi 26 sept.)<br>
+              • <strong>ATEL 56132 :</strong> ÉDI 1 - Diversité & Inclusion (Jeudi 5 nov.)<br>
+              • <strong>ATEL 56118 :</strong> Analyse de cas d'affaires
+            </p>
+            <div style="font-size: 0.82rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 14px;">
+              <span><strong>Lieu :</strong> Édifice Hélène-Desmarais</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-gold">Obligatoire</span>
+            <button class="btn btn-secondary" onclick="loadWikiDoc('case-method'); switchTab('tab-wiki');">Méthode de Cas</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: DELIVERABLES & DEADLINES -->
+    <div id="tab-deliverables" class="tab-pane">
+      <div class="deliverables-container">
+        
+        <div class="deliverables-list">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 18px;">
+            📋 Suivi des Évaluations & Examens (Automne 2026)
+          </h3>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv1" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">Évaluation Globstrat (Simulation)</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">MNGT 50482 • Présentation devant conseil & rapport final</p>
+              </div>
+            </div>
+            <div class="deliv-weight">18 Sept. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv2" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">Livrable Atelier Équipes & Conflits 1</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">ATEL 56128 • Travail réflexif d'équipe</p>
+              </div>
+            </div>
+            <div class="deliv-weight">26 Sept. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv3" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">Quiz & Travail pratique COMP 50904</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">COMP 50904 • Analyse d'états financiers réels</p>
+              </div>
+            </div>
+            <div class="deliv-weight">20 Oct. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv4" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">📝 Examen Final — COMP 50904</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Information financière • 18h30 à 21h30 (Hélène-Desmarais)</p>
+              </div>
+            </div>
+            <div class="deliv-weight" style="color: var(--accent-rose); background: rgba(244, 63, 94, 0.15);">2 Nov. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv5" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">Livrable Atelier ÉDI 1 (Diversité)</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">ATEL 56132 • Bilan d'inclusion</p>
+              </div>
+            </div>
+            <div class="deliv-weight">5 Nov. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv6" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">Étude de cas de gestion (COMP 50905)</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">COMP 50905 • Analyse des coûts et rentabilité</p>
+              </div>
+            </div>
+            <div class="deliv-weight">30 Nov. 2026</div>
+          </div>
+
+          <div class="deliverable-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <input type="checkbox" class="deliv-checkbox" id="deliv7" onchange="updateProgress()">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">📝 Examen Final — COMP 50905</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Comptabilité de gestion • 18h30 à 21h30 (Hélène-Desmarais)</p>
+              </div>
+            </div>
+            <div class="deliv-weight" style="color: var(--accent-rose); background: rgba(244, 63, 94, 0.15);">14 Déc. 2026</div>
+          </div>
+
+        </div>
+
+        <div class="progress-box">
+          <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">
+            📊 Progression Trimestrielle
+          </h3>
+          <p style="font-size: 0.84rem; color: var(--text-muted);">
+            Avancement des échéances majeures de la session d'automne 2026.
+          </p>
+
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; color: var(--text-main);">
+            <span>Complété</span>
+            <span id="progressText">0 / 7 complétés (0%)</span>
+          </div>
+
+          <div style="margin-top: 24px; padding: 14px; background: var(--bg-surface-elevated); border-radius: var(--radius-md); font-size: 0.82rem; color: var(--text-muted);">
+            💡 <strong>Règle HEC :</strong> Tous les examens finaux se déroulent en présentiel à l'édifice Hélène-Desmarais. La note de passage standard est de 60% (C).
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 5: TOOLS & CASE ANALYSIS -->
+    <div id="tab-tools" class="tab-pane">
+      <div class="tools-grid">
+        
+        <!-- Break-Even & Financial Ratio Calculator -->
+        <div class="tool-card">
+          <h3>🧮 Simulateur de Rentabilité & CVP</h3>
+          <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 18px;">Calculateur de seuil de rentabilité (COMP 50905).</p>
+
+          <div class="form-group">
+            <label>Prix de vente unitaire (P) $</label>
+            <input type="number" id="calcPrice" class="form-input" value="100" oninput="calculateBreakEven()">
+          </div>
+
+          <div class="form-group">
+            <label>Coût variable unitaire (CV) $</label>
+            <input type="number" id="calcVarCost" class="form-input" value="60" oninput="calculateBreakEven()">
+          </div>
+
+          <div class="form-group">
+            <label>Charges fixes totales (CF) $</label>
+            <input type="number" id="calcFixedCost" class="form-input" value="40000" oninput="calculateBreakEven()">
+          </div>
+
+          <div class="calc-result-box">
+            <div class="calc-result-row">
+              <span>Marge sur coût variable unitaire (MCVu) :</span>
+              <span class="calc-val" id="resMcv">$40.00</span>
+            </div>
+            <div class="calc-result-row">
+              <span>Taux de marge sur coût variable (TMCV) :</span>
+              <span class="calc-val" id="resTmcv">40.0 %</span>
+            </div>
+            <div class="calc-result-row">
+              <span><strong>Seuil de rentabilité (Unités) :</strong></span>
+              <span class="calc-val" id="resSrUnits" style="color: var(--accent-gold); font-size: 1.05rem;">1,000 unités</span>
+            </div>
+            <div class="calc-result-row">
+              <span><strong>Seuil de rentabilité (Chiffre d'Affaires $) :</strong></span>
+              <span class="calc-val" id="resSrRevenue" style="color: var(--accent-gold); font-size: 1.05rem;">$100,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Ratios Quick Calculator -->
+        <div class="tool-card">
+          <h3>📈 Simulateur de Ratios Financiers</h3>
+          <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 18px;">Analyse de liquidité et de rentabilité (COMP 50904).</p>
+
+          <div class="form-group">
+            <label>Actif à court terme ($)</label>
+            <input type="number" id="calcActifCT" class="form-input" value="150000" oninput="calculateRatios()">
+          </div>
+          <div class="form-group">
+            <label>Passif à court terme ($)</label>
+            <input type="number" id="calcPassifCT" class="form-input" value="100000" oninput="calculateRatios()">
+          </div>
+          <div class="form-group">
+            <label>Bénéfice Net ($) / Capitaux Propres ($)</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="calcNetIncome" class="form-input" value="25000" oninput="calculateRatios()" placeholder="Bénéfice net">
+              <input type="number" id="calcEquity" class="form-input" value="200000" oninput="calculateRatios()" placeholder="Capitaux propres">
+            </div>
+          </div>
+
+          <div class="calc-result-box">
+            <div class="calc-result-row">
+              <span>Ratio de Liquidité Générale (Current Ratio) :</span>
+              <span class="calc-val" id="resCurrentRatio">1.50</span>
+            </div>
+            <div class="calc-result-row">
+              <span>Rendement des Capitaux Propres (ROE) :</span>
+              <span class="calc-val" id="resRoe">12.5 %</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEC Case Resolution Framework Generator -->
+        <div class="tool-card" style="grid-column: 1 / -1;">
+          <h3>📑 Générateur de Gabarit de Cas HEC</h3>
+          <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 18px;">Générez la structure standardisée HEC (Méthodologie ATEL 56118) prête pour Obsidian.</p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label>Titre du Cas d'Affaires</label>
+              <input type="text" id="caseTitle" class="form-input" value="Cas Stratégique — Entreprise XYZ">
+            </div>
+
+            <div class="form-group">
+              <label>Mandat / Question décisionnelle principale</label>
+              <input type="text" id="caseMandate" class="form-input" value="L'entreprise doit-elle pivoter vers le modèle B2B d'ici Q2 ?">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Critères de décision pondérés (séparés par des virgules)</label>
+            <input type="text" id="caseCriteria" class="form-input" value="Rentabilité financière (40%), Faisabilité opérationnelle (35%), Risque d'image et acceptabilité (25%)">
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="generateCaseMarkdown()">
+            📋 Copier le Gabarit Markdown pour Obsidian
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 6: ZONECOURS & SYNC -->
+    <div id="tab-zonecours" class="tab-pane">
+      <div class="tool-card" style="max-width: 800px; margin: 0 auto;">
+        <h3>🔄 Centre de Synchronisation ZoneCours</h3>
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 20px;">Connectez vos espaces de cours HEC à votre coffre-fort Obsidian.</p>
+
+        <div style="background: var(--bg-surface-elevated); padding: 18px; border-radius: var(--radius-md); margin-bottom: 20px; border: 1px solid var(--border-color);">
+          <h4 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--text-main);">📌 Comment exécuter la synchronisation :</h4>
+          <ol style="padding-left: 20px; font-size: 0.86rem; color: var(--text-muted); line-height: 1.6;">
+            <li>Lancez le fichier <code style="color: var(--accent-cyan); background: var(--bg-base); padding: 2px 6px; border-radius: 4px;">sync_zonecours.bat</code> ou ouvrez un terminal PowerShell.</li>
+            <li>Connectez-vous à ZoneCours avec vos identifiants HEC et validez le 2FA.</li>
+            <li>Choisissez l'option <strong>[2]</strong> pour extraire tous les cours et séances en profondeur.</li>
+          </ol>
+        </div>
+
+        <div class="form-group">
+          <label>Commande PowerShell rapide à copier :</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" readonly class="form-input" value='python "c:\Users\vince\OneDrive\Documents\MBA Obsedian\MBA\zonecours_sync.py"' id="syncCmdInput">
+            <button class="btn btn-secondary" onclick="copySyncCmd()">Copier</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button class="btn btn-primary" onclick="exportICalFile()">📥 Télécharger le Calendrier iCal (.ics)</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+    <div class="modal-card" id="modalCard" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalTitle" style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;">Détails</h3>
+        <button class="modal-close" onclick="closeModalDirect()">×</button>
+      </div>
+      <div id="modalContent" style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>🎓 <strong>MBA HEC Montréal — Cockpit Académique & Wiki</strong> • Cohorte S26AB • Vincent Cantin</p>
+    <p style="margin-top: 4px;">Open Knowledge Format (OKF) & Obsidian Vault • 2026-2028</p>
+  </footer>
+
+  <script>
+    // Knowledge Base Documents
+    const WIKI_DOCS = {
+      'case-method': {
+        title: "Méthodologie de Résolution de Cas d'Affaires (Standard HEC Montréal)",
+        type: "Concept Méthodologique",
+        resource: "Guides pédagogiques HEC Montréal",
+        tags: ["#methode-hec", "#cas-affaires", "#strategie", "#decision"],
+        content: `
+          <div class="callout-box">
+            <strong>🎯 Standard HEC Montréal :</strong> La résolution de cas repose sur une approche rigoureuse, logique et orientée vers la prise de décision managériale et financière.
+          </div>
+
+          <h3>1. Diagnostic de la Situation</h3>
+          <ul>
+            <li><strong>Analyse Externe (Macro & Industrie) :</strong> Diagnostic PESTEL et les 5 Forces de Michael Porter (rivalité, entrants, substituts, pouvoir clients/fournisseurs).</li>
+            <li><strong>Analyse Interne (Ressources & Compétences) :</strong> Chaîne de valeur, modèle d'affaires, santé financière (ratios).</li>
+            <li><strong>Synthèse FFOM :</strong> Forces, Faiblesses, Opportunités, Menaces.</li>
+          </ul>
+
+          <h3>2. Formulation de la Question Décisionnelle Centrale</h3>
+          <p>La question doit être précise, ouverte et orientée vers l'action : <em>« Comment l'entreprise X peut-elle [atteindre l'objectif Y] face à [la contrainte Z] d'ici [horizon temporel] ? »</em></p>
+
+          <h3>3. Définition des Critères de Décision Pondérés</h3>
+          <p>Grille de critères totalisant 100% : Critères financiers (VAN, ROI, rentabilité), Critères stratégiques, Faisabilité opérationnelle, et Risque/ESG.</p>
+
+          <h3>4. Élaboration et Évaluation des Options</h3>
+          <p>Développer 2 à 3 options mutuellement exclusives et réalistes, notées rigoureusement sur la grille multicritère avec chiffrage financier systématique.</p>
+
+          <h3>5. Recommandation et Plan de Mise en Œuvre (5W2H)</h3>
+          <p>Découpage par phases (Court terme 0-6 mois, Moyen terme 6-18 mois, Long terme), budget prévisionnel et matrice d'atténuation des 3 risques majeurs.</p>
+        `
+      },
+      'pestel-swot': {
+        title: "Analyse Stratégique : Cadres PESTEL & FFOM",
+        type: "Concept Stratégique",
+        resource: "Syllabus Management & Stratégie HEC",
+        tags: ["#strategie", "#pestel", "#ffom", "#swot", "#porter"],
+        content: `
+          <div class="callout-box callout-gold">
+            <strong>🌐 Diagnostic Stratégique :</strong> L'analyse PESTEL structure l'environnement macroéconomique tandis que le modèle FFOM/SWOT fait la synthèse entre le diagnostic interne et externe.
+          </div>
+
+          <h3>1. Analyse PESTEL</h3>
+          <ul>
+            <li><strong>Politique :</strong> Stabilité gouvernementale, fiscalité, politiques commerciales.</li>
+            <li><strong>Économique :</strong> Taux d'intérêt, inflation, croissance du PIB, taux de change.</li>
+            <li><strong>Socioculturel :</strong> Démographie, tendances de consommation, diversité.</li>
+            <li><strong>Technologique :</strong> Automatisation, intelligence artificielle, R&D.</li>
+            <li><strong>Environnemental :</strong> RSE, empreinte carbone, transition énergétique.</li>
+            <li><strong>Légal :</strong> Normes du travail, propriété intellectuelle, conformité.</li>
+          </ul>
+
+          <h3>2. Les 5 Forces de Michael Porter</h3>
+          <p>Évaluation de l'attractivité sectorielle : Intensité de la rivalité, menace des nouveaux entrants, menace des substituts, pouvoir des clients, pouvoir des fournisseurs.</p>
+        `
+      },
+      'ratios': {
+        title: "Analyse des États Financiers et Ratios Clés",
+        type: "Concept Financier",
+        resource: "COMP 50904 — Information Financière",
+        tags: ["#finance", "#ratios", "#liquidite", "#rentabilite", "#bilan"],
+        content: `
+          <div class="callout-box callout-emerald">
+            <strong>📈 Ratios Clés :</strong> Outils indispensables pour diagnostiquer la santé financière d'une entreprise à partir du Bilan et de l'État des résultats.
+          </div>
+
+          <h3>1. Ratios de Liquidité (Court Terme)</h3>
+          <ul>
+            <li><strong>Ratio de Liquidité Générale (Current Ratio) :</strong> <code>Actif CT / Passif CT</code> (Cible > 1.5)</li>
+            <li><strong>Ratio de Liquidité Réduite (Quick Ratio) :</strong> <code>(Actif CT - Stocks) / Passif CT</code> (Cible > 1.0)</li>
+          </ul>
+
+          <h3>2. Ratios de Rentabilité</h3>
+          <ul>
+            <li><strong>Marge Brute :</strong> <code>Bénéfice Brut / Ventes</code></li>
+            <li><strong>Rendement de l'Actif (ROA) :</strong> <code>Bénéfice Net / Actif Total Moyen</code></li>
+            <li><strong>Rendement des Capitaux Propres (ROE) :</strong> <code>Bénéfice Net / Capitaux Propres Moyens</code></li>
+          </ul>
+
+          <h3>3. Ratios de Solvabilité & Structure</h3>
+          <ul>
+            <li><strong>Ratio d'Endettement :</strong> <code>Dette Totale / Actif Total</code></li>
+            <li><strong>Couverture des Intérêts :</strong> <code>BAII (EBIT) / Frais Financiers</code></li>
+          </ul>
+        `
+      },
+      'breakeven': {
+        title: "Comptabilité de Gestion — Seuil de Rentabilité & Analyse CVP",
+        type: "Concept Gestion",
+        resource: "COMP 50905 — Comptabilité de gestion",
+        tags: ["#comptabilite-gestion", "#point-mort", "#mcv", "#cvp"],
+        content: `
+          <div class="callout-box">
+            <strong>⚖️ Analyse Coût-Volume-Profit :</strong> Modélisation de l'impact des variations de volumes, prix et coûts sur le résultat opérationnel.
+          </div>
+
+          <h3>1. Formules Fondamentales</h3>
+          <ul>
+            <li><strong>Marge sur Coût Variable Unitaire (MCVu) :</strong> <code>MCVu = Prix (P) - Coût Variable (CV)</code></li>
+            <li><strong>Taux de Marge sur Coût Variable (TMCV) :</strong> <code>TMCV = MCVu / Prix</code></li>
+            <li><strong>Seuil de Rentabilité en Volume (Unités) :</strong> <code>Q* = Coûts Fixes (CF) / MCVu</code></li>
+            <li><strong>Seuil de Rentabilité en Chiffre d'Affaires ($) :</strong> <code>CA* = Coûts Fixes (CF) / TMCV</code></li>
+            <li><strong>Marge de Sécurité :</strong> <code>MS = CA Réel - CA*</code></li>
+          </ul>
+        `
+      },
+      'comp50904': {
+        title: "COMP 50904 — Analyser l'information financière",
+        type: "Cours A2026",
+        resource: "Syllabus HEC CSC 5.357",
+        tags: ["#cours", "#comp50904", "#ifrs", "#ncecf"],
+        content: `
+          <p><strong>Enseignants :</strong> Zvi Singer (CSC 5.357) & Johnathon Cziffra (CSC 5.469)</p>
+          <p><strong>Période :</strong> 28 septembre au 1er novembre 2026 • <strong>Examen final :</strong> Lundi 2 nov. 2026 (18h30–21h30)</p>
+          <p><strong>Manuel recommandé :</strong> <em>Le gestionnaire et les états financiers</em> (Claude D. Laroche, Pearson).</p>
+          <h3>Objectifs :</h3>
+          <ul>
+            <li>Lire, interpréter et auditer les 4 états financiers fondamentaux (Bilan, Résultat, Flux de trésorerie, Capitaux propres).</li>
+            <li>Maîtriser les cadres IFRS et NCECF.</li>
+            <li>Calculer et commenter les ratios de rentabilité, liquidité et solvabilité.</li>
+          </ul>
+        `
+      },
+      'comp50905': {
+        title: "COMP 50905 — Comptabilité de gestion et mesures de performance",
+        type: "Cours A2026",
+        resource: "Syllabus HEC",
+        tags: ["#cours", "#comp50905", "#gestion", "#couts"],
+        content: `
+          <p><strong>Enseignants :</strong> Samuel Sponem & Michael Fong</p>
+          <p><strong>Période :</strong> 9 novembre au 13 décembre 2026 • <strong>Examen final :</strong> Lundi 14 déc. 2026 (18h30–21h30)</p>
+          <h3>Objectifs :</h3>
+          <ul>
+            <li>Comprendre la structure de coûts (fixes vs variables, directs vs indirects).</li>
+            <li>Calculer le point mort, la marge sur coût variable et les budgets prévisionnels.</li>
+            <li>Mesurer et piloter la performance financière interne d'une organisation.</li>
+          </ul>
+        `
+      },
+      'mngt50482': {
+        title: "MNGT 50482 — Gérer une entreprise : simulation Globstrat",
+        type: "Simulation Intensive",
+        resource: "Syllabus HEC Globstrat",
+        tags: ["#simulation", "#mngt50482", "#globstrat", "#strategie"],
+        content: `
+          <p><strong>Coordonnateur :</strong> Alireza Ahmadsimab</p>
+          <p><strong>Dates :</strong> Lundi 14 au Vendredi 18 septembre 2026 (9h00 – 21h30 / Fin vendredi 13h00)</p>
+          <h3>Déroulement :</h3>
+          <ul>
+            <li>8 tours de simulation en équipes de gestionnaires.</li>
+            <li>Gestion transversale (R&D, Marketing, Production, RH, Finance).</li>
+            <li>Présentation de 10 minutes devant le conseil d'administration.</li>
+          </ul>
+        `
+      },
+      'mngt50415': {
+        title: "MNGT 50415 — Devenir dirigeant(e) : Programme de coaching",
+        type: "Leadership & Coaching",
+        resource: "Syllabus HEC",
+        tags: ["#leadership", "#coaching", "#mngt50415"],
+        content: `
+          <p><strong>Équipe :</strong> Valérie Poulin, Joanne Lortie, Lyne Turcotte</p>
+          <p><strong>Période :</strong> 28 septembre au 13 décembre 2026</p>
+          <p><strong>Samedi intensif associé :</strong> 17 octobre 2026 (Édifice Hélène-Desmarais)</p>
+          <p>Parcours réflexif de développement du leadership, bilan 360 et séances de coaching individuel.</p>
+        `
+      },
+      'mngt56124': {
+        title: "MNGT 56124 — L'art de communiquer en tant que dirigeant(e)",
+        type: "Communication & Influence",
+        resource: "Syllabus HEC",
+        tags: ["#communication", "#pitch", "#mngt56124"],
+        content: `
+          <p><strong>Équipe :</strong> Chantal Robidoux, Olivier Erhard</p>
+          <p><strong>Samedi intensif associé :</strong> 21 novembre 2026</p>
+          <p>Prise de parole en public, storytelling exécutif, communication de crise et présentations à fort impact.</p>
+        `
+      },
+      'profs': {
+        title: "Annuaire du Corps Professoral — MBA HEC Montréal",
+        type: "Annuaire",
+        resource: "Bottin HEC Montréal",
+        tags: ["#annuaire", "#professeurs", "#contacts"],
+        content: `
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+            <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
+              <th style="padding: 8px;">Professeur</th>
+              <th style="padding: 8px;">Cours / Rôle</th>
+              <th style="padding: 8px;">Courriel</th>
+              <th style="padding: 8px;">Bureau</th>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 8px;"><strong>Zvi Singer</strong></td>
+              <td style="padding: 8px;">COMP 50904 (Coordonnateur)</td>
+              <td style="padding: 8px;"><code>zvi.singer@hec.ca</code></td>
+              <td style="padding: 8px;">CSC 5.357</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 8px;"><strong>Johnathon Cziffra</strong></td>
+              <td style="padding: 8px;">COMP 50904 (Section S26I)</td>
+              <td style="padding: 8px;"><code>johnathon.cziffra@hec.ca</code></td>
+              <td style="padding: 8px;">CSC 5.469</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 8px;"><strong>Samuel Sponem</strong></td>
+              <td style="padding: 8px;">COMP 50905 (Coordonnateur)</td>
+              <td style="padding: 8px;"><code>samuel.sponem@hec.ca</code></td>
+              <td style="padding: 8px;">CSC 5.340</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 8px;"><strong>Alireza Ahmadsimab</strong></td>
+              <td style="padding: 8px;">MNGT 50482 (Globstrat)</td>
+              <td style="padding: 8px;"><code>alireza.ahmadsimab@hec.ca</code></td>
+              <td style="padding: 8px;">CSC 4.300</td>
+            </tr>
+          </table>
+        `
+      },
+      'student': {
+        title: "Profil Étudiant — Vincent Cantin, ing.",
+        type: "Entité Étudiant",
+        resource: "Profil Cohorte S26AB",
+        tags: ["#etudiant", "#vincent-cantin", "#mba"],
+        content: `
+          <p><strong>Nom :</strong> Vincent Cantin</p>
+          <p><strong>Programme :</strong> MBA 2 ans à temps partiel (2026-2028), Cohorte S26AB</p>
+          <p><strong>Formation antérieure :</strong> Ingénieur (Membre de l'Ordre des Ingénieurs du Québec - OIQ)</p>
+          <p><strong>Objectifs MBA :</strong> Consolider les compétences en finance d'entreprise, comptabilité de gestion stratégique et leadership de direction.</p>
+        `
+      }
+    };
+
+    // Events Data Store
+    const MBA_EVENTS = [
+      {
+        id: 'atel-56101-s1',
+        date: '2026-09-10',
+        dayName: 'Jeudi',
+        dateDisplay: '10 Septembre 2026',
+        time: '16h00 – 17h30',
+        title: 'ATEL 56101 : Atelier MBA (Séance 1)',
+        desc: 'Accueil officiel et première session plénière d’intégration pour la cohorte MBA S26AB.',
+        type: 'atelier',
+        tags: ['ATEL 56101', 'Accueil', 'A.373'],
+        location: 'Salle A.373 Centre de conf. Claude-S',
+        month: 8
+      },
+      {
+        id: 'atel-56101-s2',
+        date: '2026-09-10',
+        dayName: 'Jeudi',
+        dateDisplay: '10 Septembre 2026',
+        time: '17h30 – 19h00',
+        title: 'ATEL 56101 : Atelier MBA (Séance 2)',
+        desc: 'Deuxième atelier d’accueil et activités d’apprentissage expérientiel en sous-groupes.',
+        type: 'atelier',
+        tags: ['ATEL 56101', 'Intégration', 'A.463'],
+        location: 'Salle A.463 GardaWorld',
+        month: 8
+      },
+      {
+        id: 'atel-56101-s3',
+        date: '2026-09-10',
+        dayName: 'Jeudi',
+        dateDisplay: '10 Septembre 2026',
+        time: '19h00 – 21h30',
+        title: 'ATEL 56101 : Atelier MBA (Séance 3)',
+        desc: 'Soirée de clôture d’accueil, consignes pour la semaine intensive Globstrat et réseautage.',
+        type: 'atelier',
+        tags: ['ATEL 56101', 'Réseautage', 'A.373'],
+        location: 'Salle A.373 Centre de conf. Claude-S',
+        month: 8
+      },
+      {
+        id: 'atel-56101-s4',
+        date: '2026-09-14',
+        dayName: 'Lundi',
+        dateDisplay: '14 Septembre 2026',
+        time: '09h00 – 11h30',
+        title: 'ATEL 56101 : Atelier MBA (Séance 4)',
+        desc: 'Cadrage pédagogique avant le lancement des opérations de simulation d’entreprise.',
+        type: 'atelier',
+        tags: ['ATEL 56101', 'Cadrage', 'A.373'],
+        location: 'Salle A.373 Centre de conf. Claude-S',
+        month: 8
+      },
+      {
+        id: 'globstrat-s1',
+        date: '2026-09-14',
+        dayName: 'Lundi',
+        dateDisplay: '14 Septembre 2026',
+        time: '13h00 – 14h30',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 1)',
+        desc: 'Lancement de la simulation d’entreprise. Présentation du marché mondial et des paramètres initiaux.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Globstrat', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s2',
+        date: '2026-09-14',
+        dayName: 'Lundi',
+        dateDisplay: '14 Septembre 2026',
+        time: '16h00 – 17h30',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 2)',
+        desc: 'Validation des choix stratégiques d’équipe et soumission de la Décision 1.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Décision 1', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s3',
+        date: '2026-09-15',
+        dayName: 'Mardi',
+        dateDisplay: '15 Septembre 2026',
+        time: '09h30 – 11h00',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 3)',
+        desc: 'Analyse des résultats du Tour 1 et stratégie marketing/prix pour le marché international.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Tour 1', 'Marketing', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s4',
+        date: '2026-09-15',
+        dayName: 'Mardi',
+        dateDisplay: '15 Septembre 2026',
+        time: '14h00 – 15h30',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 4)',
+        desc: 'Planification de la capacité de production, R&D et validation des Décisions 2 et 3.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Décisions 2-3', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s5',
+        date: '2026-09-16',
+        dayName: 'Mercredi',
+        dateDisplay: '16 Septembre 2026',
+        time: '09h30 – 11h00',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 5)',
+        desc: 'Gestion des ressources humaines, rémunération, climat organisationnel et politiques RSE.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'RH', 'RSE', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s6',
+        date: '2026-09-16',
+        dayName: 'Mercredi',
+        dateDisplay: '16 Septembre 2026',
+        time: '14h00 – 15h30',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 6)',
+        desc: 'Structure financière, emprunts bancaires, trésorerie et validation des Décisions 4 et 5.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Finance', 'Décisions 4-5', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s7',
+        date: '2026-09-17',
+        dayName: 'Jeudi',
+        dateDisplay: '17 Septembre 2026',
+        time: '09h30 – 11h00',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 7)',
+        desc: 'Stratégie d’expansion internationale, logistique globale et gestion du risque de change.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'International', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s8',
+        date: '2026-09-17',
+        dayName: 'Jeudi',
+        dateDisplay: '17 Septembre 2026',
+        time: '13h30 – 15h00',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 8)',
+        desc: 'Optimisation de la rentabilité, ajustements concurrentiels et soumission des Décisions 6 et 7.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Décisions 6-7', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'globstrat-s9',
+        date: '2026-09-18',
+        dayName: 'Vendredi',
+        dateDisplay: '18 Septembre 2026',
+        time: '09h30 – 13h00',
+        title: 'MNGT 50482 : Simulation Globstrat (Séance 9 — Clôture & Pitch)',
+        desc: 'Résultats Décision 8 et présentation orale exécutive de 10 min devant le Conseil d’administration.',
+        type: 'simulation',
+        tags: ['MNGT 50482', 'Pitch Conseil', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'atel-56118-s1',
+        date: '2026-09-21',
+        dayName: 'Lundi',
+        dateDisplay: '21 Septembre 2026',
+        time: '18h30 – 21h30',
+        title: 'ATEL 56118 : Atelier analyse de cas (Séance 1)',
+        desc: 'Méthodologie standardisée HEC de résolution de cas d’affaires (FFOM, PESTEL, critères pondérés).',
+        type: 'atelier',
+        tags: ['ATEL 56118', 'Méthodo Cas', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 8
+      },
+      {
+        id: 'atel-56103-s1',
+        date: '2026-09-24',
+        dayName: 'Jeudi',
+        dateDisplay: '24 Septembre 2026',
+        time: '18h30 – 21h30',
+        title: 'ATEL 56103 : Séance préparatoire — Gérer à l’aide des informations comptables',
+        desc: 'Mise à niveau sur la mécanique comptable (débit/crédit, partie double, balance).',
+        type: 'atelier',
+        tags: ['ATEL 56103', 'Préparation Compta', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 8
+      },
+      {
+        id: 'atel-56128-s1',
+        date: '2026-09-26',
+        dayName: 'Samedi',
+        dateDisplay: '26 Septembre 2026',
+        time: '09h00 – 12h00',
+        title: 'ATEL 56128 : Gestion des équipes collaboratives et conflits 1',
+        desc: 'Premier samedi obligatoire crédité. Mise en place du contrat d’équipe et gestion des conflits.',
+        type: 'saturday',
+        tags: ['ATEL 56128', 'Samedi Obligatoire', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 8
+      },
+      {
+        id: 'atel-56104-s1',
+        date: '2026-09-28',
+        dayName: 'Lundi',
+        dateDisplay: '28 Septembre 2026',
+        time: '16h45 – 18h15',
+        title: 'ATEL 56104 : Recherche d’informations d’affaires (Séance 1)',
+        desc: 'Formation de la bibliothèque HEC sur Capital IQ, IBISWorld, Statista.',
+        type: 'atelier',
+        tags: ['ATEL 56104', 'Bibliothèque', 'A.668'],
+        location: 'Salle A.668 Luc-Poirier - EHD',
+        month: 8
+      },
+      {
+        id: 'mngt-50415-s1',
+        date: '2026-09-28',
+        dayName: 'Lundi',
+        dateDisplay: '28 Septembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Coaching (Séance 1)',
+        desc: 'Lancement du parcours réflexif de leadership. Transition d’ingénieur vers dirigeant.',
+        type: 'cours',
+        tags: ['MNGT 50415', 'Coaching', 'Séance 1', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 8
+      },
+      {
+        id: 'mngt-56124-s1',
+        date: '2026-09-29',
+        dayName: 'Mardi',
+        dateDisplay: '29 Septembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 1)',
+        desc: 'Fondements de la communication managériale, présence scénique et structure d’impact.',
+        type: 'cours',
+        tags: ['MNGT 56124', 'Communication', 'Séance 1', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 8
+      },
+      {
+        id: 'comp-50904-s1',
+        date: '2026-10-01',
+        dayName: 'Jeudi',
+        dateDisplay: '1er Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 1)',
+        desc: 'Cadre conceptuel IFRS/NCECF, rôle économique de l’info financière et gouvernance.',
+        type: 'cours',
+        tags: ['COMP 50904', 'Séance 1', 'IFRS', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'mngt-56124-s2',
+        date: '2026-10-06',
+        dayName: 'Mardi',
+        dateDisplay: '6 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 2)',
+        desc: 'Techniques de persuasion, narration d’affaires (*Storytelling*) et adaptation à l’auditoire.',
+        type: 'cours',
+        tags: ['MNGT 56124', 'Storytelling', 'Séance 2', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 9
+      },
+      {
+        id: 'comp-50904-s2',
+        date: '2026-10-08',
+        dayName: 'Jeudi',
+        dateDisplay: '8 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 2)',
+        desc: 'État de la situation financière : Actifs courants (stocks, créances) et immobilisations.',
+        type: 'cours',
+        tags: ['COMP 50904', 'Séance 2', 'Bilan Actifs', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'mngt-50415-s2',
+        date: '2026-10-13',
+        dayName: 'Mardi',
+        dateDisplay: '13 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Coaching (Séance 2)',
+        desc: 'Réflexivité managériale, gestion des déclencheurs émotionnels et intelligence relationnelle.',
+        type: 'cours',
+        tags: ['MNGT 50415', 'Intelligence Relationnelle', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 9
+      },
+      {
+        id: 'comp-50904-s3',
+        date: '2026-10-15',
+        dayName: 'Jeudi',
+        dateDisplay: '15 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 3)',
+        desc: 'Passifs court et long terme, obligations, capitaux propres et bénéfices non répartis.',
+        type: 'cours',
+        tags: ['COMP 50904', 'Séance 3', 'Passifs', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'mngt-50415-s3',
+        date: '2026-10-17',
+        dayName: 'Samedi',
+        dateDisplay: '17 Octobre 2026',
+        time: '09h00 – 12h00',
+        title: 'MNGT 50415 : Coaching de dirigeant-e (Séance 3)',
+        desc: 'Samedi obligatoire (Matin) : Ateliers pléniers de dynamique de leadership.',
+        type: 'saturday',
+        tags: ['MNGT 50415', 'Samedi Obligatoire', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 9
+      },
+      {
+        id: 'comp-50904-s4',
+        date: '2026-10-17',
+        dayName: 'Samedi',
+        dateDisplay: '17 Octobre 2026',
+        time: '13h00 – 16h00',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 4)',
+        desc: 'Samedi obligatoire (Après-midi) : Analyse pratique en équipe des états financiers réels.',
+        type: 'saturday',
+        tags: ['COMP 50904', 'Samedi Obligatoire', 'Analyse Réelle', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'comp-50904-s5',
+        date: '2026-10-22',
+        dayName: 'Jeudi',
+        dateDisplay: '22 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 5)',
+        desc: 'Tableau des flux de trésorerie : Flux d’exploitation, d’investissement et de financement.',
+        type: 'cours',
+        tags: ['COMP 50904', 'Séance 5', 'Flux Trésorerie', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'mngt-50415-s4',
+        date: '2026-10-26',
+        dayName: 'Lundi',
+        dateDisplay: '26 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Coaching (Séance 4)',
+        desc: 'Délégation, responsabilisation des collaborateurs et gestion de la performance humaine.',
+        type: 'cours',
+        tags: ['MNGT 50415', 'Délégation', 'Séance 4', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 9
+      },
+      {
+        id: 'comp-50904-s6',
+        date: '2026-10-29',
+        dayName: 'Jeudi',
+        dateDisplay: '29 Octobre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50904 : Analyser l’information financière (Séance 6 — Ratios)',
+        desc: 'Système complet des ratios financiers (ROE, DuPont, liquidité) et révision finale.',
+        type: 'cours',
+        tags: ['COMP 50904', 'Séance 6', 'Ratios DuPont', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 9
+      },
+      {
+        id: 'exam-comp50904',
+        date: '2026-11-02',
+        dayName: 'Lundi',
+        dateDisplay: '2 Novembre 2026',
+        time: '18h30 – 20h00',
+        title: '📝 EXAMEN FINAL — COMP 50904 (Information financière)',
+        desc: 'Examen final individuel en présentiel à l’édifice Hélène-Desmarais. Durée : 1 h 30 (40%).',
+        type: 'exam',
+        tags: ['Examen', 'COMP 50904', '40%'],
+        location: 'Édifice HDesmarais (Salle selon nom de famille)',
+        month: 10
+      },
+      {
+        id: 'mngt-56124-s3',
+        date: '2026-11-04',
+        dayName: 'Mercredi',
+        dateDisplay: '4 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 3)',
+        desc: 'Argumentation sous contrainte, réfutation d’objections et prise de parole.',
+        type: 'cours',
+        tags: ['MNGT 56124', 'Négociation', 'Séance 3', 'C.626'],
+        location: 'Salle C.626 Londres',
+        month: 10
+      },
+      {
+        id: 'atel-56132-s1',
+        date: '2026-11-05',
+        dayName: 'Jeudi',
+        dateDisplay: '5 Novembre 2026',
+        time: '18h30 – 20h30',
+        title: 'ATEL 56132 : Atelier ÉDI 1 (Séance 1)',
+        desc: 'Atelier crédité : « De la différence à la diversité, entre discrimination et vivre ensemble ».',
+        type: 'atelier',
+        tags: ['ATEL 56132', 'ÉDI 1', 'A.463'],
+        location: 'Salle A.463 GardaWorld',
+        month: 10
+      },
+      {
+        id: 'comp-50905-s1',
+        date: '2026-11-12',
+        dayName: 'Jeudi',
+        dateDisplay: '12 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 1)',
+        desc: 'Comportement des coûts (fixes vs variables), MCV et seuil de rentabilité (CVP).',
+        type: 'cours',
+        tags: ['COMP 50905', 'Séance 1', 'CVP', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 10
+      },
+      {
+        id: 'mngt-50415-s5',
+        date: '2026-11-16',
+        dayName: 'Lundi',
+        dateDisplay: '16 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Coaching (Séance 5)',
+        desc: 'Alignement stratégique des équipes, culture d’entreprise et gestion du changement.',
+        type: 'cours',
+        tags: ['MNGT 50415', 'Gestion Changement', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 10
+      },
+      {
+        id: 'comp-50905-s2',
+        date: '2026-11-19',
+        dayName: 'Jeudi',
+        dateDisplay: '19 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50905 : Comptabilité de gestion et performance (Séance 2)',
+        desc: 'Méthode des coûts complets, sections homogènes, clés de répartition, unités d’œuvre (UO).',
+        type: 'cours',
+        tags: ['COMP 50905', 'Coûts Complets', 'Séance 2', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 10
+      },
+      {
+        id: 'mngt-56124-s4',
+        date: '2026-11-21',
+        dayName: 'Samedi',
+        dateDisplay: '21 Novembre 2026',
+        time: '09h00 – 12h00',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 4)',
+        desc: 'Samedi obligatoire (Matin) : Ateliers intensifs d’art oratoire, pitch exécutif enregistré.',
+        type: 'saturday',
+        tags: ['MNGT 56124', 'Samedi Obligatoire', 'Pitch Exécutif', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 10
+      },
+      {
+        id: 'comp-50905-s3',
+        date: '2026-11-21',
+        dayName: 'Samedi',
+        dateDisplay: '21 Novembre 2026',
+        time: '13h00 – 16h00',
+        title: 'COMP 50905 : Comptabilité de gestion (Séance 3 — Cas Belle)',
+        desc: 'Samedi obligatoire (Après-midi) : Résolution en équipe et finalisation du rapport Cas Belle.',
+        type: 'saturday',
+        tags: ['COMP 50905', 'Samedi Obligatoire', 'Cas Belle', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 10
+      },
+      {
+        id: 'mngt-56124-s5',
+        date: '2026-11-23',
+        dayName: 'Lundi',
+        dateDisplay: '23 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 5)',
+        desc: 'Influence stratégique, communication avec le conseil d’administration et gouvernance relationnelle.',
+        type: 'cours',
+        tags: ['MNGT 56124', 'Conseil Admin', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 10
+      },
+      {
+        id: 'comp-50905-s4',
+        date: '2026-11-26',
+        dayName: 'Jeudi',
+        dateDisplay: '26 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50905 : Comptabilité de gestion (Séance 4 — Écarts)',
+        desc: 'Contrôle budgétaire, budget flexible et décomposition mathématique des écarts sur coûts variables.',
+        type: 'cours',
+        tags: ['COMP 50905', 'Écarts', 'Séance 4', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 10
+      },
+      {
+        id: 'mngt-50415-s6',
+        date: '2026-11-30',
+        dayName: 'Lundi',
+        dateDisplay: '30 Novembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 50415 : Devenir dirigeant-e — Coaching (Séance 6 — Clôture)',
+        desc: 'Séance de clôture du parcours de coaching. Synthèse des apprentissages et plan de carrière.',
+        type: 'cours',
+        tags: ['MNGT 50415', 'Clôture Coaching', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 10
+      },
+      {
+        id: 'comp-50905-s5',
+        date: '2026-12-03',
+        dayName: 'Jeudi',
+        dateDisplay: '3 Décembre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50905 : Comptabilité de gestion (Séance 5 — PCI & ROI)',
+        desc: 'Centres de responsabilité, Prix de Cession Interne (PCI), ROI et EVA.',
+        type: 'cours',
+        tags: ['COMP 50905', 'PCI', 'ROI', 'EVA', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 11
+      },
+      {
+        id: 'mngt-56124-s6',
+        date: '2026-12-07',
+        dayName: 'Lundi',
+        dateDisplay: '7 Décembre 2026',
+        time: '18h30 – 21h30',
+        title: 'MNGT 56124 : L’art de communiquer en dirigeant-e (Séance 6 — Clôture)',
+        desc: 'Dernière séance de communication. Présentation des pitchs finaux et bilan de progression.',
+        type: 'cours',
+        tags: ['MNGT 56124', 'Pitch Final', 'Clôture', 'C.651'],
+        location: 'Salle C.651 Groupe-Deschênes - EHD',
+        month: 11
+      },
+      {
+        id: 'comp-50905-s6',
+        date: '2026-12-10',
+        dayName: 'Jeudi',
+        dateDisplay: '10 Décembre 2026',
+        time: '18h30 – 21h30',
+        title: 'COMP 50905 : Comptabilité de gestion (Séance 6 — Révision)',
+        desc: 'Étude de cas intégrative globale récapitulant l’ensemble du cours et préparation à l’examen final.',
+        type: 'cours',
+        tags: ['COMP 50905', 'Révision Examen', 'C.623'],
+        location: 'Salle C.623 Labid-Aljundi',
+        month: 11
+      },
+      {
+        id: 'exam-comp50905',
+        date: '2026-12-14',
+        dayName: 'Lundi',
+        dateDisplay: '14 Décembre 2026',
+        time: '18h30 – 20h30',
+        title: '📝 EXAMEN FINAL — COMP 50905 (Comptabilité de gestion)',
+        desc: 'Examen final individuel en présentiel à l’édifice Hélène-Desmarais. Durée : 2 h 00 (40%).',
+        type: 'exam',
+        tags: ['Examen', 'COMP 50905', '40%'],
+        location: 'Édifice HDesmarais (Salle selon nom de famille)',
+        month: 11
+      }
+    ];
+
+    let currentFilter = 'all';
+    let currentMonth = 8;
+
+    // Render Timeline Events
+    function renderEvents() {
+      const container = document.getElementById('eventsListContainer');
+      const searchVal = document.getElementById('eventSearch').value.toLowerCase();
+
+      const filtered = MBA_EVENTS.filter(evt => {
+        const matchesType = (currentFilter === 'all') || (evt.type === currentFilter);
+        const matchesSearch = evt.title.toLowerCase().includes(searchVal) ||
+                              evt.desc.toLowerCase().includes(searchVal) ||
+                              evt.dateDisplay.toLowerCase().includes(searchVal) ||
+                              evt.tags.some(t => t.toLowerCase().includes(searchVal));
+        return matchesType && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 48px; background: var(--bg-surface); border-radius: var(--radius-md); color: var(--text-dim);">
+            <div style="font-size: 2rem; margin-bottom: 8px;">🔍</div>
+            <p>Aucun événement trouvé pour ces critères de recherche.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(evt => {
+        let badgeType = 'badge-primary';
+        if (evt.type === 'exam') badgeType = 'badge-rose';
+        if (evt.type === 'saturday') badgeType = 'badge-gold';
+        if (evt.type === 'simulation') badgeType = 'badge-emerald';
+        if (evt.type === 'atelier') badgeType = 'badge-purple';
+
+        return `
+          <div class="event-card type-${evt.type}">
+            <div class="event-date-col">
+              <span class="day-name">${evt.dayName}</span>
+              <span class="full-date">${evt.dateDisplay.split(' ')[0]} ${evt.dateDisplay.split(' ')[1]}</span>
+              <span class="event-time">⏰ ${evt.time.split('(')[0].trim()}</span>
+            </div>
+
+            <div class="event-body">
+              <h3>${evt.title}</h3>
+              <p>${evt.desc}</p>
+              <div class="event-tags">
+                ${evt.tags.map(t => `<span class="badge ${badgeType}">${t}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="event-actions">
+              <button class="btn btn-secondary" onclick="openEventDetails('${evt.id}')" style="padding: 6px 12px; font-size: 0.8rem;">
+                Fiche
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterEvents(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderEvents();
+    }
+
+    function searchEvents() {
+      renderEvents();
+    }
+
+    // Mini Calendar
+    function renderMiniCalendar(monthIdx) {
+      const grid = document.getElementById('miniCalendarGrid');
+      grid.innerHTML = '';
+
+      const year = 2026;
+      const firstDay = new Date(year, monthIdx, 1).getDay();
+      const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+      const prevMonthDays = new Date(year, monthIdx, 0).getDate();
+
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const d = prevMonthDays - i;
+        grid.innerHTML += `<div class="day-cell other-month">${d}</div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `2026-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const evts = MBA_EVENTS.filter(e => e.date === dateStr || (e.date.includes('au') && monthIdx === 8 && day >= 14 && day <= 18));
+        
+        let extraClass = '';
+        if (evts.length > 0) {
+          if (evts.some(e => e.type === 'exam')) extraClass = 'has-exam has-event';
+          else if (evts.some(e => e.type === 'saturday')) extraClass = 'has-saturday has-event';
+          else extraClass = 'has-event';
+        }
+
+        grid.innerHTML += `<div class="day-cell ${extraClass}" onclick="filterByCalendarDay('${dateStr}')">${day}</div>`;
+      }
+    }
+
+    function selectMonth(monthIdx, label, btn) {
+      currentMonth = monthIdx;
+      document.getElementById('selectedMonthLabel').textContent = label;
+      document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMiniCalendar(monthIdx);
+    }
+
+    function filterByCalendarDay(dateStr) {
+      const matched = MBA_EVENTS.find(e => e.date === dateStr);
+      if (matched) {
+        document.getElementById('eventSearch').value = matched.title.split(':')[0];
+        renderEvents();
+      }
+    }
+
+    // Wiki Explorer Loader
+    function loadWikiDoc(docKey) {
+      const doc = WIKI_DOCS[docKey];
+      if (!doc) return;
+
+      document.getElementById('wikiDocTitle').textContent = doc.title;
+      document.getElementById('wikiDocType').textContent = doc.type;
+      document.getElementById('wikiDocResource').textContent = "Source : " + doc.resource;
+      document.getElementById('wikiDocBody').innerHTML = doc.content;
+
+      document.querySelectorAll('.wiki-nav-item').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(docKey)) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    function filterWikiList() {
+      const q = document.getElementById('wikiSearch').value.toLowerCase();
+      document.querySelectorAll('.wiki-nav-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      
+      if (isDark) {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '☀️';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '🌙';
+      }
+    }
+
+    // Deliverables Progress
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.deliv-checkbox');
+      const total = checkboxes.length;
+      let checked = 0;
+      checkboxes.forEach(c => { if (c.checked) checked++; });
+
+      const pct = Math.round((checked / total) * 100);
+      document.getElementById('progressBarFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = `${checked} / ${total} complétés (${pct}%)`;
+    }
+
+    // Calculators
+    function calculateBreakEven() {
+      const P = parseFloat(document.getElementById('calcPrice').value) || 0;
+      const CV = parseFloat(document.getElementById('calcVarCost').value) || 0;
+      const CF = parseFloat(document.getElementById('calcFixedCost').value) || 0;
+
+      const mcv = P - CV;
+      const tmcv = P > 0 ? (mcv / P) * 100 : 0;
+      const srUnits = mcv > 0 ? Math.ceil(CF / mcv) : 0;
+      const srRevenue = tmcv > 0 ? Math.round((CF / (tmcv / 100))) : 0;
+
+      document.getElementById('resMcv').textContent = '$' + mcv.toFixed(2);
+      document.getElementById('resTmcv').textContent = tmcv.toFixed(1) + ' %';
+      document.getElementById('resSrUnits').textContent = srUnits.toLocaleString('fr-CA') + ' unités';
+      document.getElementById('resSrRevenue').textContent = '$' + srRevenue.toLocaleString('fr-CA');
+    }
+
+    function calculateRatios() {
+      const actCT = parseFloat(document.getElementById('calcActifCT').value) || 0;
+      const pasCT = parseFloat(document.getElementById('calcPassifCT').value) || 0;
+      const ni = parseFloat(document.getElementById('calcNetIncome').value) || 0;
+      const eq = parseFloat(document.getElementById('calcEquity').value) || 0;
+
+      const cr = pasCT > 0 ? (actCT / pasCT).toFixed(2) : '0.00';
+      const roe = eq > 0 ? ((ni / eq) * 100).toFixed(1) + ' %' : '0.0 %';
+
+      document.getElementById('resCurrentRatio').textContent = cr;
+      document.getElementById('resRoe').textContent = roe;
+    }
+
+    function generateCaseMarkdown() {
+      const title = document.getElementById('caseTitle').value;
+      const mandate = document.getElementById('caseMandate').value;
+      const criteria = document.getElementById('caseCriteria').value;
+
+      const md = `# 📊 Analyse de Cas HEC : ${title}
+
+## 1. Mandat & Diagnostic Stratégique
+> **Question décisionnelle :** ${mandate}
+
+### Diagnostic FFOM / PESTEL
+- **Forces :** 
+- **Faiblesses :** 
+- **Opportunités :** 
+- **Menaces :** 
+
+---
+
+## 2. Critères de Décision Pondérés
+${criteria.split(',').map((c, i) => `${i + 1}. **${c.trim()}**`).join('\n')}
+
+---
+
+## 3. Évaluation des Options Stratégiques
+| Option | Rentabilité Financière | Faisabilité Opérationnelle | Risque & Mitigation | Score |
+| :--- | :--- | :--- | :--- | :--- |
+| **Option 1 (Statu quo amélioré)** | | | | / 100 |
+| **Option 2 (Expansion / Pivot)** | | | | / 100 |
+
+---
+
+## 4. Recommandation & Plan d'Action (5W2H)
+- **Qui (Who) :**
+- **Quoi (What) :**
+- **Quand (When) :**
+- **Coût (How much) :**
+- **Risques majeurs & mesures d'atténuation :**
+`;
+
+      navigator.clipboard.writeText(md).then(() => {
+        alert("✅ Gabarit copié dans votre presse-papier ! Vous pouvez le coller directement dans Obsidian.");
+      });
+    }
+
+    function copySyncCmd() {
+      const input = document.getElementById('syncCmdInput');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      alert("✅ Commande copiée ! Ouvrez PowerShell et collez-la pour lancer la synchronisation.");
+    }
+
+    function exportICalFile() {
+      window.location.href = "./raw/00_Hub_Central/MBA_HEC_Automne_2026.ics";
+    }
+
+    function openEventDetails(id) {
+      const evt = MBA_EVENTS.find(e => e.id === id);
+      if (!evt) return;
+
+      document.getElementById('modalTitle').textContent = evt.title;
+      document.getElementById('modalContent').innerHTML = `
+        <div style="margin-bottom: 14px;">
+          <p><strong>📅 Date :</strong> ${evt.dateDisplay} (${evt.dayName})</p>
+          <p><strong>⏰ Horaire :</strong> ${evt.time}</p>
+          <p><strong>📍 Lieu :</strong> Édifice Hélène-Desmarais (centre-ville)</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 12px 0;">
+        <p style="margin-bottom: 12px;">${evt.desc}</p>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          ${evt.tags.map(t => `<span class="badge badge-primary">${t}</span>`).join('')}
+        </div>
+      `;
+      document.getElementById('modalBackdrop').classList.add('active');
+    }
+
+    function openZoneCoursModal() {
+      switchTab('tab-zonecours');
+    }
+
+    function closeModalDirect() {
+      document.getElementById('modalBackdrop').classList.remove('active');
+    }
+
+    function closeModal(e) {
+      if (e.target.id === 'modalBackdrop') {
+        closeModalDirect();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderEvents();
+      renderMiniCalendar(8);
+      loadWikiDoc('case-method');
+      calculateBreakEven();
+      calculateRatios();
+    });
+  </script>
+</body>
+</html>

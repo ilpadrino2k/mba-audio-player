@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecteur Exécutif Multi-Séances — COMP 50904 (MBA HEC Montréal)</title>
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --accent-subtle: rgba(56, 189, 248, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px 20px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* HEADER & NAVIGATION */
+        .header {
+            max-width: 1280px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            transition: max-width 0.3s ease;
+        }
+        body.theatre-mode .header {
+            max-width: 96vw;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h1 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .badge {
+            background: var(--accent-hover);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .header-nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .nav-link-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .nav-link-btn:hover {
+            color: var(--text-main);
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        /* SÉLECTEUR DE SÉANCES */
+        .seance-selector-bar {
+            max-width: 1280px;
+            width: 100%;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            transition: max-width 0.3s ease;
+        }
+        body.theatre-mode .seance-selector-bar {
+            max-width: 96vw;
+        }
+        .seance-tab {
+            background: #1e293b;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .seance-tab:hover {
+            background: #334155;
+            color: var(--text-main);
+            border-color: #64748b;
+        }
+        .seance-tab.active {
+            background: var(--accent-hover);
+            color: #ffffff;
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+        }
+        .seance-tab .pill-count {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+        }
+
+        /* CONTENEUR PRINCIPAL */
+        .main-container {
+            max-width: 1280px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 18px;
+            transition: all 0.3s ease;
+        }
+        body.theatre-mode .main-container {
+            max-width: 96vw;
+            grid-template-columns: 1fr 360px;
+        }
+
+        /* PLAYER BOX */
+        .player-box {
+            background: var(--bg-card);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BOÎTE REDIMENSIONNABLE */
+        .video-resizable-box {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 480px;
+            min-height: 260px;
+            max-height: 900px;
+            resize: both;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            border: 1px solid #475569;
+            transition: height 0.15s ease-out;
+        }
+        body.theatre-mode .video-resizable-box {
+            height: 620px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            outline: none;
+            background: #000;
+        }
+
+        .now-playing {
+            margin: 12px 0 8px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding-bottom: 8px;
+        }
+        .now-playing-title {
+            color: var(--accent);
+        }
+
+        /* BARRE DE CONTRÔLES */
+        .controls-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            font-size: 0.82rem;
+        }
+
+        .speed-controls, .custom-resize-controls, .expand-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 5px 9px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background: #475569;
+            border-color: var(--accent);
+        }
+        .action-btn.active {
+            background: var(--accent-hover);
+            border-color: var(--accent);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+        }
+
+        .resize-slider-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            padding: 2px 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+        }
+        .resize-slider-box input[type="range"] {
+            width: 85px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        /* PLAYLIST LATERALE */
+        .playlist {
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+        .playlist-header h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+        .playlist-header .count-badge {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .playlist-item {
+            background: #0f172a;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .playlist-item:hover {
+            background: #1e293b;
+            border-color: #64748b;
+        }
+        .playlist-item.active {
+            background: rgba(2, 132, 199, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+        }
+        .playlist-item strong {
+            font-size: 0.86rem;
+            color: #f1f5f9;
+        }
+        .playlist-item.active strong {
+            color: var(--accent);
+        }
+        .playlist-item small {
+            font-size: 0.74rem;
+            color: #94a3b8;
+            line-height: 1.25;
+        }
+
+        /* SECTION NOTES ÉCRITES SOUS LA VIDÉO */
+        .notes-section {
+            max-width: 1280px;
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 22px 26px;
+            margin-top: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: max-width 0.3s ease;
+        }
+        body.theatre-mode .notes-section {
+            max-width: 96vw;
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .notes-header h2 {
+            font-size: 1.15rem;
+            color: var(--accent);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .capsule-badge {
+            background: #334155;
+            color: #38bdf8;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+        }
+
+        .notes-content {
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .notes-content h3 {
+            color: #f1f5f9;
+            font-size: 1.05rem;
+            margin-top: 14px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+        .notes-content ul {
+            margin: 6px 0 14px 18px;
+            padding: 0;
+        }
+        .notes-content li {
+            margin-bottom: 6px;
+        }
+        .notes-content strong {
+            color: #f8fafc;
+        }
+        .rule-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-left-width: 4px;
+        }
+        .rule-card.warning {
+            border-left-color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .rule-card.success {
+            border-left-color: var(--success);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .pill-tag {
+            background: #0284c7;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+        .pill-tag.orange { background: #d97706; }
+        .pill-tag.green { background: #059669; }
+        .pill-tag.purple { background: #7c3aed; }
+
+        /* BOUTON ONGLETS AUTO-TEST */
+        .seance-tab.autotest-tab {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            margin-left: auto;
+        }
+        .seance-tab.autotest-tab:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .seance-tab.autotest-tab.active {
+            background: #ef4444;
+            border-color: #f87171;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.5);
+        }
+
+        /* SECTION AUTO-TESTS PANEL */
+        .autotest-panel {
+            max-width: 1280px;
+            width: 100%;
+            margin-top: 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: none;
+        }
+        .autotest-panel.active {
+            display: block;
+        }
+        .autotest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .autotest-title {
+            margin: 0;
+            color: #fca5a5;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .autotest-score-badge {
+            background: #ef4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .autotest-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 14px;
+        }
+        .autotest-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .autotest-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .autotest-card.persistent {
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            background: rgba(239, 68, 68, 0.05);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.15);
+        }
+        .autotest-card.resolved {
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.03);
+            opacity: 0.85;
+        }
+        .autotest-card.resolved:hover {
+            opacity: 1;
+            border-color: #10b981;
+        }
+        .star-badge {
+            background: linear-gradient(135deg, #ef4444, #f59e0b);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .resolved-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .autotest-card h4 {
+            margin: 0 0 6px 0;
+            color: #f8fafc;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .autotest-card p {
+            margin: 0 0 10px 0;
+            font-size: 0.84rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        .autotest-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-play-video {
+            background: var(--accent-hover);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn-play-video:hover {
+            background: #0ea5e9;
+        }
+        .btn-open-book {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-open-book:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* BOUTON ET MODALE POPUP DU SÉLECTEUR DE SÉANCES */
+        .btn-open-modal {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-open-modal:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 620px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.25s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                transform: translateY(-20px) scale(0.97);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+        .modal-close-btn:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body-list {
+            padding: 16px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-seance-item {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #f8fafc;
+        }
+        .modal-seance-item:hover {
+            background: #1e293b;
+            border-color: #38bdf8;
+            transform: translateX(4px);
+        }
+        .modal-seance-item.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+        .modal-seance-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .modal-seance-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+        .modal-seance-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .modal-seance-item.autotest {
+            border-left: 4px solid #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+        .modal-seance-item.autotest:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.18);
+        }
+
+        @media (max-width: 900px) {
+            .autotest-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .playlist {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENTÊTE DU LECTEUR -->
+    <div class="header">
+        <div class="header-title-box">
+            <h1>🎬 Lecteur Exécutif — COMP 50904</h1>
+            <span class="badge">MBA HEC Montréal</span>
+        </div>
+        <div class="header-nav-links">
+            <a href="balado_ifrs_comp50904.html" class="nav-link-btn" style="background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.4); color: #f472b6; font-weight: 600;" title="Écouter le résumé audio exécutif du Chapitre 4 (Les Actifs)">🎙️ Balado Audio Chap. 4</a>
+            <a href="dashboard.html" class="nav-link-btn">📊 Dashboard</a>
+            <a href="index.html" class="nav-link-btn">🏠 Accueil Web</a>
+            <span style="font-size: 0.8rem; color: #64748b;">Vitesse par défaut : <strong>1.5x</strong></span>
+        </div>
+    </div>
+
+    <!-- SÉLECTEUR DE SÉANCES COMP 50904 -->
+    <div class="seance-selector-bar">
+        <button class="btn-open-modal" onclick="openSeanceModal()" title="Ouvrir toutes les séances et auto-tests sous forme de liste popup">
+            <span>📋 Séances en Liste</span>
+        </button>
+        <button class="seance-tab" onclick="switchSeance(1)" id="tab-s1">
+            <span>Séance 1 : États financiers</span>
+            <span class="pill-count">6 caps</span>
+        </button>
+        <button class="seance-tab" onclick="switchSeance(2)" id="tab-s2">
+            <span>Séance 2 : Actifs courants & Immos</span>
+            <span class="pill-count">5 caps</span>
+        </button>
+        <button class="seance-tab active" onclick="switchSeance(3)" id="tab-s3">
+            <span>Séance 3 : Incorporels, Passifs & CP</span>
+            <span class="pill-count">5 caps</span>
+        </button>
+        <button class="seance-tab" onclick="switchSeance(4)" id="tab-s4">
+            <span>Séance 4 : Résultat global & Notes</span>
+            <span class="pill-count">5 caps</span>
+        </button>
+        <button class="seance-tab" onclick="switchSeance(5)" id="tab-s5">
+            <span>Séance 5 : Flux de trésorerie (TFT)</span>
+            <span class="pill-count">5 caps</span>
+        </button>
+        <button class="seance-tab" onclick="switchSeance(6)" id="tab-s6">
+            <span>Séance 6 : Ratios, Diagnostic & Limites</span>
+            <span class="pill-count">6 caps</span>
+        </button>
+        <button class="seance-tab autotest-tab" style="background: rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.45); color: #6ee7b7;" onclick="toggleAutotestPanel(1)" id="tab-autotest-s1">
+            <span>🎯 Auto-Tests S1</span>
+            <span class="pill-count" style="background: rgba(16, 185, 129, 0.4); color: #fff;">⭐ 3 notions</span>
+        </button>
+        <button class="seance-tab autotest-tab" style="background: rgba(59, 130, 246, 0.18); border-color: rgba(59, 130, 246, 0.45); color: #93c5fd;" onclick="toggleAutotestPanel(2)" id="tab-autotest-s2">
+            <span>🎯 Auto-Tests S2</span>
+            <span class="pill-count" style="background: rgba(59, 130, 246, 0.4); color: #fff;">⭐ 5 notions</span>
+        </button>
+        <button class="seance-tab autotest-tab" onclick="toggleAutotestPanel(3)" id="tab-autotest-s3">
+            <span>🎯 Auto-Tests S3</span>
+            <span class="pill-count" style="background: rgba(239, 68, 68, 0.4); color: #fff;">⭐ 3 restantes</span>
+        </button>
+        <button class="seance-tab autotest-tab" style="background: rgba(245, 158, 11, 0.18); border-color: rgba(245, 158, 11, 0.45); color: #fde68a;" onclick="toggleAutotestPanel(4)" id="tab-autotest-s4">
+            <span>🎯 Auto-Tests S4</span>
+            <span class="pill-count" style="background: rgba(245, 158, 11, 0.4); color: #fff;">⭐ 6 notions</span>
+        </button>
+        <button class="seance-tab autotest-tab" style="background: rgba(14, 165, 233, 0.18); border-color: rgba(14, 165, 233, 0.45); color: #7dd3fc;" onclick="toggleAutotestPanel(5)" id="tab-autotest-s5">
+            <span>🎯 Auto-Tests S5</span>
+            <span class="pill-count" style="background: rgba(14, 165, 233, 0.4); color: #fff;">⭐ 11 notions</span>
+        </button>
+        <button class="seance-tab autotest-tab" style="background: rgba(168, 85, 247, 0.18); border-color: rgba(168, 85, 247, 0.45); color: #d8b4fe;" onclick="toggleAutotestPanel(6)" id="tab-autotest-s6">
+            <span>🎯 Auto-Tests S6</span>
+            <span class="pill-count" style="background: rgba(168, 85, 247, 0.4); color: #fff;">⭐ 10 notions</span>
+        </button>
+    </div>
+
+    <!-- MODALE POPUP : SÉLECTION RAPIDE EN LISTE DES SÉANCES -->
+    <div class="modal-overlay" id="seanceModal" onclick="closeSeanceModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>📚 Navigation des Séances — COMP 50904</h3>
+                <button class="modal-close-btn" onclick="closeSeanceModal()" title="Fermer la liste">&times;</button>
+            </div>
+            <div class="modal-body-list">
+                <div class="modal-seance-item" onclick="selectSeanceFromModal(1)" id="modal-s1">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 1 : Information financière et états financiers</span>
+                        <span class="modal-seance-desc">Bilan, Résultat, Principes comptables fondamentaux IFRS</span>
+                    </div>
+                    <span class="pill-count">6 capsules</span>
+                </div>
+                <div class="modal-seance-item" onclick="selectSeanceFromModal(2)" id="modal-s2">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 2 : Actifs à court terme et immobilisations corporelles</span>
+                        <span class="modal-seance-desc">Trésorerie, Créances clients, Stocks (PEPS/CUMP), Amortissements</span>
+                    </div>
+                    <span class="pill-count">5 capsules</span>
+                </div>
+                <div class="modal-seance-item active" onclick="selectSeanceFromModal(3)" id="modal-s3">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 3 : Incorporels, Placements, Passifs & Capitaux Propres</span>
+                        <span class="modal-seance-desc">Goodwill, R&D, Valeur de consolidation, Provisions IAS 37, AERG</span>
+                    </div>
+                    <span class="pill-count">5 capsules</span>
+                </div>
+                <div class="modal-seance-item" onclick="selectSeanceFromModal(4)" id="modal-s4">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 4 : État du résultat global et notes annexes</span>
+                        <span class="modal-seance-desc">Produits des activités ordinaires (IFRS 15), Marge brute, Dépréciation</span>
+                    </div>
+                    <span class="pill-count">5 capsules</span>
+                </div>
+                <div class="modal-seance-item" onclick="selectSeanceFromModal(5)" id="modal-s5">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 5 : Tableau des flux de trésorerie (TFT)</span>
+                        <span class="modal-seance-desc">Activités d'exploitation, d'investissement et de financement, BFR</span>
+                    </div>
+                    <span class="pill-count">5 capsules</span>
+                </div>
+                <div class="modal-seance-item" onclick="selectSeanceFromModal(6)" id="modal-s6">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title">Séance 6 : Diagnostic financier, ratios & limites</span>
+                        <span class="modal-seance-desc">Liquidité, Solvabilité, Rentabilité (ROE, ROCE), Limites comptables</span>
+                    </div>
+                    <span class="pill-count">6 capsules</span>
+                </div>
+                <div class="modal-seance-item autotest" style="border-left-color: #10b981; background: rgba(16, 185, 129, 0.08);" onclick="selectAutotestFromModal(1)" id="modal-autotest-s1">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #6ee7b7;">🎯 Auto-Évaluation Séance 1 : États Financiers & IFRS</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score Edge : 15.67 / 18.0 (87.1 %) — 3 notions ciblées avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(16, 185, 129, 0.4); color: #fff;">⭐ 3 notions</span>
+                </div>
+                <div class="modal-seance-item autotest" style="border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.08);" onclick="selectAutotestFromModal(2)" id="modal-autotest-s2">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #93c5fd;">🎯 Auto-Évaluation Séance 2 : Actifs Courants & Immos Corporelles</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score Edge : 21.91 / 26.0 (84.3 %) — 5 notions ciblées avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(59, 130, 246, 0.4); color: #fff;">⭐ 5 notions</span>
+                </div>
+                <div class="modal-seance-item autotest" onclick="selectAutotestFromModal(3)" id="modal-autotest-s3">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #fca5a5;">🎯 Auto-Évaluation Séance 3 : Notions en écart</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score : 26.31 / 28.0 (94.0 %) — 3 notions persistantes avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(239, 68, 68, 0.4); color: #fff;">⭐ 3 restantes</span>
+                </div>
+                <div class="modal-seance-item autotest" style="border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.08);" onclick="selectAutotestFromModal(4)" id="modal-autotest-s4">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #fde68a;">🎯 Auto-Évaluation Séance 4 : Résultat Global & Notes</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score Edge : 23.0 / 29.0 (79.3 %) — 6 notions ciblées avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(245, 158, 11, 0.4); color: #fff;">⭐ 6 notions</span>
+                </div>
+                <div class="modal-seance-item autotest" style="border-left-color: #0ea5e9; background: rgba(14, 165, 233, 0.08);" onclick="selectAutotestFromModal(5)" id="modal-autotest-s5">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #7dd3fc;">🎯 Auto-Évaluation Séance 5 : Tableau des Flux de Trésorerie (TFT)</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score Edge : 15.92 / 25.0 (63.7 %) — 11 notions ciblées avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(14, 165, 233, 0.4); color: #fff;">⭐ 11 notions</span>
+                </div>
+                <div class="modal-seance-item autotest" style="border-left-color: #a855f7; background: rgba(168, 85, 247, 0.08);" onclick="selectAutotestFromModal(6)" id="modal-autotest-s6">
+                    <div class="modal-seance-info">
+                        <span class="modal-seance-title" style="color: #d8b4fe;">🎯 Auto-Évaluation Séance 6 : Diagnostic & Ratios Financiers</span>
+                        <span class="modal-seance-desc" style="color: #cbd5e1;">Score Edge : 26.44 / 34.0 (77.8 %) — 10 notions ciblées avec étoile ⭐</span>
+                    </div>
+                    <span class="pill-count" style="background: rgba(168, 85, 247, 0.4); color: #fff;">⭐ 10 notions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZONE PRINCIPALE DE LECTURE -->
+    <div class="main-container">
+        <div class="player-box">
+            <!-- CONTENEUR VIDÉO REDIMENSIONNABLE -->
+            <div class="video-resizable-box" id="resizableBox">
+                <video id="videoPlayer" controls autoplay>
+                    <source id="videoSource" src="" type="video/mp4">
+                    Votre navigateur ne supporte pas la balise vidéo.
+                </video>
+            </div>
+            
+            <div class="now-playing">
+                <div>
+                    <span id="seancePrefix" style="color: #94a3b8; font-weight: 500;">Séance 3 — </span>
+                    <span class="now-playing-title" id="videoTitle">Chargement...</span>
+                </div>
+                <span id="playbackIndicator" style="font-size: 0.75rem; color: #10b981; font-weight: 600;">⚡ Vitesse : 1.5x</span>
+            </div>
+
+            <div class="controls-bar">
+                <div class="speed-controls">
+                    <span style="color: #94a3b8;">Vitesse :</span>
+                    <button class="action-btn" onclick="setSpeed(1.0)">1.0x</button>
+                    <button class="action-btn" onclick="setSpeed(1.25)">1.25x</button>
+                    <button class="action-btn active" id="btn15" onclick="setSpeed(1.5)">1.5x</button>
+                    <button class="action-btn" onclick="setSpeed(1.75)">1.75x</button>
+                    <button class="action-btn" onclick="setSpeed(2.0)">2.0x</button>
+                </div>
+
+                <div class="custom-resize-controls">
+                    <div class="resize-slider-box">
+                        <span style="color: #94a3b8;">Hauteur :</span>
+                        <input type="range" id="heightSlider" min="260" max="850" value="480" oninput="adjustHeight(this.value)">
+                        <span id="heightValue" style="color: #38bdf8; min-width: 44px;">480px</span>
+                    </div>
+                    <button class="action-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick="resetSize()" title="Réinitialiser la taille">
+                        ↺ Réinit
+                    </button>
+                </div>
+
+                <div class="expand-controls">
+                    <button class="action-btn" id="theatreBtn" onclick="toggleTheatre()">
+                        📺 Mode Cinéma
+                    </button>
+                    <button class="action-btn" onclick="toggleFullscreen()">
+                        ⛶ Plein Écran
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAYLIST DE LA SÉANCE -->
+        <div class="playlist">
+            <div class="playlist-header">
+                <h3 id="playlistTitle">Capsules Séance</h3>
+                <span class="count-badge" id="playlistCount">0 vidéos</span>
+            </div>
+            <div id="playlistItems">
+                <!-- Injecté dynamiquement par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ZONE DES EXPLICATIONS ÉCRITES SYNTHÉTIQUES DYNAMIQUES -->
+    <div class="notes-section">
+        <div class="notes-header">
+            <h2>📝 Synthèse Exécutive des Notions Clés à Retenir</h2>
+            <span class="capsule-badge" id="notesBadge">Séance 3 — Capsule 1 sur 5</span>
+        </div>
+        <div class="notes-content" id="notesContent">
+            <!-- Injecté dynamiquement selon la séance et la capsule active -->
+        </div>
+    </div>
+
+
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 1) -->
+    <div class="autotest-panel" id="autotestPanel-s1">
+        <div class="autotest-header">
+            <div>
+                <h3 class="autotest-title">🎯 Remédiation Auto-Évaluation Séance 1 : États Financiers & Caractéristiques IFRS</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Score Edge : <strong style="color: #34d399;">15.67 / 18.0 Points</strong> (87.1 %) — <span style="color: #fca5a5; font-weight: 600;">⭐ 3 notions prioritaires marquées d'une étoile</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" style="background: #059669;" title="Notions en écart au quiz">⭐ 3 Notions à réviser</span>
+                <span class="resolved-badge" title="Questions réussies avec brio">✓ 15 Notions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q6 - Caractéristiques Qualitatives IFRS (Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q6 — Caractéristiques Qualitatives Fondamentales & Sous-Composantes IFRS</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Typologie rigoureuse du cadre conceptuel :</strong><br>
+                    • 1. Prédictions sur événements futurs ➔ <strong>Valeur prédictive</strong> (composante de la <em>Pertinence</em>).<br>
+                    • 2. Données probantes, méthodes divulguées ➔ <strong>Vérifiabilité</strong> (caractéristique auxiliaire).<br>
+                    • 3. Sans erreur ni biais ➔ <strong>Neutralité</strong> (composante de l'<em>Image fidèle</em>).<br>
+                    • 4. Disponible avant de perdre sa valeur ➔ <strong>Rapidité</strong>.<br>
+                    • 5. Présentation semblable pour cas similaires ➔ <strong>Comparabilité</strong>.<br>
+                    • 6. Information claire et concise ➔ <strong>Compréhensibilité</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(1, 1, 30)">▶ Vidéo (00:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=16" target="_blank" class="btn-open-book">📖 Livre (p. 16)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q10 - Équation Fondamentale du Bilan (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q10 — Équation Fondamentale du Bilan : Actif = Passif + Capitaux Propres</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calcul & Bouclage immédiat :</strong><br>
+                    Données : <code>Passif = 150 000 $</code> | <code>Capitaux Propres = 150 000 $</code>.<br>
+                    <code>Actifs = Passifs (150 000 $) + Capitaux Propres (150 000 $) = 300 000 $</code>.<br>
+                    <em>Piège d'inattention :</em> Ne jamais soustraire les capitaux propres des passifs pour trouver l'actif !</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(1, 3, 20)">▶ Vidéo (00:20)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=18" target="_blank" class="btn-open-book">📖 Livre (p. 18)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q14 - Nature des Postes : Produits vs Charges (Cap 5) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q14 — Classification des Flux au P&L : Produits (P) vs Charges (C)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Ventilation exacte :</strong><br>
+                    • <em>Charges (C) :</em> Frais de publicité (C), Loyers payés siège social (C), Salaires (C), Amortissement (C), Frais de ventes (C), Coût des ventes (C).<br>
+                    • <em>Produits (P) :</em> Services rendus (P), Ventes (P), Loyers reçus immeuble locatif (P).<br>
+                    <em>Règle de saisie Sakai :</em> Saisir impérativement en <strong>MAJUSCULES (C ou P)</strong> pour éviter que le formulaire n'invalide les minuscules !</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(1, 4, 30)">▶ Vidéo (00:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=22" target="_blank" class="btn-open-book">📖 Livre (p. 22)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 2) -->
+    <div class="autotest-panel" id="autotestPanel-s2">
+        <div class="autotest-header">
+            <div>
+                <h3 class="autotest-title">🎯 Remédiation Auto-Évaluation Séance 2 : Trésorerie, Stocks & Immobilisations Corporelles</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Score Edge : <strong style="color: #34d399;">21.91 / 26.0 Points</strong> (84.3 %) — <span style="color: #fca5a5; font-weight: 600;">⭐ 5 notions prioritaires analysées</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" style="background: #059669;" title="Questions avec points perdus">⭐ 5 Notions à réviser</span>
+                <span class="resolved-badge" title="Questions réussies avec brio">✓ 18 Notions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q3 - Placements très liquides et équivalents de trésorerie (Cap 1) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q3 — Critères d'Équivalence de Trésorerie (IAS 7) : Placements & CPG</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 1</span>
+                        </div>
+                    </h4>
+                    <p><strong>Définition exacte IAS 7 / Chapitre 4 :</strong><br>
+                    • Énoncé : <em>« Les placements très liquides et sûrs (ex: CPG ou bons du Trésor à échéance &lt; 3 mois) dont la valeur ne fluctue presque pas font partie de la trésorerie et équivalents. »</em> ➔ <strong>VRAI</strong>.<br>
+                    • <em>Règle d'or :</em> Deux conditions cumulatives : échéance &lt; 90 jours à l'acquisition ET risque négligeable de variation de juste valeur.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(2, 0, 45)">▶ Vidéo (00:45)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=64" target="_blank" class="btn-open-book">📖 Livre (p. 64)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q11 - Coût d'entrée des stocks & Frais accessoires (Cap 3) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q11 — Coût d'Acquisition des Stocks : Frais Accessoires vs Frais Généraux (IAS 2)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 3</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calcul & Règles d'inclusion / exclusion :</strong><br>
+                    • Prix d'achat brut : <code>20 000 $</code> — Escompte/rabais obtenu : <code>- 2 000 $</code> = Net <code>18 000 $</code>.<br>
+                    • Frais directs rattachables inclus : Transport (<code>+ 56 $</code>) + Assurances transit (<code>+ 32 $</code>) + Douanes non recouvrables (<code>+ 47 $</code>) + Frais spécifiques de commande (longue distance) (<code>+ 15 $</code>) = <strong>18 150 $</strong>.<br>
+                    • <em>Élément exclu (OpEx) :</em> Salaire récurrent du responsable des achats (<code>1 000 $</code>) = Frais généraux d'administration !</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(2, 2, 40)">▶ Vidéo (00:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=82" target="_blank" class="btn-open-book">📖 Livre (p. 82)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q17 - Dépense en capital (CapEx) vs Dépense d'exploitation (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q17 — Frontière CapEx vs OpEx : Nature d'une Dépense en Capital (IAS 16)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Définition fondamentale :</strong><br>
+                    • Une dépense en capital (<em>CapEx</em>) est <strong>un ajout à l'actif</strong> (capitalisation au bilan).<br>
+                    • Elle procure des avantages économiques futurs au-delà de l'exercice en cours (augmentation de capacité, prolongation de durée de vie).<br>
+                    • <em>Erreur fréquente :</em> La confondre avec une charge d'exploitation immédiate (<em>OpEx</em>).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(2, 3, 25)">▶ Vidéo (00:25)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=95" target="_blank" class="btn-open-book">📖 Livre (p. 95)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : Q20 - Coût d'entrée d'une immobilisation corporelle (Cas Hershey - Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q20 — Composantes du Coût d'Origine d'une Machine : Inclus (I) vs Exclus (E)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règles d'arbitrage IAS 16 :</strong><br>
+                    • <em>TPS et TVQ payées :</em> <strong>Exclu (E)</strong> car ces taxes sont entièrement remboursables (crédits de taxe sur les intrants CTI/RTI).<br>
+                    • <em>Lubrification initiale pour mise en état de marche :</em> <strong>Inclus (I)</strong> (indispensable à l'utilisation prévue).<br>
+                    • <em>Lubrification et entretien annuel récurrent :</em> <strong>Exclu (E)</strong> (charge de maintenance courante / OpEx au P&L).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(2, 3, 90)">▶ Vidéo (01:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=97" target="_blank" class="btn-open-book">📖 Livre (p. 97)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : Q21 - Rôle et nature de l'amortissement comptable (Cap 5) -->
+            <div class="autotest-card persistent" style="border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q21 — Mythes et Réalités de l'Amortissement : Non-Financement de Remplacement</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #059669;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Énoncé ERRONÉ démasqué :</strong><br>
+                    • L'affirmation : <em>« L'amortissement sert à créer un fonds monétaire destiné à remplacer l'actif à la fin de sa vie utile »</em> est <strong>TOTALEMENT FAUSSE</strong>.<br>
+                    • <em>Vérité comptable :</em> L'amortissement est une simple répartition systématique du coût d'acquisition sur la durée d'utilisation (principe de rattachement). Il ne met <strong>aucun dollar en réserve</strong> et ne génère aucune liquidité.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(2, 4, 30)">▶ Vidéo (00:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=104" target="_blank" class="btn-open-book">📖 Livre (p. 104)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 3) -->
+    <div class="autotest-panel active" id="autotestPanel-s3">
+        <div class="autotest-header">
+            <div>
+                <h3 class="autotest-title">🎯 Remédiation Auto-Évaluation Séance 3 : Incorporels, Passifs & Capitaux Propres</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Nouveau Score Edge : <strong style="color: #38bdf8;">26.31 / 28.0 Points</strong> (94.0 %) — Progression de +5.00 pts ! <span style="color: #fca5a5; font-weight: 600;">⭐ 3 notions prioritaires marquées d'une étoile</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" title="Notions encore en écart au dernier test">⭐ 3 Notions à réviser</span>
+                <span class="resolved-badge" title="Erreurs corrigées avec succès au dernier test">✓ 6 Notions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q2 (PERSISTANTE - ⭐ ÉTOILE) -->
+            <div class="autotest-card persistent">
+                <div>
+                    <h4>
+                        <span>Q2 — Nature du Goodwill</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 1</span>
+                        </div>
+                    </h4>
+                    <p><strong>Piège persistant :</strong> Le Goodwill (achalandage) est bien une immobilisation incorporelle, mais elle est non identifiable et <strong>non amortissable</strong> (test de dépréciation annuel obligatoire). Toutes les options de la question étaient des incorporels.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 0, 40)">▶ Vidéo (00:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=124" target="_blank" class="btn-open-book">📖 Livre (p. 124)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q5 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q5 — Recherche vs Développement</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag orange">Cap 1</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> Les frais de recherche (150 k$) vont <strong>100% en charges au résultat</strong>. Seuls les frais de développement / brevet (20 k$) sont capitalisés à l'actif sous IFRS.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 0, 129)">▶ Vidéo (02:09)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=159" target="_blank" class="btn-open-book">📖 Livre (p. 159)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q10 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q10 — Placement de Portefeuille</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag purple">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> 1 000 actions Scotia (< 0,01 %) = aucun contrôle ni influence. C'est un actif non courant au coût de <strong>31 000 $</strong> sans consolidation du résultat de BNS.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 1, 97)">▶ Vidéo (01:37)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=177" target="_blank" class="btn-open-book">📖 Livre (p. 177)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : Q11 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q11 — Mise en Équivalence (20-50%)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag purple">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> Coût d'achat (100 k$) + 20% du Résultat Net de Sellier (10 k$) = <strong>110 000 $</strong> inscrits au bilan sous la méthode de la mise en équivalence.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 1, 195)">▶ Vidéo (03:15)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=177" target="_blank" class="btn-open-book">📖 Livre (p. 177)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : Q12 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q12 — Limites de la Consolidation</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag purple">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> Les états financiers consolidés masquent les résultats isolés de chaque filiale car ils agrègent tout le groupe comme une entité unique.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 1, 371)">▶ Vidéo (06:11)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=177" target="_blank" class="btn-open-book">📖 Livre (p. 177)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 6 : Q16 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q16 — Dividendes à Payer</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag green">Cap 3</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> Les dividendes déclarés payables sous 6 mois (< 12 mois après clôture) constituent obligatoirement un <strong>Passif courant</strong> (dette à court terme).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 2, 76)">▶ Vidéo (01:16)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=127" target="_blank" class="btn-open-book">📖 Livre (p. 127)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 7 : Q18 (PERSISTANTE - ⭐ ÉTOILE) -->
+            <div class="autotest-card persistent">
+                <div>
+                    <h4>
+                        <span>Q18 — Provisions IAS 37 (3 critères)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Piège persistant :</strong> Obligation + Sortie probable + <strong>Perte estimable de façon fiable</strong>. Si le coût n'est pas estimable (procès environnemental B), mention en notes uniquement sans provision chiffrée au passif.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 3, 430)">▶ Vidéo (07:10)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=129" target="_blank" class="btn-open-book">📖 Livre (p. 129)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 9 : Q20 (RÉSOLUE / MAÎTRISÉE) -->
+            <div class="autotest-card resolved">
+                <div>
+                    <h4>
+                        <span>Q20 — Échéance de Dette : Portion Courante (PC) vs Long Terme (PNC)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="resolved-badge">✓ MAÎTRISÉ</span>
+                            <span class="pill-tag green">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle acquise :</strong> Sur une note de 150 000 $ payable par tranches annuelles de 30 000 $ : la tranche de 30 000 $ exigible d'ici 12 mois est un <strong>Passif Courant (PC)</strong> (portion courante de la dette à long terme). Les 120 000 $ restants constituent le <strong>Passif Non-Courant (PNC)</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 3, 120)">▶ Vidéo (02:00)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=127" target="_blank" class="btn-open-book">📖 Livre (p. 127)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 8 : Q27 (PERSISTANTE - ⭐ ÉTOILE) -->
+            <div class="autotest-card persistent">
+                <div>
+                    <h4>
+                        <span>Q27 — Composantes des Capitaux Propres</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge">⭐ À RÉVISER</span>
+                            <span class="pill-tag">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Piège persistant :</strong> Ventilation exacte : Inclus (I) : Actions ordinaires émises, Résultats non distribués (BNR), AOCI/AERG. Exclus (E) : Produits, Notes à payer, Pertes d'immos, Avantages sociaux futurs, Trésorerie, Gains sur vente.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(3, 4, 63)">▶ Vidéo (01:03)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=140" target="_blank" class="btn-open-book">📖 Livre (p. 140)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 4) -->
+    <div class="autotest-panel" id="autotestPanel-s4">
+        <div class="autotest-header" style="border-bottom-color: rgba(245, 158, 11, 0.3);">
+            <div>
+                <h3 class="autotest-title" style="color: #fde68a;">🎯 Remédiation Auto-Évaluation Séance 4 : Résultat Global & Notes Annexes</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Score Edge : <strong style="color: #f59e0b;">23.0 / 29.0 Points</strong> (79.3 %) — <span style="color: #fde68a; font-weight: 600;">⭐ 6 notions ciblées à réviser avec sauts vidéo & renvois au manuel officiel</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" title="Notions en écart lors du test Séance 4">⭐ 6 Notions à réviser</span>
+                <span class="resolved-badge" title="Questions réussies lors du test Séance 4">✓ 23 Questions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q7 - Constatation des produits -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q7 — Critères de Constatation des Produits (IFRS 15)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Piège managérial :</strong> La réception des sommes d'argent n'est <strong>JAMAIS un critère</strong> de comptabilisation des produits (comptabilité d'engagement). Les critères diffèrent entre vente de biens (transfert des risques & contrôle) et prestation de services (degré d'avancement).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 1, 10)">▶ Vidéo (00:10)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=190" target="_blank" class="btn-open-book">📖 Livre (p. 190)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q8 - Définition comptable des produits -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q8 — Nature des Produits et Bénéfices Non Répartis</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Définition exacte :</strong> Les produits correspondent à <strong>l'augmentation des bénéfices non répartis (BNR)</strong> résultant de la vente ou des services. Ils ne sont ni un apport en capital (actions) ni un remboursement de dette (sortie de cash).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 1, 45)">▶ Vidéo (00:45)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=191" target="_blank" class="btn-open-book">📖 Livre (p. 191)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q18 - Calcul du Résultat Net -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q18 — Calcul du Résultat Net (Cas Baldwin)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Formule :</strong> Résultat net = Produits (140 k$) - Charges (59 k$ + 8 k$ + 3 k$ + 4 k$) = <strong>66 000 $</strong>. La trésorerie initiale (35 k$) et l'ordinateur à l'actif (20 k$) sont des postes du bilan et ne doivent pas entrer dans le calcul du P&L !</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 3, 30)">▶ Vidéo (00:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=195" target="_blank" class="btn-open-book">📖 Livre (p. 195)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : Q19 - Résultat d'Exploitation (RAII / EBIT) -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q19 — Résultat d'Exploitation (RAII) & Impôts/Intérêts</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calcul en sens inverse :</strong> RAII = Résultat Net (150 000 $) + Impôts (25% de 100 000 $ = 25 000 $) + Intérêts (12 500 $) = <strong>187 500 $</strong>. Le résultat d'exploitation mesure la performance opérationnelle avant financement et fiscalité.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 3, 110)">▶ Vidéo (01:50)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=196" target="_blank" class="btn-open-book">📖 Livre (p. 196)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : Q21 - Reconstitution des Ventes à partir du Résultat Brut -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q21 — Produits Ordinaires à partir de la Marge Brute</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Équation :</strong> Résultat brut (144 000 $) = Ventes ordinaires - Coût des ventes (216 000 $).<br>➔ <strong>Ventes ordinaires = 144 000 $ + 216 000 $ = 360 000 $</strong>. Les charges opérationnelles (130 000 $) n'interviennent qu'après la marge brute.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 3, 40)">▶ Vidéo (00:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=194" target="_blank" class="btn-open-book">📖 Livre (p. 194)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 6 : Q28 - Événements Postérieurs à la Date de Clôture -->
+            <div class="autotest-card persistent" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.05); box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q28 — Typologie des Notes : Événements Postérieurs</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #f59e0b;">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle IAS 10 :</strong> Une recherche de fournisseur ou un litige survenu au 1er trimestre 2022 après la clôture du 31 décembre 2021 constitue une <strong>note d'événement postérieur</strong>. Elle éclaire les utilisateurs sur des pertes potentielles futures sans modifier le bilan 2021.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(4, 4, 150)">▶ Vidéo (02:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=205" target="_blank" class="btn-open-book">📖 Livre (p. 205)</a>
+                </div>
+            </div>
+        </div>
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 5) -->
+    <div class="autotest-panel" id="autotestPanel-s5">
+        <div class="autotest-header" style="border-bottom-color: rgba(14, 165, 233, 0.3);">
+            <div>
+                <h3 class="autotest-title" style="color: #7dd3fc;">🎯 Remédiation Auto-Évaluation Séance 5 : Tableau des Flux de Trésorerie (TFT)</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Score Edge : <strong style="color: #0ea5e9;">15.92 / 25.0 Points</strong> (63.7 %) — <span style="color: #7dd3fc; font-weight: 600;">⭐ 11 notions ciblées à réviser avec sauts vidéo & renvois au manuel officiel</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" style="background: linear-gradient(135deg, #0284c7, #0369a1);" title="Notions en écart lors du test Séance 5">⭐ 11 Notions à réviser</span>
+                <span class="resolved-badge" title="Questions réussies lors du test Séance 5">✓ 14 Questions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q3 - Classification des Flux (Cap 1) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q3 — Typologie des Flux selon les 3 Piliers (IAS 7)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag blue">Cap 1</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle IAS 7 :</strong> Le paiement aux fournisseurs pour stocks relève de l'<strong>Exploitation</strong> (cycle d'exploitation). L'acquisition ou cession d'immobilisations relève de l'<strong>Investissement</strong>. Les emprunts, remboursements de dette financière et émissions d'actions relèvent du <strong>Financement</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 0, 90)">▶ Vidéo (01:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=216" target="_blank" class="btn-open-book">📖 Livre (p. 216)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q5 - Encaissements Clients (Cas A/R $44k -> $42k) (Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q5 — Encaissements auprès des Clients (Méthode Directe 1)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Formule :</strong> Encaissements = Ventes (129 000 $) + Clients début (44 000 $) - Clients fin (42 000 $) = <strong>131 000 $</strong>.<br><em>Logique :</em> Les clients ont baissé de 2 000 $, ce qui signifie que l'entreprise a encaissé 2 000 $ de plus que les ventes comptabilisées de l'exercice.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 1, 60)">▶ Vidéo (01:00)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=219" target="_blank" class="btn-open-book">📖 Livre (p. 219)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q6 - Encaissements Clients (Cas A/R $45k -> $31k) (Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q6 — Encaissements auprès des Clients (Méthode Directe 2)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Formule :</strong> Encaissements = Ventes (690 000 $) + Clients début (45 000 $) - Clients fin (31 000 $) = <strong>704 000 $</strong>.<br><em>Attention :</em> La diminution de 14 000 $ des créances clients constitue un encaissement net supplémentaire à ajouter aux ventes.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 1, 120)">▶ Vidéo (02:00)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=219" target="_blank" class="btn-open-book">📖 Livre (p. 219)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : Q12 - Ajustement Amortissement post-cession (Cap 3) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q12 — Neutralisation de l'Amortissement si Actifs Cédés</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 3</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle :</strong> Si une société a vendu la totalité de ses immobilisations corporelles en 2020, elle n'enregistre <strong>aucune charge d'amortissement en 2021</strong>. Par conséquent, il n'y a <strong>aucun ajustement d'amortissement</strong> à faire dans les flux d'exploitation en 2021.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 2, 45)">▶ Vidéo (00:45)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=225" target="_blank" class="btn-open-book">📖 Livre (p. 225)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : Q14 - Résultat Net vs Flux Opérationnels en Cash Intégral (Cap 3) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q14 — Égalité Résultat Net et Flux Exploitation : Faux !</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 3</span>
+                        </div>
+                    </h4>
+                    <p><strong>Piège :</strong> Même si 100 % des ventes et dépenses sont payées au comptant (aucun compte client/fournisseur), le Résultat Net <strong>ne sera JAMAIS égal aux flux de trésorerie</strong> si l'entreprise a des <strong>charges non monétaires</strong> comme l'amortissement d'actifs corporels ! Réponse : <strong>Faux</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 2, 75)">▶ Vidéo (01:15)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=225" target="_blank" class="btn-open-book">📖 Livre (p. 225)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 6 : Q16 - Flux d'Investissement : Bestar (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q16 — Flux d'Investissement : Cas Bestar (Montant Net)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calcul :</strong> Achat d'entreprise (-17,0 M$) + Améliorations locatives (-2,0 M$) + Produit de cession d'usine (+25,0 M$) = <strong>+6,0 M$</strong>.<br><em>Attention :</em> Le gain sur vente de 5 M$ est déjà inclus dans le chèque total de 25 M$ reçu. Ne pas le compter en double !</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 3, 50)">▶ Vidéo (00:50)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=230" target="_blank" class="btn-open-book">📖 Livre (p. 230)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 7 : Q17 - Flux d'Investissement : Telfleur (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q17 — Flux d'Investissement : Cas Telfleur Inc.</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calcul :</strong> Reconstruction de l'entrepôt (-400 000 $) + Système de gestion d'inventaire (-60 000 $) + Indemnité d'assurance reçue (+120 000 $) = <strong>-340 000 $</strong>.<br><em>Exclusions :</em> L'amortissement et les coûts historiques de l'ancien entrepôt ne génèrent aucun flux monétaire dans l'exercice.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 3, 85)">▶ Vidéo (01:25)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=231" target="_blank" class="btn-open-book">📖 Livre (p. 231)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 8 : Q18 - Impact des Transactions sur les Flux d'Investissement (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q18 — Grille d'Impacts sur les Flux d'Investissement (+ / - / 0)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Répartition exacte (8 transactions) :</strong><br>
+                    • Dividendes payés : <strong>0</strong> (Financement) | • Vente de terrain : <strong>+</strong><br>
+                    • Perte sur vente de terrain : <strong>0</strong> (Non-cash) | • Amortissement : <strong>0</strong> (Exploitation)<br>
+                    • Émission note à payer : <strong>0</strong> (Financement) | • Achat matériel : <strong>-</strong><br>
+                    • Achat d'actions d'une autre cie : <strong>-</strong> | • Remboursement d'emprunt : <strong>0</strong> (Financement).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 3, 110)">▶ Vidéo (01:50)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=230" target="_blank" class="btn-open-book">📖 Livre (p. 230)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 9 : Q22 - Remboursement Dette Long Terme : ACT Pharma (Cap 5) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q22 — Remboursement de Dette Financière (ACT Pharma)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle de lecture du bilan :</strong> Si l'état de la situation financière de la société n'indique aucune dette à long terme au passif, le montant du remboursement de dette à long terme est obligatoirement de <strong>0 $</strong>. Ne pas confondre avec les dettes d'exploitation (fournisseurs).</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 4, 40)">▶ Vidéo (00:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=234" target="_blank" class="btn-open-book">📖 Livre (p. 234)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 10 : Q24 - Flux de Financement : Autos Rouges (Cap 5) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q24 — Flux de Financement & Dividendes Versés (Autos Rouges)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Calculs :</strong><br>
+                    • Émission note à payer : <strong>+10 000 $</strong> | • Émission actions ordinaires : <strong>+8 000 $</strong><br>
+                    • <em>Dividendes versés</em> : BNR début (246 k$) + Bénéfice net (150 k$) - BNR fin (250 k$) = <strong>146 000 $</strong> (décaissement de <strong>-146 000 $</strong>).<br>
+                    <em>Flux net de financement :</em> +10 000 + 8 000 - 146 000 = <strong>-128 000 $</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 4, 70)">▶ Vidéo (01:10)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=235" target="_blank" class="btn-open-book">📖 Livre (p. 235)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 11 : Q25 - Flux de Financement Net : PhotoParfaite (Cap 5) -->
+            <div class="autotest-card persistent" style="border-color: rgba(14, 165, 233, 0.6); background: rgba(14, 165, 233, 0.05); box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q25 — Flux Net des Activités de Financement (PhotoParfaite)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #0284c7;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Réconciliation exhaustive :</strong><br>
+                    • Dividendes versés : -8,3 k$ | • Émission actions ordinaires : +14,1 k$<br>
+                    • Remboursement dette ct : -6,9 k$ | • Remboursement note lt : -1,3 k$<br>
+                    • Émission note à payer : +2,1 k$ | • Rachat d'actions : -6,3 k$<br>
+                    ➔ <strong>Flux Net de Financement = -6 600 $ (-6,6 k$)</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(5, 4, 90)">▶ Vidéo (01:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=235" target="_blank" class="btn-open-book">📖 Livre (p. 235)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANNEAU CLINIQUE DE REMÉDIATION DES AUTO-TESTS (SÉANCE 6) -->
+    <div class="autotest-panel" id="autotestPanel-s6">
+        <div class="autotest-header">
+            <div>
+                <h3 class="autotest-title">🎯 Remédiation Auto-Évaluation Séance 6 : Diagnostic Financier & Ratios Avancés</h3>
+                <span style="font-size: 0.84rem; color: #94a3b8;">Score Edge : <strong style="color: #c084fc;">26.44 / 34.0 Points</strong> (77.8 %) — <span style="color: #fca5a5; font-weight: 600;">⭐ 10 notions prioritaires marquées d'une étoile</span></span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="star-badge" style="background: #9333ea;" title="Notions en écart au quiz">⭐ 10 Notions à réviser</span>
+                <span class="resolved-badge" title="Questions réussies avec brio">✓ 24 Notions Maîtrisées</span>
+            </div>
+        </div>
+
+        <div class="autotest-cards-grid">
+            <!-- CARTE 1 : Q3 - Sources d'information (Cap 1) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q3 — Sources d'Information Financière & Rôles Spécifiques</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag orange">Cap 1</span>
+                        </div>
+                    </h4>
+                    <p><strong>Typologie des sources :</strong><br>
+                    • <em>Rapport Annuel :</em> Inclut obligatoirement le rapport de gestion (MD&A).<br>
+                    • <em>Prospectus :</em> Document légal obligatoire pour émettre des titres au public.<br>
+                    • <em>Communiqués de presse :</em> Source interne sur les opérations récentes.<br>
+                    • <em>Bases de données sectorielles :</em> Points de référence pour comparaison aux pairs.<br>
+                    • <em>Rapports spécialisés :</em> Source externe sur le secteur d'activité.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 0, 30)">▶ Vidéo (00:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=272" target="_blank" class="btn-open-book">📖 Livre (p. 272)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : Q5 - Rendement de l'actif (Bibo Inc - Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q5 — Rendement de l'Actif (ROA) : Cas Bibo Inc.</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle & Calcul :</strong><br>
+                    <code>ROA = Résultat Net / Actif Total = 410,4 M$ / 9 853,0 M$ = 0,0417 ≈ 4 %</code>.<br>
+                    <em>Piège :</em> Ne pas utiliser le résultat d'exploitation (RAII) ni les capitaux propres pour le ROA de base.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 1, 45)">▶ Vidéo (00:45)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=276" target="_blank" class="btn-open-book">📖 Livre (p. 276)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : Q8 - Équation DuPont Inverse : Faux ! (Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q8 — Articulation ROA vs ROE (Équation DuPont) : Faux !</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>L'énoncé inverse la relation :</strong><br>
+                    L'énoncé affirmait : <em>ROA = ROE × Levier</em> ➔ <strong>FAUX</strong> !<br>
+                    <strong>La vraie formule :</strong> <code>ROE = ROA × Levier Financier</code><br>
+                    Preuve unitaire : <code>(RN / CP) = (RN / Actifs) × (Actifs / CP)</code>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 1, 90)">▶ Vidéo (01:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=277" target="_blank" class="btn-open-book">📖 Livre (p. 277)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : Q9 - Ratios Canadian Tire (Cap 2) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q9 — Ratios Comparatifs Canadian Tire 2019-2020</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag cyan">Cap 2</span>
+                        </div>
+                    </h4>
+                    <p><strong>Conventions officielles :</strong><br>
+                    • ROA 2020 : <code>862,6 / 20 377,1 = 0,04</code> | ROA 2019 : <code>894,8 / 19 518,3 = 0,05</code><br>
+                    • ROE 2020 : <code>862,6 / 5 834,7 = 0,15</code> | ROE 2019 : <code>894,8 / 5 504,7 = 0,16</code><br>
+                    • Levier 2020 : <code>20 377,1 / 5 834,7 = 3,49</code> | Levier 2019 : <code>19 518,3 / 5 504,7 = 3,55</code>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 1, 120)">▶ Vidéo (02:00)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=278" target="_blank" class="btn-open-book">📖 Livre (p. 278)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : Q17 - Utilité de la Marge Brute (Cap 3) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q17 — Rôle de la Marge Brute vs Charges Administratives</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag green">Cap 3</span>
+                        </div>
+                    </h4>
+                    <p><strong>Énoncé faux démasqué :</strong><br>
+                    Le ratio de marge brute <strong>ne permet PAS</strong> d'évaluer la fixation des coûts administratifs.<br>
+                    • <em>Marge brute :</em> Mesure l'efficacité du <strong>pricing</strong> et le contrôle du <strong>coût des ventes (CMV)</strong>.<br>
+                    • Les frais d'administration se trouvent sous la marge brute.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 2, 40)">▶ Vidéo (00:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=280" target="_blank" class="btn-open-book">📖 Livre (p. 280)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 6 : Q18 - Rotation d'Actif & Délai de Stock (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q18 — Rotation de l'Actif & Délai Moyen des Stocks</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Formules & Calculs :</strong><br>
+                    • <em>Délai de détention des stocks :</em> <code>365 / (Coût des ventes 117 973 / Stocks fin 12 207) = 37,77 ≈ 38 jours</code>.<br>
+                    • <em>Rotation de l'actif total :</em> <code>Ventes 140 433 / Actif total 244 363 = 0,5746 ≈ 0,58</code>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 3, 50)">▶ Vidéo (00:50)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=284" target="_blank" class="btn-open-book">📖 Livre (p. 284)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 7 : Q19 - Délai de Financement du Cycle d'Exploitation (Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q19 — Délai de Financement (Cycle de Trésorerie) = 97 Jours</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Formule complète :</strong> <code>Délai Financement = Stocks (j) + Clients (j) - Fournisseurs (j)</code><br>
+                    1) Stocks = <code>365 / (1 203 973 / 113 245) ≈ 35 j</code><br>
+                    2) Clients = <code>365 × 422 302 / 1 958 433 ≈ 79 j</code><br>
+                    3) Achats = CMV (1 203 973) - Stock déb (112 302) + Stock fin (113 245) = 1 204 916 $<br>
+                    4) Fournisseurs = <code>365 × 54 687 / 1 204 916 ≈ 17 j</code> ➔ <strong>35 + 79 - 17 = 97 jours</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 3, 90)">▶ Vidéo (01:30)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=285" target="_blank" class="btn-open-book">📖 Livre (p. 285)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 8 : Q23 - Rotation des Stocks via Achats (Thé Vert - Cap 4) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q23 — Rotation des Stocks : Reconstitution du Coût des Ventes</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag purple">Cap 4</span>
+                        </div>
+                    </h4>
+                    <p><strong>Reconstitution du CMV :</strong><br>
+                    <code>Coût des ventes = Achats (81 000) + Stock début (20 000) - Stock fin (24 000) = 77 000 $</code>.<br>
+                    <code>Rotation des stocks = CMV / Stock fin = 77 000 / 24 000 = 3,21 fois</code>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 3, 110)">▶ Vidéo (01:50)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=284" target="_blank" class="btn-open-book">📖 Livre (p. 284)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 9 : Q27 - Ratio d'Endettement Général (Dettes / Actif total) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q27 — Ratio de Dette / Endettement Général (Dettes / Actif total)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag blue">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Règle d'or de la dette totale :</strong><br>
+                    <code>Dettes totales = Passifs courants + Passifs non courants</code><br>
+                    • Cie A : Passifs (1 230 + 674 = 1 904) / Actif (3 739) = <strong>0,51</strong><br>
+                    • Cie B : Passifs (3 200 + 4 204 = 7 404) / Actif (10 608) = <strong>0,70</strong><br>
+                    • Cie C : Passifs (59 977 + 95 890 = 155 867) / Actif (190 022) = <strong>0,82</strong>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 4, 60)">▶ Vidéo (01:00)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=288" target="_blank" class="btn-open-book">📖 Livre (p. 288)</a>
+                </div>
+            </div>
+
+            <!-- CARTE 10 : Q31 - Couverture des Intérêts : Reconstitution du RAII (Scotia) -->
+            <div class="autotest-card persistent" style="border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.05); box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);">
+                <div>
+                    <h4>
+                        <span>Q31 — Couverture des Intérêts : Reconstitution RAII (Banque Scotia)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="star-badge" style="background: #9333ea;">⭐ À RÉVISER</span>
+                            <span class="pill-tag blue">Cap 5</span>
+                        </div>
+                    </h4>
+                    <p><strong>Reconstitution ascendante du RAII :</strong><br>
+                    Quand le RAII n'est pas identifié isolément :<br>
+                    <code>RAII = Résultat avant impôt (12 826) + Charges d'intérêts (8 025) = 20 851 M$</code>.<br>
+                    <code>Couverture des intérêts = 20 851 / 8 025 = 2,60 fois</code>.</p>
+                </div>
+                <div class="autotest-card-actions">
+                    <button class="btn-play-video" onclick="jumpToVideo(6, 4, 100)">▶ Vidéo (01:40)</button>
+                    <a href="../raw/01_Cours/COMP50904_Information_Financiere/Le_gestionnaire_et_les_etats_financiers_9e_ed_OFFICIEL_ERPI_HD.pdf#page=289" target="_blank" class="btn-open-book">📖 Livre (p. 289)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DONNÉES COMPLÈTES DES 6 SÉANCES DE COMP 50904
+        const COURS_DATA = {
+            1: {
+                title: "Séance 1 : Information financière et états financiers",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_01/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_Les_états_financiers_un_aperçu.mp4",
+                        name: "1. Les états financiers : un aperçu",
+                        desc: "Rôle de la comptabilité, relation principal-agent, créanciers vs actionnaires"
+                    },
+                    {
+                        file: "Capsule_2_-_Caractéristiques_qualitatives_fondamentales.mp4",
+                        name: "2. Caractéristiques qualitatives IFRS",
+                        desc: "Pertinence (valeur prédictive) vs Représentation fidèle (exhaustivité, neutralité)"
+                    },
+                    {
+                        file: "Capsule_3_-_Lunetterie_New_Look.mp4",
+                        name: "3. Cas Réel : Lunetterie New Look",
+                        desc: "Lecture des 4 états financiers, résultat net (12,4 M$) vs cash opérationnel (22 M$)"
+                    },
+                    {
+                        file: "Capsule_4_-_État_de_la_situation_financière.mp4",
+                        name: "4. État de la situation financière (Bilan)",
+                        desc: "Définition IFRS Actif, Passif, Capitaux Propres, critères Courant / Non courant"
+                    },
+                    {
+                        file: "Capsule_5_-_État_du_résultat.mp4",
+                        name: "5. État du résultat global (P&L)",
+                        desc: "Performance sur une période, principe de réalisation, profit comptable vs encaisse"
+                    },
+                    {
+                        file: "Capsule_6_-_Tableaux_des_flux_de_trésorerie_et_État_des_variations_des_capitaux_propres.mp4",
+                        name: "6. Flux de trésorerie & Variations des CP",
+                        desc: "Les 3 piliers (Exploitation, Investissement, Financement) et bouclage de trésorerie"
+                    }
+                ],
+                notes: [
+                    // S1 - C1
+                    `<h3>1. Le Rôle Fondamental de la Comptabilité & Théorie de l'Agence</h3>
+                    <ul>
+                        <li><strong>Langage d'affaires universel :</strong> La comptabilité structure les échanges économiques à travers un ensemble normé de règles internationales (les normes IFRS / PCGR).</li>
+                        <li><strong>Asymétrie d'information & Reddition de comptes :</strong> Les gestionnaires dirigent l'entreprise au quotidien, mais ils utilisent des capitaux confiés par des apporteurs externes (actionnaires et banquiers). Les états financiers constituent le rapport officiel de gestion.</li>
+                        <li><strong>Besoins divergents des bailleurs de fonds :</strong>
+                            <ul>
+                                <li><span class="pill-tag">CRÉANCIERS</span> Priorité à la <strong>sécurité et à la liquidité</strong> : capacité de remboursement du capital et couverture régulière des intérêts.</li>
+                                <li><span class="pill-tag">ACTIONNAIRES</span> Recherche de <strong>rendement</strong> sous forme de plus-value boursière et de dividendes distribués.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Parties prenantes élargies :</strong> Fournisseurs (risque de non-paiement), Clients (pérennité du service après-vente et garanties), Employés & Syndicats (négociations salariales), Autorités fiscales (assiette de l'impôt sur le bénéfice).
+                    </div>`,
+
+                    // S1 - C2
+                    `<h3>2. Les Caractéristiques Qualitatives Fondamentales (Cadre IFRS)</h3>
+                    <p>Pour fonder une décision managériale rigoureuse, l'information comptable doit obligatoirement valider deux vertus cardinales :</p>
+                    <ul>
+                        <li><strong>1. La Pertinence (Relevance) :</strong>
+                            <ul>
+                                <li><em>Valeur prédictive :</em> Permet aux décideurs d'anticiper les résultats et flux de trésorerie futurs.</li>
+                                <li><em>Valeur confirmative :</em> Confirme ou corrige les prévisions et attentes antérieures.</li>
+                                <li><em>Matérialité (Importance relative) :</em> Une omission ou inexactitude est matérielle si elle est susceptible d'influencer le jugement d'un lecteur raisonnable.</li>
+                            </ul>
+                        </li>
+                        <li><strong>2. La Représentation Fidèle (Faithful Representation) :</strong>
+                            <ul>
+                                <li><em>Exhaustivité :</em> Toutes les transactions nécessaires à la compréhension globale sont présentées.</li>
+                                <li><em>Neutralité :</em> Présentation exempte de biais managérial ou de tentative d'embellissement.</li>
+                                <li><em>Exempte d'erreurs matérielles :</em> Rigueur absolue dans les calculs et estimations.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Attributs auxiliaires d'enrichissement :</strong> Comparabilité (dans le temps et entre concurrents), Vérifiabilité (auditabilité par des tiers indépendants), Rapidité (disponibilité dans un délai utile) et Compréhensibilité.
+                    </div>`,
+
+                    // S1 - C3
+                    `<h3>3. Cas Pratique : Lunetterie New Look (TSX: BCI)</h3>
+                    <ul>
+                        <li><strong>Structure patrimoniale réelle :</strong> Actifs de 175 M$, Passifs de 80 M$, Capitaux Propres de 95 M$.</li>
+                        <li><strong>Résultat Net vs Dividendes :</strong> Sur un bénéfice net de 12,4 M$, New Look a versé 8,0 M$ en dividendes à ses actionnaires et a conservé 4,4 M$ en résultats non distribués réinvestis dans l'expansion.</li>
+                    </ul>
+                    <div class="rule-card success">
+                        <strong>Le Paradoxe Clé du Gestionnaire :</strong>
+                        <p style="margin: 4px 0 0 0;">Le résultat net était de 12,4 M$, mais les flux de trésorerie opérationnels réels ont atteint plus de <strong>22 M$</strong>. La raison majeure : les amortissements sont déduits du profit sans représenter aucune sortie de cash immédiate.</p>
+                    </div>`,
+
+                    // S1 - C4
+                    `<h3>4. L'État de la Situation Financière (Bilan)</h3>
+                    <p>Photographie instantanée du patrimoine économique de l'entité à une date donnée :</p>
+                    <ul>
+                        <li><strong>Actif (Ressource économique) :</strong> Contrôlée par l'entité, issue d'événements passés, et dont on attend des avantages économiques futurs (génération de cash ou réduction de coûts).</li>
+                        <li><strong>Passif (Obligation actuelle) :</strong> Dette incontournable de transférer une ressource économique (argent, bien ou service) résultant d'opérations passées.</li>
+                        <li><strong>Capitaux Propres :</strong> Intérêt résiduel des propriétaires : <code>Capitaux Propres = Actifs - Passifs</code>.</li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Frontière Courant vs Non courant :</strong> Un élément est classé <strong>courant</strong> s'il est consommé, réalisé ou réglé dans le cadre du cycle d'exploitation normal ou dans les <strong>12 mois</strong> suivant la clôture. Au-delà, il est <strong>non courant</strong>.
+                    </div>`,
+
+                    // S1 - C5
+                    `<h3>5. L'État du Résultat Global (P&L / Compte de Résultat)</h3>
+                    <ul>
+                        <li><strong>Périodicité (Le film de l'année) :</strong> Mesure la rentabilité économique dégagée entre deux dates de bilan (du 1er janvier au 31 décembre).</li>
+                        <li><strong>Principe de réalisation & Rapprochement des charges (Matching Principle) :</strong> Une charge engagée pour produire les revenus d'une période doit être imputée sur cette même période.</li>
+                    </ul>
+                    <div class="rule-card warning">
+                        <strong>Vigilance Managériale :</strong> Le profit comptable n'est pas de l'argent liquide en banque ! Une entreprise en forte croissance peut afficher d'excellents bénéfices mais tomber en faillite technique de liquidités si ses clients tardent à payer (crise de fonds de roulement).
+                    </div>`,
+
+                    // S1 - C6
+                    `<h3>6. Le Tableau des Flux de Trésorerie & Variation des Capitaux Propres</h3>
+                    <ul>
+                        <li><strong>Les 3 Catégories de Flux Universelles :</strong>
+                            <ul>
+                                <li><span class="pill-tag green">EXPLOITATION</span> Trésorerie issue du cœur de métier (encaissements clients moins décaissements fournisseurs et salaires).</li>
+                                <li><span class="pill-tag orange">INVESTISSEMENT</span> Achats et ventes d'usines, équipements, technologies, acquisitions d'entreprises.</li>
+                                <li><span class="pill-tag purple">FINANCEMENT</span> Émissions et remboursements d'emprunts bancaires, émission d'actions et versement de dividendes.</li>
+                            </ul>
+                        </li>
+                        <li><strong>État des variations des capitaux propres :</strong> Explique l'évolution du capital-actions et des bénéfices non répartis au fil de l'exercice.</li>
+                    </ul>`
+                ]
+            },
+            2: {
+                title: "Séance 2 : L'état de la situation financière — Les actifs",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_02/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_Les_actifs_courants_la_trésorerie.mp4",
+                        name: "1. Trésorerie et équivalents",
+                        desc: "Numéraire disponible, dépôts, placements < 3 mois, découverts au passif"
+                    },
+                    {
+                        file: "Capsule_2_-_Les_actifs_courants_les_comptes_clients.mp4",
+                        name: "2. Comptes clients & créances douteuses",
+                        desc: "Ventes à crédit, provision pour créances douteuses (contra-actif), VNR"
+                    },
+                    {
+                        file: "Capsule_3_-_Les_actifs_courants_les_stocks.mp4",
+                        name: "3. Gestion et valorisation des stocks",
+                        desc: "Coût d'entrée, PEPS/FIFO vs CMP, règle du moindre du coût ou de la VNR"
+                    },
+                    {
+                        file: "Capsule_4_-_Les_actifs_non_courants_les_immobilisations_corporelles.mp4",
+                        name: "4. Immobilisations : Entrée & CapEx",
+                        desc: "Frontière critique CapEx (actif) vs OpEx (charges d'entretien), coûts de démantèlement"
+                    },
+                    {
+                        file: "Capsule_5_-_Les_immobilisations_corporelles.mp4",
+                        name: "5. Amortissement & Sortie d'actifs",
+                        desc: "Répartition du coût sur la durée d'utilité, linéaire vs dégressif, impact non-cash"
+                    }
+                ],
+                notes: [
+                    // S2 - C1
+                    `<h3>1. Les Actifs Courants — Trésorerie & Équivalents</h3>
+                    <ul>
+                        <li><strong>Trésorerie stricte :</strong> Monnaie immédiatement accessible (comptes de chèques, encaisse en succursale, petite caisse).</li>
+                        <li><strong>Équivalents de trésorerie :</strong> Placements à très court terme (échéance initiale **inférieure à 3 mois**) présentant un risque négligeable de variation de valeur.</li>
+                        <li><strong>Traitement du découvert bancaire :</strong> Un solde bancaire négatif n'est pas un actif négatif ; il est reclassé sous les **passifs courants** (emprunts bancaires temporaires / marges de crédit).</li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Devises étrangères :</strong> Les soldes en devises (USD, EUR) doivent obligatoirement être convertis au taux de change de clôture à la date du bilan.
+                    </div>`,
+
+                    // S2 - C2
+                    `<h3>2. Comptes Clients & Provisions pour Créances Douteuses</h3>
+                    <ul>
+                        <li><strong>Créances clients :</strong> Droits contractuels à recevoir des liquidités suite à une vente à terme (30, 60 jours).</li>
+                        <li><strong>Présentation nette au bilan :</strong>
+                            <p style="margin: 4px 0;"><code>Comptes Clients Nets = Comptes Clients Bruts - Provision pour Créances Douteuses</code></p>
+                        </li>
+                        <li><strong>Rattachement immédiat :</strong> La mauvaise dette doit être estimée et passée en charge lors de l'exercice même de la vente sans attendre la faillite formelle du client des mois plus tard.</li>
+                    </ul>
+                    <div class="rule-card warning">
+                        <strong>Risque Managériale :</strong> Sous-évaluer la provision gonfle artificiellement l'actif du bilan et le résultat net. Surveiller l'évolution du DSO (délai moyen de recouvrement).
+                    </div>`,
+
+                    // S2 - C3
+                    `<h3>3. Évaluation et Dépréciation des Stocks</h3>
+                    <ul>
+                        <li><strong>Coût d'acquisition complet :</strong> Prix d'achat net + frais de transport d'acheminement, droits de douane et frais de manutention indispensables.</li>
+                        <li><strong>Méthodes de sortie de stock admises :</strong>
+                            <ul>
+                                <li><span class="pill-tag">PEPS / FIFO</span> Premier entré, premier sorti. En période d'inflation, minimise le coût des ventes et affiche un bénéfice plus élevé.</li>
+                                <li><span class="pill-tag">CMP</span> Coût moyen pondéré. Lisse les fluctuations de cours.</li>
+                                <li><em>Norme IFRS : La méthode DEPS/LIFO est strictement interdite.</em></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Règle d'or : Moindre du coût et de la Valeur Nette de Réalisation (VNR) :</strong>
+                        <p style="margin: 4px 0 0 0;">Si le prix de marché d'un stock ou d'un modèle démodé tombe sous son coût d'origine, une <strong>dépréciation de stock</strong> doit être enregistrée immédiatement en charge d'exploitation.</p>
+                    </div>`,
+
+                    // S2 - C4
+                    `<h3>4. Immobilisations Corporelles — Entrée & Capitalisation</h3>
+                    <ul>
+                        <li><strong>Définition :</strong> Actifs tangibles à long terme (> 1 an) destinés à être utilisés dans la production ou la location.</li>
+                        <li><strong>Arbitrage Stratégique CapEx vs OpEx :</strong>
+                            <ul>
+                                <li><span class="pill-tag green">CapEx (Bilan)</span> Frais nécessaires pour rendre l'actif opérationnel (achat, livraison, installation, tests) ou dépenses améliorant sa durée/capacité.</li>
+                                <li><span class="pill-tag orange">OpEx (P&L)</span> Réparations régulières et entretien courant qui maintiennent simplement l'actif en état.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Obligations environnementales :</strong> Les coûts futurs prévisibles de démantèlement et de réhabilitation d'un site doivent être actualisés et intégrés au coût initial de l'actif.
+                    </div>`,
+
+                    // S2 - C5
+                    `<h3>5. Amortissement & Sortie des Immobilisations</h3>
+                    <ul>
+                        <li><strong>Nature réelle :</strong> Ce n'est pas une mesure de perte de valeur marchande, mais une **répartition systématique du coût sur la durée d'utilité estimée**.</li>
+                        <li><strong>Calcul linéaire standard :</strong>
+                            <p style="margin: 4px 0;"><code>Amortissement annuel = (Coût d'origine - Valeur résiduelle) / Durée d'utilité en années</code></p>
+                        </li>
+                        <li><strong>Double écriture comptable :</strong>
+                            <ul>
+                                <li>Au Bilan : Augmente le compte d'<em>Amortissement cumulé</em> (contra-actif diminuant la valeur nette de l'immobilisation).</li>
+                                <li>Au Résultat : Reconnaissance d'une <em>Charge d'amortissement</em> sans sortie de trésorerie (dépense non-cash).</li>
+                            </ul>
+                        </li>
+                    </ul>`
+                ]
+            },
+            3: {
+                title: "Séance 3 : Incorporels, placements, passifs et capitaux propres",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_03/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_Composantes_de_l_état_de_la_situation_financière_deuxième_partie.mp4",
+                        name: "1. Incorporels, R&D et Goodwill",
+                        desc: "Brevets, licences, IAS 38, R&D interne vs acquise, écart d'acquisition"
+                    },
+                    {
+                        file: "Capsule_2_-_Les_actifs_non_courants_les_placements.mp4",
+                        name: "2. Les placements financiers",
+                        desc: "Portefeuille (<20%), associés (20-50%), filiales (>50%), coentreprises"
+                    },
+                    {
+                        file: "Capsule_3_-_Les_passifs_courants.mp4",
+                        name: "3. Passifs courants & Provisions",
+                        desc: "Fournisseurs, acomptes clients, règle du triptyque de passif (IAS 37)"
+                    },
+                    {
+                        file: "Capsule_4_-_Les_principaux_enjeux_des_passifs.mp4",
+                        name: "4. Enjeux passifs & Hors-bilan",
+                        desc: "PCDLT, contrats de location IFRS 16, régimes de retraite à prestations déterminées"
+                    },
+                    {
+                        file: "Capsule_5_-_Capitaux_propres.mp4",
+                        name: "5. Capitaux propres & RND",
+                        desc: "Capital-actions, résultats non distribués (RND), dividendes déclarés"
+                    }
+                ],
+                notes: [
+                    // S3 - C1
+                    `<h3>1. Immobilisations Incorporelles (IAS 38) & Goodwill</h3>
+                    <ul>
+                        <li><strong>Définition :</strong> Actif identifiable sans substance physique (brevets, licences, marques, logiciels, R&D).</li>
+                        <li><strong>Généré en interne vs Acquis :</strong>
+                            <ul>
+                                <li><span class="pill-tag">INTERNE</span> Une marque créée à l'interne (ex: Coca-Cola) ou une liste de clients fidélisée au fil du temps <strong>n'apparaît JAMAIS au bilan</strong>.</li>
+                                <li><span class="pill-tag">ACQUIS</span> Une marque ou technologie achetée lors d'une transaction avec un tiers est inscrite à l'actif à sa juste valeur marchande.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Recherche vs Développement :</strong>
+                            <ul>
+                                <li><em>Recherche :</em> Toujours passée en <strong>charges immédiates</strong> à l'état des résultats.</li>
+                                <li><em>Développement :</em> <strong>Capitalisable à l'actif</strong> uniquement si l'entreprise valide les 6 critères IFRS (faisabilité technique, marché avéré, ressources financières disponibles).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Goodwill (Écart d'acquisition) :</strong>
+                        <p style="margin: 4px 0 0 0;"><code>Goodwill = Prix payé pour l'entreprise - Juste valeur des actifs nets identifiables acquis</code></p>
+                        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8;">Il reflète les synergies futures. Il n'est <strong>JAMAIS amorti</strong>, mais obligatoirement soumis à un <strong>test annuel de dépréciation (impairment test)</strong>.</p>
+                    </div>`,
+
+                    // S3 - C2
+                    `<h3>2. Placements Financiers & Degrés d'Influence</h3>
+                    <p>La méthode comptable dépend du pourcentage de détention et du pouvoir décisionnel :</p>
+                    <ul>
+                        <li><strong>Placement de portefeuille (&lt; 20 % des droits de vote) :</strong> Investissement passif. Comptabilisé au coût puis réévalué à chaque clôture à la <strong>juste valeur marchande</strong>.</li>
+                        <li><strong>Entreprise associée (20 % à 50 %) :</strong> Influence notable sur la gouvernance.
+                            <br>➔ <strong>Mise en équivalence (Equity Method) :</strong> le placement augmente de la quote-part du bénéfice net de l'associée et diminue des dividendes reçus.
+                        </li>
+                        <li><strong>Filiale (&gt; 50 % ou contrôle de fait) :</strong> Contrôle exclusif.
+                            <br>➔ <strong>Consolidation intégrale :</strong> le bilan présente 100 % des actifs et dettes du groupe, avec une ligne pour les <em>Participations ne donnant pas le contrôle (intérêts minoritaires)</em>.
+                        </li>
+                    </ul>`,
+
+                    // S3 - C3
+                    `<h3>3. Passifs Courants & Provisions pour Risques (IAS 37)</h3>
+                    <ul>
+                        <li><strong>Passifs courants :</strong> Exigibles dans les 12 prochains mois (fournisseurs, salaires à payer, impôts).</li>
+                        <li><strong>Dépôts de clients / Produits différés :</strong> Sommes encaissées avant livraison du bien ou service. Constitue une <strong>dette de service</strong> envers le client (on lui doit un service, pas de l'argent).</li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Le Triptyque des Situations de Passif :</strong>
+                        <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+                            <li><strong>Dette certaine :</strong> Montant et échéance connus contractuellement (facture fournisseur).</li>
+                            <li><strong>Provision (IAS 37) :</strong> Obligation actuelle probable (> 50 %) et estimable de façon fiable (garanties produits, litiges). ➔ <em>Inscrite au passif avec charge au résultat.</em></li>
+                            <li><strong>Passif éventuel :</strong> Risque seulement possible (< 50 %) ou montant non estimable. ➔ <em>Information en note complémentaire uniquement, rien au bilan.</em></li>
+                        </ul>
+                    </div>`,
+
+                    // S3 - C4
+                    `<h3>4. Enjeux Stratégiques des Passifs & Engagements Hors-Bilan</h3>
+                    <ul>
+                        <li><strong>Portion courante de la dette à long terme (PCDLT) :</strong> La tranche de capital d'un emprunt remboursable dans les 12 prochains mois <strong>doit obligatoirement être transférée du passif non courant au passif courant</strong>. Les intérêts futurs ne figurent pas au bilan.</li>
+                        <li><strong>Contrats de location (Norme IFRS 16) :</strong> Révolution comptable ! Les baux opérationnels ne sont plus hors-bilan. Le locataire doit inscrire un <strong>Actif au titre du droit d'utilisation</strong> et une <strong>Obligation locative (dette)</strong> au passif.</li>
+                        <li><strong>Régimes de retraite :</strong>
+                            <ul>
+                                <li><em>Cotisations déterminées :</em> L'employeur verse sa part, le risque financier est porté par l'employé.</li>
+                                <li><em>Prestations déterminées :</em> L'employeur garantit une rente à vie. Le déficit éventuel de la caisse de retraite doit être inscrit comme un passif lourd au bilan.</li>
+                            </ul>
+                        </li>
+                    </ul>`,
+
+                    // S3 - C5
+                    `<h3>5. Capitaux Propres & Résultats Non Distribués (RND)</h3>
+                    <ul>
+                        <li><strong>Composantes :</strong> Capital-actions (sommes investies par les actionnaires) + Résultats non distribués (profits accumulés réinvestis).</li>
+                        <li><strong>Équation fondamentale des RND :</strong>
+                            <p style="margin: 4px 0;"><code>RND de clôture = RND d'ouverture + Résultat net de l'exercice - Dividendes déclarés</code></p>
+                        </li>
+                        <li><strong>Règle cruciale des dividendes :</strong> Le dividende versé aux actionnaires n'est <strong>JAMAIS une charge</strong> à l'état des résultats. C'est une distribution directe prélevée sur les capitaux propres.</li>
+                    </ul>`
+                ]
+            },
+            4: {
+                title: "Séance 4 : État du résultat global et notes aux états financiers",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_04/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_L_état_des_résultats.mp4",
+                        name: "1. L'état des résultats",
+                        desc: "Structure du compte de résultat, articulation avec le bilan, produits ordinaires vs autres, charges"
+                    },
+                    {
+                        file: "Capsule_2_-_La_constatation_des_produits.mp4",
+                        name: "2. La constatation des produits",
+                        desc: "Critères IFRS, vente de biens vs prestation de services, transfert de contrôle, produits différés"
+                    },
+                    {
+                        file: "Capsule_3_-_Les_charges_et_les_éléments_inhabituels.mp4",
+                        name: "3. Charges & Éléments inhabituels",
+                        desc: "Coût des ventes (stocks début + achats - fin), charges d'exploitation, restructuration, dépréciation"
+                    },
+                    {
+                        file: "Capsule_4_-_Les_différentes_mesures_de_la_performance_et_le_résultat_global.mp4",
+                        name: "4. Mesures de performance & Résultat global",
+                        desc: "Marge brute, BAIIA / EBITDA, BAII / EBIT, résultat net, AERG (OCI) et résultat global total"
+                    },
+                    {
+                        file: "Capsule_5_-_Notes_aux_états_financiers.mp4",
+                        name: "5. Notes aux états financiers",
+                        desc: "Rôle légal, principales conventions comptables, passifs éventuels (IAS 37), engagements hors-bilan"
+                    }
+                ],
+                notes: [
+                    // S4 - C1
+                    `<h3>1. L'État des Résultats — Mesure de la Performance Économique</h3>
+                    <ul>
+                        <li><strong>Rôle fondamental :</strong> Contrairement au bilan (photo du patrimoine à un instant précis), l'état des résultats mesure la <strong>performance et la rentabilité générée sur une période donnée</strong> (exercice financier, trimestre).</li>
+                        <li><strong>Bouclage et articulation avec le Bilan :</strong>
+                            <ul>
+                                <li>Les <em>ventes</em> génèrent de la trésorerie ou des créances clients à l'actif.</li>
+                                <li>Le <em>coût des ventes</em> découle de la sortie des stocks inscrits à l'actif.</li>
+                                <li>Le <em>résultat net final</em> est transféré dans les capitaux propres au poste <strong>Résultats non distribués (RND)</strong>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Composantes structurelles clés :</strong>
+                            <ul>
+                                <li><em>Produits des activités ordinaires :</em> Ventes générées par le cœur de métier de l'entreprise.</li>
+                                <li><em>Autres produits :</em> Revenus accessoires non liés à l'activité principale (redevances, intérêts).</li>
+                                <li><em>Coût des ventes :</em> Dépenses directes d'achat et de fabrication des produits vendus.</li>
+                                <li><em>Charges d'exploitation :</em> Frais de vente/marketing et charges administratives générales.</li>
+                                <li><em>Charges financières :</em> Intérêts payés sur la dette d'emprunt.</li>
+                                <li><em>Impôt sur le résultat :</em> Charge fiscale courante et différée.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Règle d'or managériale :</strong> Le profit comptable n'est PAS de l'argent en banque ! La comptabilité d'engagement (accrual accounting) enregistre les transactions lorsque les obligations de performance sont accomplies, indépendamment de la date d'encaissement monétaire.
+                    </div>`,
+
+                    // S4 - C2
+                    `<h3>2. La Constatation des Produits (Norme IFRS 15)</h3>
+                    <ul>
+                        <li><strong>Vente de biens — Les 5 critères indispensables de prise en compte :</strong>
+                            <ol style="margin: 4px 0 0 0; padding-left: 20px;">
+                                <li>Transfert à l'acheteur des <strong>risques et avantages importants</strong> inhérents à la propriété des biens.</li>
+                                <li>L'entreprise ne conserve aucune implication dans la gestion continue ni le contrôle effectif des biens vendus.</li>
+                                <li>Le montant des produits peut être <strong>évalué de façon fiable</strong>.</li>
+                                <li>Il est <strong>probable</strong> que les avantages économiques associés à la transaction iront à l'entreprise.</li>
+                                <li>Les coûts encourus ou à encourir pour la transaction peuvent être mesurés de façon fiable.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Prestations de services — Méthode à l'avancement :</strong>
+                            <p style="margin: 4px 0 0 0;">Le revenu est constaté proportionnellement au degré d'avancement de la prestation à la date de clôture, pourvu que le résultat soit estimable de manière fiable.</p>
+                        </li>
+                    </ul>
+                    <div class="rule-card warning">
+                        <strong>Piège Managériel : Les Produits Différés (Passif Courant) :</strong>
+                        <p style="margin: 4px 0 0 0;">Une somme perçue avant la livraison d'un bien ou la prestation de service (acompte client, abonnement payé d'avance, carte-cadeau, billet d'avion) ne peut <strong>JAMAIS être enregistrée en ventes</strong>. Elle constitue un <strong>passif courant (dette de service)</strong> envers le client jusqu'à l'exécution de la prestation.</p>
+                    </div>`,
+
+                    // S4 - C3
+                    `<h3>3. Les Charges d'Exploitation & Les Éléments Inhabituels</h3>
+                    <ul>
+                        <li><strong>Équation fondamentale du Coût des Ventes :</strong>
+                            <div class="rule-card" style="margin: 6px 0;">
+                                <code>Coût des ventes = Stock début + Achats / Coût de fabrication [MP + MOD + FGF] - Stock fin</code>
+                            </div>
+                        </li>
+                        <li><strong>Frais de vente & Charges administratives :</strong> Dépenses de la période non rattachées au coût de fabrication unitaire (publicité, salaires du siège social, loyers de bureaux, honoraires professionnels).</li>
+                        <li><strong>Éléments inhabituels / non récurrents :</strong>
+                            <ul>
+                                <li>Frais de restructuration d'envergure (fermetures d'usines, indemnités de départ).</li>
+                                <li>Pertes de valeur ou dépréciations d'actifs (write-downs d'inventaire ou d'usines).</li>
+                                <li>Gains ou pertes sur aliénation d'actifs à long terme ou abandons d'activités.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card success">
+                        <strong>Approche d'Analyse Stratégique :</strong> Pour évaluer la rentabilité durable d'une entreprise (son « earnings power »), l'analyste doit impérativement <strong>isoler et retraiter les éléments inhabituels</strong> afin de ne pas fausser la tendance des opérations courantes.
+                    </div>`,
+
+                    // S4 - C4
+                    `<h3>4. Mesures de la Performance en Cascade & Résultat Global</h3>
+                    <ul>
+                        <li><strong>La cascade progressive des marges :</strong>
+                            <ol style="margin: 4px 0 0 0; padding-left: 20px;">
+                                <li><strong>Chiffre d'affaires (Ventes)</strong></li>
+                                <li><em>(-) Coût des ventes</em> ➔ <strong>Résultat Brut (Marge brute) :</strong> Rentabilité industrielle directe du produit.</li>
+                                <li><em>(-) Frais de vente et d'administration</em> ➔ <strong>Résultat d'Exploitation (BAII / EBIT) :</strong> Performance opérationnelle pure, indépendante de la structure de capital.</li>
+                                <li><em>(+) Amortissements neutralisés</em> ➔ <strong>BAIIA / EBITDA :</strong> Mesure de trésorerie brute d'exploitation très suivie par les banquiers et acquéreurs.</li>
+                                <li><em>(-) Charges financières nettes</em> ➔ <strong>Résultat avant impôts (EBT)</strong>.</li>
+                                <li><em>(-) Impôts sur le résultat</em> ➔ <strong>Résultat Net (Bénéfice net) :</strong> Résidu revenant aux actionnaires.</li>
+                            </ol>
+                        </li>
+                        <li><strong>L'État du Résultat Global (OCI / AERG) :</strong>
+                            <div class="rule-card" style="margin: 6px 0;">
+                                <code>Résultat Global Total = Résultat Net + Autres Éléments du Résultat Global (AERG)</code>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin: 4px 0 0 0;">Les AERG (Other Comprehensive Income) regroupent les <strong>effets latents et non réalisés</strong> qui ne transitent pas par le résultat net : écarts de conversion de devises étrangères, couverture de flux de trésorerie, écarts actuariels de retraite.</p>
+                        </li>
+                    </ul>`,
+
+                    // S4 - C5
+                    `<h3>5. Les Notes aux États Financiers — Clé de Voûte de l'Audit</h3>
+                    <ul>
+                        <li><strong>Valeur légale des notes :</strong> Les notes font partie intégrante des états financiers audités. Il est strictement interdit d'interpréter un état financier sans examiner ses notes.</li>
+                        <li><strong>Note sur les conventions comptables (Note 1/2) :</strong>
+                            <p style="margin: 4px 0 0 0;">Expose les choix méthodologiques cruciaux : méthode de valorisation des inventaires (FIFO vs coût moyen), durées d'utilité et taux d'amortissement, critères de reconnaissance des revenus complexes.</p>
+                        </li>
+                        <li><strong>Éventualités et passifs éventuels (IAS 37) :</strong>
+                            <ul>
+                                <li><em>Obligation potentielle :</em> Dépend d'événements futurs incertains hors du contrôle de l'entreprise (poursuites en justice, litiges fiscaux).</li>
+                                <li><em>Règle de divulgation :</em> Si la sortie de fonds n'est pas probable (> 50%) ou si le montant ne peut être estimé de façon fiable, aucun passif n'est inscrit au bilan, mais <strong>la divulgation détaillée en note est obligatoire</strong>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Engagements contractuels & Événements postérieurs :</strong>
+                            <ul>
+                                <li><em>Engagements :</em> Obligations contractuelles majeures à long terme (commandes fermes, baux non enregistrés, garanties d'emprunt accordées).</li>
+                                <li><em>Événements postérieurs à la clôture :</em> Événements survenus entre la date de fin d'exercice et la date de publication (ajustables si confirmant des conditions antérieures, non ajustables si nouveaux mais décrits en note).</li>
+                            </ul>
+                        </li>
+                    </ul>`
+                ]
+            },
+            5: {
+                title: "Séance 5 : Le tableau des flux de trésorerie (TFT) et le BFR",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_05/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_Une_introduction.mp4",
+                        name: "1. Introduction au Tableau des flux",
+                        desc: "Variation de l'encaisse entre deux bilans, espèces et quasi-espèces, 3 pôles de flux"
+                    },
+                    {
+                        file: "Capsule_2_-_Flux_de_trésorerie_liés_aux_activités_opérationnelles.mp4",
+                        name: "2. Flux opérationnels & Le facteur temps",
+                        desc: "Pourquoi Résultat net ≠ Trésorerie, décalage temporel, BFR (clients, stocks, fournisseurs)"
+                    },
+                    {
+                        file: "Capsule_3_-_Flux_de_trésorerie_liés_aux_activités_opérationnelles.mp4",
+                        name: "3. Flux opérationnels & L'amortissement",
+                        desc: "Neutralisation de la charge d'amortissement non monétaire (non-cash), formule indirecte"
+                    },
+                    {
+                        file: "Capsule_4_-_Flux_de_trésorerie_liés_aux_activités_d_investissement.mp4",
+                        name: "4. Flux liés aux investissements (CapEx)",
+                        desc: "Modifications des actifs non courants, achat/vente d'usines et matériel, acquisition de filiales"
+                    },
+                    {
+                        file: "Capsule_5_-_Flux_de_trésorerie_liés_aux_activités_de_financement.mp4",
+                        name: "5. Flux de financement & Bouclage",
+                        desc: "Dettes à long terme, émission d'actions, dividendes versés et réconciliation finale"
+                    }
+                ],
+                notes: [
+                    // S5 - C1
+                    `<h3>1. Introduction au Tableau des Flux de Trésorerie (TFT)</h3>
+                    <ul>
+                        <li><strong>Objectif fondamental :</strong> Expliquer avec précision comment l'encaisse nette d'une société a évolué entre le début et la fin de l'exercice financier.</li>
+                        <li><strong>Définition de la trésorerie :</strong> Monnaie en caisse, comptes bancaires et placements liquides à échéance de <strong>moins de 3 mois</strong>.</li>
+                        <li><strong>Articulation avec le Bilan :</strong>
+                            <p style="margin: 4px 0;"><code>Δ Trésorerie = Flux Exploitation + Flux Investissement + Flux Financement</code></p>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Cas New Look :</strong> A commencé avec 1 496 k$, a généré 14 772 k$ en exploitation, en a réinvesti 5 829 k$, et a remboursé dettes/dividendes pour 9 021 k$, terminant avec 1 418 k$ d'encaisse.
+                    </div>`,
+
+                    // S5 - C2
+                    `<h3>2. Flux Opérationnels & Le Rôle Clé du Facteur Temps</h3>
+                    <p>Pourquoi le bénéfice net ne correspond-il jamais au cash généré par les ventes ? <strong>À cause du facteur temps :</strong></p>
+                    <ul>
+                        <li><strong>Ventes à crédit :</strong> Une vente comptabilisée le 15 décembre est au résultat de l'année, mais l'argent n'entre qu'en janvier de l'année suivante.</li>
+                        <li><strong>Mécanisme d'ajustement du BFR :</strong>
+                            <ul>
+                                <li><em>Augmentation des comptes clients :</em> L'entreprise a encaissé moins que ce qu'elle a vendu ➔ <strong>Ajustement négatif (-)</strong>.</li>
+                                <li><em>Augmentation des stocks :</em> De l'argent a été immobilisé dans des stocks non encore vendus ➔ <strong>Ajustement négatif (-)</strong>.</li>
+                                <li><em>Augmentation des fournisseurs :</em> L'entreprise a conservé sa trésorerie en retardant ses paiements ➔ <strong>Ajustement positif (+)</strong>.</li>
+                            </ul>
+                        </li>
+                    </ul>`,
+
+                    // S5 - C3
+                    `<h3>3. Flux Opérationnels & L'Amortissement Non Décaissé</h3>
+                    <ul>
+                        <li><strong>L'amortissement est une écriture purement comptable :</strong> La sortie d'argent a eu lieu dans le passé lors de l'achat de la machine.</li>
+                        <li><strong>La méthode indirecte :</strong>
+                            <p style="margin: 4px 0;"><code>Flux Exploitation = Résultat Net + Amortissements (non-cash) ± Variations du BFR</code></p>
+                        </li>
+                    </ul>
+                    <div class="rule-card success">
+                        <strong>Règle de Santé Financière :</strong> Une entreprise saine doit systématiquement afficher des <strong>flux de trésorerie opérationnels supérieurs à son résultat net</strong>, précisément grâce à l'ajout des amortissements qui reconstituent la capacité d'autofinancement.
+                    </div>`,
+
+                    // S5 - C4
+                    `<h3>4. Flux Liés aux Activités d'Investissement</h3>
+                    <ul>
+                        <li><strong>Origine bilancielle :</strong> Mouvements affectant les <strong>actifs non courants</strong> (à long terme).</li>
+                        <li><strong>Opérations courantes :</strong>
+                            <ul>
+                                <li>Acquisitions d'immobilisations corporelles (CapEx : usines, machines, laboratoires).</li>
+                                <li>Vente d'anciennes installations ou équipements usagés.</li>
+                                <li>Acquisitions d'entreprises (rachat de filiales ou prise de participation stratégique).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Interprétation :</strong> Un flux d'investissement nettement négatif est le signe sain d'une entreprise qui réinvestit activement pour développer sa capacité productive future.
+                    </div>`,
+
+                    // S5 - C5
+                    `<h3>5. Flux Liés aux Activités de Financement & Réconciliation Globale</h3>
+                    <ul>
+                        <li><strong>Transactions sur les capitaux et dettes :</strong>
+                            <ul>
+                                <li><em>Encaissements :</em> Souscription d'un nouvel emprunt bancaire, émission d'obligations ou émission de nouvelles actions.</li>
+                                <li><em>Décaissements :</em> Remboursement du capital d'une dette à long terme, rachat d'actions et versement de dividendes aux actionnaires.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Lecture managériale :</strong> Permet de voir si l'entreprise s'endette pour survivre ou si elle génère assez de cash interne pour désendetter son bilan et rémunérer ses actionnaires.</li>
+                    </ul>`
+                ]
+            },
+            6: {
+                title: "Séance 6 : Diagnostic financier global, ratios avancés et limites",
+                folder: "../raw/01_Cours/COMP50904_Information_Financiere/Seance_06/Videos/",
+                videos: [
+                    {
+                        file: "Capsule_1_-_Un_cadre_d_analyse_et_d_interprétation_des_états_financiers.mp4",
+                        name: "1. Cadre d'analyse & Sources d'information",
+                        desc: "Rapport de l'auditeur, déclaration de la direction, MD&A, banques de données"
+                    },
+                    {
+                        file: "Capsule_2_-_Introduction_aux_ratios.mp4",
+                        name: "2. Introduction aux ratios & Effet de levier",
+                        desc: "Rendement actif (ROA), capitaux propres (ROE), décomposition DuPont et levier"
+                    },
+                    {
+                        file: "Capsule_3_-_Les_ratios_de_performance.mp4",
+                        name: "3. Ratios de performance (Marges & BPA)",
+                        desc: "Marge brute, marge nette (7,54%), coûts opérationnels, BPA de base vs dilué"
+                    },
+                    {
+                        file: "Capsule_4_-_Les_ratios_d_activités.mp4",
+                        name: "4. Ratios d'activité & Gestion opérationnelle",
+                        desc: "Rotation actif (1,77), rotation stocks (157 jours), délai fournisseurs (106 jours)"
+                    },
+                    {
+                        file: "Capsule_5_-_Les_ratios_de_financement.mp4",
+                        name: "5. Ratios de financement & Structure financière",
+                        desc: "Liquidité générale, quick ratio, endettement global, couverture des charges financières"
+                    },
+                    {
+                        file: "Capsule_6_-_Les_limites_de_l_analyse.mp4",
+                        name: "6. Limites de l'analyse & Jugement managérial",
+                        desc: "Terminologie, regroupement de postes, choix de conventions, lecture indispensable des notes"
+                    }
+                ],
+                notes: [
+                    // S6 - C1
+                    `<h3>1. Le Cadre Global du Diagnostic Financier</h3>
+                    <ul>
+                        <li><strong>Les composantes du dossier financier complet :</strong>
+                            <ul>
+                                <li><em>États financiers audités :</em> Bilan, P&L, Flux de trésorerie, Variations des capitaux propres et Notes annexes.</li>
+                                <li><em>Rapport des auditeurs :</em> Opinion sans réserve attestant de l'image fidèle selon les normes IFRS.</li>
+                                <li><em>Déclaration formelle de la direction :</em> Engagement légal du président et du CFO sur la véracité des estimations.</li>
+                                <li><em>Rapport annuel et analyse de la direction (MD&A) :</em> Vision stratégique, risques et contexte de marché.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Bases de données & Concurrence :</strong> SEDAR+, Statistique Canada, Yahoo Finance, Infinancials. Les ratios ne valent rien isolément ; ils prennent tout leur sens comparés aux pairs sectoriels.
+                    </div>`,
+
+                    // S6 - C2
+                    `<h3>2. Diagnostic de Rentabilité : ROA, ROE et Levier Financier</h3>
+                    <ul>
+                        <li><strong>Cas New Look :</strong>
+                            <ul>
+                                <li><em>Rendement de l'actif (ROA) :</em> <code>6 045 / 45 217 = 13,36 %</code> (contre 10,38 % l'année précédente après normalisation des éléments inhabituels).</li>
+                                <li><em>Rendement pour les actionnaires (ROE) :</em> <code>6 045 / 24 114 = 25,0 %</code>.</li>
+                                <li><em>Levier financier :</em> <code>45 217 / 24 114 = 1,88</code>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="rule-card success">
+                        <strong>L'Équation DuPont Appliquée :</strong>
+                        <p style="margin: 4px 0 0 0;"><code>ROE = ROA (13,36 %) × Levier (1,88) = 25,0 %</code></p>
+                        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8;">Pour chaque dollar investi en actif qui rapporte 13 %, l'effet de levier de la dette permet de dégager 25 % de rendement net pour l'actionnaire.</p>
+                    </div>`,
+
+                    // S6 - C3
+                    `<h3>3. Diagnostic de Performance : Structure des Marges & BPA</h3>
+                    <ul>
+                        <li><strong>Marge bénéficiaire nette :</strong> <code>6 045 / 80 190 = 7,54 %</code> (largement supérieure à la moyenne du commerce de détail à 3,0 % et au concurrent Coastal Contacts à -2,67 %).</li>
+                        <li><strong>Structure verticale des coûts de New Look :</strong>
+                            <ul>
+                                <li>Matériaux utilisés : 22 % du chiffre d'affaires.</li>
+                                <li>Rémunération du personnel : 31 % du chiffre d'affaires.</li>
+                                <li>Autres frais d'exploitation : 30 % du chiffre d'affaires.</li>
+                                <li>Amortissement : 5 % | Intérêts : 0,45 % | Impôts : 3 % | <strong>Bénéfice net résiduel : 7,54 %</strong>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bénéfice par action (BPA) :</strong> 0,60 $ de base contre 0,59 $ dilué (faible dilution liée aux stock-options de gestion).</li>
+                    </ul>`,
+
+                    // S6 - C4
+                    `<h3>4. Diagnostic d'Activité & Efficience Opérationnelle</h3>
+                    <ul>
+                        <li><strong>Rotation de l'actif :</strong> <code>80 190 / 45 217 = 1,77</code> (1,77 $ de ventes générées pour chaque dollar d'actif investi, contre 1,59 dans l'industrie).</li>
+                        <li><strong>Délai moyen de rotation des stocks :</strong> 157 jours en inventaire.</li>
+                        <li><strong>Délai de recouvrement des clients :</strong> 2,2 jours (modèle de vente au détail au comptant / carte de crédit).</li>
+                        <li><strong>Délai de paiement des fournisseurs :</strong> 106 jours (excellent pouvoir de négociation, finance ses achats auprès de ses partenaires).</li>
+                    </ul>
+                    <div class="rule-card">
+                        <strong>Âge des immobilisations :</strong> Le matériel optique de New Look n'est amorti qu'à 15 % (il lui reste 85 % de vie utile), confirmant de récents investissements technologiques majeurs.
+                    </div>`,
+
+                    // S6 - C5
+                    `<h3>5. Diagnostic de Financement, Liquidité & Risque Financier</h3>
+                    <ul>
+                        <li><strong>Liquidité générale :</strong> Évalue si les rentrées à court terme suffisent à honorer les factures et découverts immédiats.</li>
+                        <li><strong>Test acide :</strong> Mesure de liquidité stricte excluant les montures et lentilles non encore vendues.</li>
+                        <li><strong>Poids de la dette :</strong> New Look a un endettement maîtrisé et une charge d'intérêts très faible (0,45 % des ventes), offrant une marge de manœuvre confortable.</li>
+                    </ul>`,
+
+                    // S6 - C6
+                    `<h3>6. Synthèse des Limites de l'Analyse Financière</h3>
+                    <ul>
+                        <li><strong>La comptabilité reflète le passé :</strong> Les états financiers mesurent les réalisations historiques ; ils ne mesurent pas la satisfaction client, la culture d'équipe ni l'innovation future.</li>
+                        <li><strong>La discrétion managériale :</strong> Le choix des durées d'utilité pour amortir les équipements ou des modèles de dépréciation de stocks influence directement les résultats affichés.</li>
+                        <li><strong>L'impératif des notes :</strong> Tout diagnostic sérieux doit impérativement lire les notes aux états financiers pour valider la substance économique réelle sous les chiffres.</li>
+                    </ul>`
+                ]
+            }
+        };
+
+        // ÉTAT DU LECTEUR
+        let currentSeance = 3;
+        let currentVideoIndex = 0;
+        let currentPlaybackRate = 1.5;
+
+        const videoPlayer = document.getElementById("videoPlayer");
+        const videoSource = document.getElementById("videoSource");
+        const videoTitle = document.getElementById("videoTitle");
+        const seancePrefix = document.getElementById("seancePrefix");
+        const playlistTitle = document.getElementById("playlistTitle");
+        const playlistCount = document.getElementById("playlistCount");
+        const playlistItems = document.getElementById("playlistItems");
+        const notesContent = document.getElementById("notesContent");
+        const notesBadge = document.getElementById("notesBadge");
+        const resizableBox = document.getElementById("resizableBox");
+        const heightSlider = document.getElementById("heightSlider");
+        const heightValue = document.getElementById("heightValue");
+        const playbackIndicator = document.getElementById("playbackIndicator");
+
+        // CHANGEMENT DE SÉANCE ACTIVE
+        function switchSeance(seanceNum, initialVideoIndex = 0, initialTime = 0) {
+            if (!COURS_DATA[seanceNum]) return;
+            currentSeance = seanceNum;
+            currentVideoIndex = initialVideoIndex;
+
+            // Mise à jour des onglets de séance et des éléments de la modale
+            for (let i = 1; i <= 6; i++) {
+                const tab = document.getElementById(`tab-s${i}`);
+                const modalItem = document.getElementById(`modal-s${i}`);
+                if (tab) {
+                    if (i === seanceNum) {
+                        tab.classList.add("active");
+                    } else {
+                        tab.classList.remove("active");
+                    }
+                }
+                if (modalItem) {
+                    if (i === seanceNum) {
+                        modalItem.classList.add("active");
+                    } else {
+                        modalItem.classList.remove("active");
+                    }
+                }
+            }
+
+            // Mise à jour de l'interface et chargement de la vidéo
+            renderPlaylist();
+            loadVideo(initialVideoIndex, initialTime);
+        }
+
+        // AFFICHAGE DE LA PLAYLIST DE LA SÉANCE ACTIVE
+        function renderPlaylist() {
+            const data = COURS_DATA[currentSeance];
+            playlistTitle.textContent = `Capsules Séance ${currentSeance}`;
+            playlistCount.textContent = `${data.videos.length} vidéos`;
+            seancePrefix.textContent = `Séance ${currentSeance} — `;
+
+            let html = "";
+            data.videos.forEach((vid, idx) => {
+                html += `
+                    <div class="playlist-item ${idx === currentVideoIndex ? 'active' : ''}" id="pl-item-${idx}" onclick="loadVideo(${idx})">
+                        <strong>${vid.name}</strong>
+                        <small>${vid.desc}</small>
+                    </div>
+                `;
+            });
+            playlistItems.innerHTML = html;
+        }
+
+        // CHARGEMENT ET LECTURE D'UNE VIDÉO
+        function loadVideo(index, initialTime = 0) {
+            const seanceData = COURS_DATA[currentSeance];
+            if (index < 0 || index >= seanceData.videos.length) return;
+            currentVideoIndex = index;
+
+            const videoObj = seanceData.videos[index];
+            const fullPath = seanceData.folder + videoObj.file;
+
+            videoPlayer.src = fullPath;
+            videoTitle.textContent = videoObj.name;
+
+            // Positionner au timestamp si fourni
+            if (initialTime > 0) {
+                const setInitialTime = () => {
+                    videoPlayer.currentTime = initialTime;
+                    videoPlayer.removeEventListener("loadedmetadata", setInitialTime);
+                };
+                if (videoPlayer.readyState >= 1) {
+                    videoPlayer.currentTime = initialTime;
+                } else {
+                    videoPlayer.addEventListener("loadedmetadata", setInitialTime);
+                }
+            }
+
+            // Maintien strict de la vitesse souhaitée (par défaut 1.5x)
+            videoPlayer.playbackRate = currentPlaybackRate;
+            videoPlayer.play().catch(e => {
+                console.log("Lecture automatique différée (interaction requise) :", e);
+            });
+
+            // Mise à jour visuelle des éléments actifs de la playlist
+            const allItems = playlistItems.querySelectorAll(".playlist-item");
+            allItems.forEach((item, idx) => {
+                if (idx === index) {
+                    item.classList.add("active");
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    item.classList.remove("active");
+                }
+            });
+
+            // Mise à jour de la fiche de synthèse écrite
+            updateNotes(index);
+        }
+
+        // MISE À JOUR DE LA SYNTHÈSE ÉCRITE SOUS LA VIDÉO
+        function updateNotes(index) {
+            const seanceData = COURS_DATA[currentSeance];
+            notesBadge.textContent = `Séance ${currentSeance} — Capsule ${index + 1} sur ${seanceData.videos.length}`;
+            notesContent.innerHTML = seanceData.notes[index] || "<p>Notes de révision en cours de consolidation pour cette capsule.</p>";
+        }
+
+        // CONTRÔLE DE VITESSE (1.5x PAR DÉFAUT)
+        function setSpeed(rate) {
+            currentPlaybackRate = rate;
+            videoPlayer.playbackRate = rate;
+            playbackIndicator.textContent = `⚡ Vitesse : ${rate}x`;
+
+            document.querySelectorAll(".speed-controls .action-btn").forEach(btn => {
+                btn.classList.remove("active");
+                if (btn.textContent.trim() === `${rate}x` || (rate === 1 && btn.textContent.trim() === "1.0x")) {
+                    btn.classList.add("active");
+                }
+            });
+        }
+
+        // REDIMENSIONNEMENT VIDÉO (SLIDER & MANUEL)
+        function adjustHeight(val) {
+            resizableBox.style.height = val + "px";
+            heightValue.textContent = val + "px";
+        }
+
+        function resetSize() {
+            resizableBox.style.height = "480px";
+            resizableBox.style.width = "100%";
+            heightSlider.value = 480;
+            heightValue.textContent = "480px";
+            document.body.classList.remove("theatre-mode");
+            document.getElementById("theatreBtn").classList.remove("active");
+        }
+
+        // MODE CINÉMA / ÉTENDU
+        function toggleTheatre() {
+            document.body.classList.toggle("theatre-mode");
+            const btn = document.getElementById("theatreBtn");
+            btn.classList.toggle("active");
+            if (document.body.classList.contains("theatre-mode")) {
+                heightSlider.value = 620;
+                heightValue.textContent = "620px";
+                resizableBox.style.height = "620px";
+            } else {
+                heightSlider.value = 480;
+                heightValue.textContent = "480px";
+                resizableBox.style.height = "480px";
+            }
+        }
+
+        // PLEIN ÉCRAN
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (videoPlayer.requestFullscreen) {
+                    videoPlayer.requestFullscreen();
+                } else if (videoPlayer.webkitRequestFullscreen) {
+                    videoPlayer.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // SYNCHRONISATION DU REDIMENSIONNEMENT MANUEL (RESIZE HANDLE)
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const newHeight = Math.round(entry.contentRect.height);
+                if (newHeight >= 260 && newHeight <= 850) {
+                    heightSlider.value = newHeight;
+                    heightValue.textContent = newHeight + "px";
+                }
+            }
+        });
+        resizeObserver.observe(resizableBox);
+
+        // ENCHAÎNEMENT AUTOMATIQUE À LA FIN D'UNE VIDÉO
+        videoPlayer.addEventListener("ended", () => {
+            const seanceData = COURS_DATA[currentSeance];
+            if (currentVideoIndex + 1 < seanceData.videos.length) {
+                loadVideo(currentVideoIndex + 1);
+            } else {
+                console.log(`Séance ${currentSeance} terminée.`);
+            }
+        });
+
+        // RÉAPPLIQUER LA VITESSE LORS DU CHARGEMENT DE MÉTIER
+        videoPlayer.addEventListener("play", () => {
+            videoPlayer.playbackRate = currentPlaybackRate;
+        });
+
+        // GESTION DU POPUP MODAL EN LISTE DES SÉANCES
+        function openSeanceModal() {
+            const modal = document.getElementById("seanceModal");
+            if (modal) modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeSeanceModal(e) {
+            if (e && e.target && e.target !== document.getElementById("seanceModal") && !e.target.classList.contains("modal-close-btn")) {
+                return;
+            }
+            const modal = document.getElementById("seanceModal");
+            if (modal) modal.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        function selectSeanceFromModal(seanceNum) {
+            switchSeance(seanceNum);
+            closeSeanceModal();
+            const resizable = document.getElementById("resizableBox");
+            if (resizable) {
+                resizable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function selectAutotestFromModal(seanceNum = 3) {
+            closeSeanceModal();
+            const allSeances = [1, 2, 3, 4, 5, 6];
+            
+            // Masquer les autres panneaux
+            allSeances.forEach(s => {
+                const p = document.getElementById(`autotestPanel-s${s}`);
+                const b = document.getElementById(`tab-autotest-s${s}`);
+                if (p) p.classList.remove("active");
+                if (b) b.classList.remove("active");
+            });
+
+            const targetPanel = document.getElementById(`autotestPanel-s${seanceNum}`);
+            const targetBtn = document.getElementById(`tab-autotest-s${seanceNum}`);
+            if (targetPanel) {
+                targetPanel.classList.add("active");
+                if (targetBtn) targetBtn.classList.add("active");
+                targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Fermer la modale avec la touche Échap
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeSeanceModal();
+            }
+        });
+
+        // NAVIGATION ET REMÉDIATION AUTO-TESTS DIRECTE (S1, S2, S3, S4, S5 ou S6)
+        function toggleAutotestPanel(seanceNum = 3) {
+            const allSeances = [1, 2, 3, 4, 5, 6];
+            const targetPanel = document.getElementById(`autotestPanel-s${seanceNum}`);
+            const targetBtn = document.getElementById(`tab-autotest-s${seanceNum}`);
+            if (!targetPanel) return;
+
+            const wasActive = targetPanel.classList.contains("active");
+
+            // Masquer tous les panneaux
+            allSeances.forEach(s => {
+                const p = document.getElementById(`autotestPanel-s${s}`);
+                const b = document.getElementById(`tab-autotest-s${s}`);
+                if (p) p.classList.remove("active");
+                if (b) b.classList.remove("active");
+            });
+
+            if (!wasActive) {
+                targetPanel.classList.add("active");
+                if (targetBtn) targetBtn.classList.add("active");
+                targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function jumpToVideo(seanceNum, videoIdx, timeSec) {
+            // Basculer sur la bonne séance et la capsule demandée avec le timestamp
+            switchSeance(seanceNum, videoIdx, timeSec);
+            // Remonter de manière fluide vers le lecteur vidéo
+            const resizable = document.getElementById("resizableBox");
+            if (resizable) {
+                resizable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // INITIALISATION AU DÉMARRAGE : LECTURE DES PARAMÈTRES D'URL (s, c, t, v)
+        window.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const seanceParam = parseInt(params.get("s") || params.get("seance")) || 3;
+            const capsuleParam = parseInt(params.get("c") || params.get("capsule") || params.get("video")) || 1;
+            const timeParam = parseFloat(params.get("t") || params.get("time")) || 0;
+            const speedParam = parseFloat(params.get("v") || params.get("speed")) || 1.5;
+
+            switchSeance(seanceParam, capsuleParam - 1, timeParam);
+            setSpeed(speedParam);
+        });
+    </script>
+</body>
+</html>
